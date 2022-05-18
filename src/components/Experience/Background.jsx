@@ -42,9 +42,13 @@ function Background({ states, sceneBackgrounds }) {
   const tempColor = useMemo(() => new THREE.Color(), []);
 
   useFrame(() => {
-    bColor.lerp(tempColor.set(bottomColor), 0.01);
-    tColor.lerp(tempColor.set(topColor), 0.01);
-    csColor.lerp(tempColor.set(contactShadowColor), 0.01);
+    bColor.getHex() !== bottomColor &&
+      bColor.lerp(tempColor.set(bottomColor), 0.01);
+
+    tColor.getHex() !== topColor && tColor.lerp(tempColor.set(topColor), 0.01);
+
+    csColor.getHex() !== contactShadowColor &&
+      csColor.lerp(tempColor.set(contactShadowColor), 0.01);
 
     depthRef.current.colorA = tColor;
     depthRef.current.colorB = bColor;
