@@ -1,34 +1,35 @@
 import { useEffect, useRef } from "react";
 import Background from "./Background";
+import useObjectAnimation from "./hooks/useObjectAnimation";
+import useTransitionState from "./hooks/useTransitionState";
 import Scene01 from "./Scene_01";
 import Scene02 from "./Scene_02";
 import Scene03 from "./Scene_03";
 import Scene04 from "./Scene_04";
-import useSceneAnimation from "./useSceneAnimation";
-import useSceneTransition from "./useSceneTransition";
+import { pageTransitions } from "./transitionProps/pageTransitions";
 import { initialTransitionState } from "./_utils/sceneConstants";
 
 function Scenes(props) {
   const [
     transitionStates,
     { reset, navigatePageByNum, navigateToNextPage, navigateToPrevPage },
-  ] = useSceneTransition(initialTransitionState);
+  ] = useTransitionState(initialTransitionState);
 
   const scene1Ref = useRef(null);
   const scene2Ref = useRef(null);
   const scene3Ref = useRef(null);
   const scene4Ref = useRef(null);
 
-  useSceneAnimation(scene1Ref, transitionStates[0]);
-  useSceneAnimation(scene2Ref, transitionStates[1]);
-  useSceneAnimation(scene3Ref, transitionStates[2]);
-  useSceneAnimation(scene4Ref, transitionStates[3]);
+  useObjectAnimation(scene1Ref, transitionStates[0], pageTransitions);
+  useObjectAnimation(scene2Ref, transitionStates[1], pageTransitions);
+  useObjectAnimation(scene3Ref, transitionStates[2], pageTransitions);
+  useObjectAnimation(scene4Ref, transitionStates[3], pageTransitions);
 
   useEffect(() => {
     window.reset = reset;
-    window.navigatePageByNum = navigatePageByNum;
-    window.navigateToNextPage = navigateToNextPage;
-    window.navigateToPrevPage = navigateToPrevPage;
+    window.navigateByNum = navigatePageByNum;
+    window.navigateToNext = navigateToNextPage;
+    window.navigateToPrev = navigateToPrevPage;
   }, [transitionStates]);
 
   return (

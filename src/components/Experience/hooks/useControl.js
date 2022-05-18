@@ -1,6 +1,13 @@
 import GUI from "lil-gui";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * WebGL Scene 디버깅 용도로 만들어진 커스텀 훅입니다.
+ * 실제로 조작하며 Constant 값을 설정하기 위해 사용합니다.
+ *
+ * 적용 대상: Camera, Light, Mesh, Material, Scene State(custom hook)
+ */
+
 const themes = {
   scene01: {
     bottomColor: "#3eccaf",
@@ -43,7 +50,7 @@ const lights = {
   },
 };
 
-const initalState = {
+const initialState = {
   background: {
     bottomColor: themes.scene04.bottomColor,
     topColor: themes.scene04.topColor,
@@ -64,6 +71,29 @@ const initalState = {
   },
 };
 
+// Add Page debugger and binding context
+initialState.page = {
+  currentPage: -1,
+  navigateToNext: function () {
+    if (this.page.currentPage > 4) return;
+
+    if (window.navigateByNum) window.navigateByNum(++this.page.currentPage);
+  }.bind(initialState),
+  navigateToPrev: function () {
+    if (this.page.currentPage < -1) return;
+
+    if (window.navigateByNum) window.navigateByNum(--this.page.currentPage);
+  }.bind(initialState),
+  navigateByNum: function (pageIdx) {
+    if (pageIdx < -1 || pageIdx > 4) return;
+
+    if (window.navigateByNum) {
+      window.navigateByNum(pageIdx);
+    }
+  },
+};
+
+//Zoom Configs
 const zoomConfigs = {
   maxWidth: 1100,
   minWidth: 550,
@@ -88,7 +118,7 @@ function calZoom(width) {
 
 function useControl() {
   const guiRef = useRef(null);
-  const [state, setState] = useState(initalState);
+  const [state, setState] = useState(initialState);
 
   // * Zoom by resize
   useEffect(() => {
@@ -96,8 +126,8 @@ function useControl() {
       const width = window.innerWidth;
       const nextZoom = calZoom(width);
 
-      initalState.camera.zoom = nextZoom;
-      setState(Object.assign({}, initalState));
+      initialState.camera.zoom = nextZoom;
+      setState(Object.assign({}, initialState));
     };
 
     onResizeHandler();
@@ -112,7 +142,23 @@ function useControl() {
     const gui = new GUI();
     guiRef.current = gui;
 
-    const onChangeHandler = () => setState(Object.assign({}, initalState));
+    const onChangeHandler = () => setState(Object.assign({}, initialState));
+
+    /**
+     * Page Controller
+     */
+    const page = gui.addFolder("page");
+
+    page
+      .add(initialState.page, "currentPage")
+      .min(-1)
+      .max(4)
+      .step(1)
+      .onChange(() =>
+        initialState.page.navigateByNum(initialState.page.currentPage)
+      );
+    page.add(initialState.page, "navigateToNext");
+    page.add(initialState.page, "navigateToPrev");
 
     /**
      * Background
@@ -120,13 +166,13 @@ function useControl() {
     const background = gui.addFolder("background");
 
     background
-      .addColor(initalState.background, "bottomColor")
+      .addColor(initialState.background, "bottomColor")
       .onChange(onChangeHandler);
     background
-      .addColor(initalState.background, "topColor")
+      .addColor(initialState.background, "topColor")
       .onChange(onChangeHandler);
     background
-      .addColor(initalState.background, "contactShadowColor")
+      .addColor(initialState.background, "contactShadowColor")
       .onChange(onChangeHandler);
 
     /**
@@ -134,28 +180,28 @@ function useControl() {
      */
     const camera = gui.addFolder("camera");
 
-    camera.add(initalState.camera, "debug").onChange(onChangeHandler);
+    camera.add(initialState.camera, "debug").onChange(onChangeHandler);
 
     camera
-      .add(initalState.camera, "x")
+      .add(initialState.camera, "x")
       .min(-50)
       .max(50)
       .step(1)
       .onChange(onChangeHandler);
     camera
-      .add(initalState.camera, "y")
+      .add(initialState.camera, "y")
       .min(-50)
       .max(50)
       .step(1)
       .onChange(onChangeHandler);
     camera
-      .add(initalState.camera, "z")
+      .add(initialState.camera, "z")
       .min(-50)
       .max(50)
       .step(1)
       .onChange(onChangeHandler);
     // camera
-    //   .add(initalState.camera, "zoom")
+    //   .add(initialState.camera, "zoom")
     //   .min(0)
     //   .max(20)
     //   .step(0.001)
@@ -167,19 +213,19 @@ function useControl() {
     const orbit = gui.addFolder("orbit");
 
     orbit
-      .add(initalState.orbit, "x")
+      .add(initialState.orbit, "x")
       .min(-100)
       .max(100)
       .step(1)
       .onChange(onChangeHandler);
     orbit
-      .add(initalState.orbit, "y")
+      .add(initialState.orbit, "y")
       .min(-100)
       .max(100)
       .step(1)
       .onChange(onChangeHandler);
     orbit
-      .add(initalState.orbit, "z")
+      .add(initialState.orbit, "z")
       .min(-100)
       .max(100)
       .step(1)

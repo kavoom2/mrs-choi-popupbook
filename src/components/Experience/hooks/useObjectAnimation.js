@@ -1,14 +1,13 @@
 import gsap from "gsap";
 import React, { useRef } from "react";
-import useDidMount from "./useDidMount";
-import useDidUpdate from "./useDidUpdate";
-import { defaultActionProps } from "./_utils/sceneConstants";
-import { ActionProps, AnimationState } from "./_utils/types";
+import { useDidMount, useDidUpdate } from "../../../hooks";
+import { pageTransitions } from "../transitionProps/pageTransitions";
+import { ActionProps, AnimationState } from "../_utils/types";
 
 function useObjectAnimation(
   ref: React.ElementRef,
   state: AnimationState,
-  actionProps: ActionProps = defaultActionProps
+  actionProps: ActionProps = pageTransitions
 ): void {
   const posTweenId = useRef(null);
   const rotTweenId = useRef(null);

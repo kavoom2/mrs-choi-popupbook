@@ -22,6 +22,7 @@ Background.defaultProps = {
 
 function Background({ states, sceneBackgrounds }) {
   const depthRef = useRef(null);
+  const contactShadowRef = useRef(null);
   const openedIdx = getOpenedIdx(states);
 
   const { bottomColor, topColor, contactShadowColor } = colorSelector(
@@ -38,10 +39,12 @@ function Background({ states, sceneBackgrounds }) {
     []
   );
 
+  const tempColor = useMemo(() => new THREE.Color(), []);
+
   useFrame(() => {
-    bColor.lerp(new THREE.Color(bottomColor), 0.01);
-    tColor.lerp(new THREE.Color(topColor), 0.01);
-    csColor.lerp(new THREE.Color(contactShadowColor), 0.01);
+    bColor.lerp(tempColor.set(bottomColor), 0.01);
+    tColor.lerp(tempColor.set(topColor), 0.01);
+    csColor.lerp(tempColor.set(contactShadowColor), 0.01);
 
     depthRef.current.colorA = tColor;
     depthRef.current.colorB = bColor;
@@ -77,6 +80,7 @@ function Background({ states, sceneBackgrounds }) {
 
       {/* Contact Shadow */}
       <ContactShadows
+        ref={contactShadowRef}
         frames={1}
         position={[0, -3, 0]}
         opacity={1}

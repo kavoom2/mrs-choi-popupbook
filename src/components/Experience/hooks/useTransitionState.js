@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
-import { animationStateTypes, SceneTransitionStates } from "./_utils/types";
+import { animationStateTypes, SceneTransitionStates } from "../_utils/types";
 
-function useSceneTransition(initialState: SceneTransitionStates = []): [
+function useTransitionState(initialState: SceneTransitionStates = []): [
   SceneTransitionStates,
   {
     reset: () => void,
@@ -25,7 +25,6 @@ function useSceneTransition(initialState: SceneTransitionStates = []): [
   }, [states.length]);
 
   const navigateToNextPage = useCallback(() => {
-    console.log(states);
     const prevOpened = states.lastIndexOf(animationStateTypes.open);
 
     let nextOpened = prevOpened + 1;
@@ -50,7 +49,7 @@ function useSceneTransition(initialState: SceneTransitionStates = []): [
 
   const navigatePageByNum = useCallback(
     (pageIdx) => {
-      if (pageIdx < -1 || pageIdx > states.length - 1) {
+      if (pageIdx < -1 || pageIdx > states.length) {
         console.warn("정상적인 페이지 범위를 벗어난 요청입니다.");
         return;
       }
@@ -88,4 +87,4 @@ function generateNextState(nextOpened = [], length = 0) {
     });
 }
 
-export default useSceneTransition;
+export default useTransitionState;
