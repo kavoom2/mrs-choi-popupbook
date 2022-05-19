@@ -70,6 +70,10 @@ export default function Experience() {
   );
 }
 
+/**
+ * Debuggers (Camera / Stats)
+ */
+
 function CameraDebugger(props) {
   const vec3 = useMemo(() => new THREE.Vector3(), []);
 

@@ -1,4 +1,3 @@
-import { ContactShadows } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { Depth, LayerMaterial, Noise } from "lamina";
 import React, { useMemo, useRef } from "react";
@@ -22,7 +21,7 @@ Background.defaultProps = {
 
 function Background({ states, sceneBackgrounds }) {
   const depthRef = useRef(null);
-  const contactShadowRef = useRef(null);
+  // const contactShadowRef = useRef(null);
   const openedIdx = getOpenedIdx(states);
 
   const { bottomColor, topColor, contactShadowColor } = colorSelector(
@@ -47,8 +46,8 @@ function Background({ states, sceneBackgrounds }) {
 
     tColor.getHex() !== topColor && tColor.lerp(tempColor.set(topColor), 0.01);
 
-    csColor.getHex() !== contactShadowColor &&
-      csColor.lerp(tempColor.set(contactShadowColor), 0.01);
+    // csColor.getHex() !== contactShadowColor &&
+    //   csColor.lerp(tempColor.set(contactShadowColor), 0.01);
 
     depthRef.current.colorA = tColor;
     depthRef.current.colorB = bColor;
@@ -83,7 +82,7 @@ function Background({ states, sceneBackgrounds }) {
       </mesh>
 
       {/* Contact Shadow */}
-      <ContactShadows
+      {/* <ContactShadows
         ref={contactShadowRef}
         frames={1}
         position={[0, -3, 0]}
@@ -93,7 +92,7 @@ function Background({ states, sceneBackgrounds }) {
         blur={2.5}
         far={4}
         color={csColor}
-      />
+      /> */}
     </>
   );
 }

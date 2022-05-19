@@ -57,7 +57,7 @@ const initialState = {
     contactShadowColor: themes.scene04.contactShadowColor,
   },
   camera: {
-    debug: false,
+    debug: true,
     x: 0,
     y: 1.5,
     z: 13,
@@ -164,6 +164,7 @@ function useControl() {
      * Background
      */
     const background = gui.addFolder("background");
+    background.close();
 
     background
       .addColor(initialState.background, "bottomColor")
@@ -181,6 +182,7 @@ function useControl() {
     const camera = gui.addFolder("camera");
 
     camera.add(initialState.camera, "debug").onChange(onChangeHandler);
+    camera.close();
 
     camera
       .add(initialState.camera, "x")
@@ -211,6 +213,7 @@ function useControl() {
      * Orbit
      */
     const orbit = gui.addFolder("orbit");
+    orbit.close();
 
     orbit
       .add(initialState.orbit, "x")

@@ -15,6 +15,14 @@ export const materialNames = {
   content_front: "content_front",
 };
 
+export const depthMaterialNames = [
+  materialNames.content_back,
+  materialNames.content_main,
+  materialNames.content_front,
+  materialNames.ceil_stripetent,
+  materialNames.ceil_stripetent_tail,
+];
+
 export type AnimationState = "reset" | "preOpen" | "open" | "close";
 
 export type OrientKey = "position" | "rotation";
