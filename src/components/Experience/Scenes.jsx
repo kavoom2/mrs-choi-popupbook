@@ -1,22 +1,24 @@
 import { useGLTF } from "@react-three/drei";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import Background from "./Background";
 import useObjectAnimation from "./hooks/useObjectAnimation";
-import useTransitionState from "./hooks/useTransitionState";
 import Scene01 from "./Scene_01";
 import Scene02 from "./Scene_02";
 import Scene03 from "./Scene_03";
 import Scene04 from "./Scene_04";
-import { pageTransitions } from "./transitionProps/pageTransitions";
 import {
-  initialTransitionState,
-  meshKeys,
-  sceneNames,
-} from "./_utils/sceneConstants";
+  bookPosTransitions,
+  bookRotTransitions,
+} from "./transitionProps/mainObjectTransitions";
+import { pageTransitions } from "./transitionProps/pageTransitions";
+import { meshKeys, sceneNames } from "./_utils/sceneConstants";
 import { depthMaterialNames } from "./_utils/types";
 
-function Scenes(props) {
+function Scenes({ transitionStates }) {
+  /**
+   * Node and Materials
+   */
   const { nodes, materials } = useGLTF("/static/models/glb/popup_book.glb");
 
   const depthMaterials = useMemo(
@@ -56,10 +58,19 @@ function Scenes(props) {
     [nodes, materials]
   );
 
-  const [
-    transitionStates,
-    { reset, navigatePageByNum, navigateToNextPage, navigateToPrevPage },
-  ] = useTransitionState(initialTransitionState);
+  /**
+   * Main Book Position and Rotation
+   */
+
+  const bookPosRef = useRef(null);
+  const bookRotRef = useRef(null);
+
+  useObjectAnimation(bookPosRef, transitionStates[0], bookPosTransitions);
+  useObjectAnimation(bookRotRef, transitionStates[0], bookRotTransitions);
+
+  /**
+   * Scene(Sheet) Posisition, Rotation
+   */
 
   const scene1Ref = useRef(null);
   const scene2Ref = useRef(null);
@@ -71,65 +82,60 @@ function Scenes(props) {
   useObjectAnimation(scene3Ref, transitionStates[2], pageTransitions);
   useObjectAnimation(scene4Ref, transitionStates[3], pageTransitions);
 
-  useEffect(() => {
-    window.reset = reset;
-    window.navigateByNum = navigatePageByNum;
-    window.navigateToNext = navigateToNextPage;
-    window.navigateToPrev = navigateToPrevPage;
-  }, [transitionStates]);
-
   return (
     <>
       {/* Background */}
       <Background states={transitionStates} />
 
       {/* Popup Objects (Each page) */}
-      <group>
-        {/* Scene 01 */}
-        <group ref={scene1Ref}>
-          <group position={[0, 0.2, 0.24]}>
-            <Scene01
-              transitionState={transitionStates[0]}
-              nodes={gltfs.scene01.nodes}
-              materials={gltfs.scene01.materials}
-              depthMaterials={depthMaterials}
-            />
+      <group ref={bookRotRef}>
+        <group ref={bookPosRef}>
+          {/* Scene 01 */}
+          <group ref={scene1Ref}>
+            <group position={[0, 0.2, 0.24]}>
+              <Scene01
+                transitionState={transitionStates[0]}
+                nodes={gltfs.scene01.nodes}
+                materials={gltfs.scene01.materials}
+                depthMaterials={depthMaterials}
+              />
+            </group>
           </group>
-        </group>
 
-        {/* Scene 02 */}
-        <group ref={scene2Ref}>
-          <group position={[0, 0.2, 0.08]}>
-            <Scene02
-              transitionState={transitionStates[1]}
-              nodes={gltfs.scene02.nodes}
-              materials={gltfs.scene02.materials}
-              depthMaterials={depthMaterials}
-            />
+          {/* Scene 02 */}
+          <group ref={scene2Ref}>
+            <group position={[0, 0.2, 0.08]}>
+              <Scene02
+                transitionState={transitionStates[1]}
+                nodes={gltfs.scene02.nodes}
+                materials={gltfs.scene02.materials}
+                depthMaterials={depthMaterials}
+              />
+            </group>
           </group>
-        </group>
 
-        {/* Scene 03 */}
-        <group ref={scene3Ref}>
-          <group position={[0, 0.2, -0.08]}>
-            <Scene03
-              transitionState={transitionStates[2]}
-              nodes={gltfs.scene03.nodes}
-              materials={gltfs.scene03.materials}
-              depthMaterials={depthMaterials}
-            />
+          {/* Scene 03 */}
+          <group ref={scene3Ref}>
+            <group position={[0, 0.2, -0.08]}>
+              <Scene03
+                transitionState={transitionStates[2]}
+                nodes={gltfs.scene03.nodes}
+                materials={gltfs.scene03.materials}
+                depthMaterials={depthMaterials}
+              />
+            </group>
           </group>
-        </group>
 
-        {/* Scene 04 */}
-        <group ref={scene4Ref}>
-          <group position={[0, 0.2, -0.24]}>
-            <Scene04
-              transitionState={transitionStates[3]}
-              nodes={gltfs.scene04.nodes}
-              materials={gltfs.scene04.materials}
-              depthMaterials={depthMaterials}
-            />
+          {/* Scene 04 */}
+          <group ref={scene4Ref}>
+            <group position={[0, 0.2, -0.24]}>
+              <Scene04
+                transitionState={transitionStates[3]}
+                nodes={gltfs.scene04.nodes}
+                materials={gltfs.scene04.materials}
+                depthMaterials={depthMaterials}
+              />
+            </group>
           </group>
         </group>
       </group>

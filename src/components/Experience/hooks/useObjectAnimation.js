@@ -47,7 +47,7 @@ function useObjectAnimation(
           z: position.z,
           ease: position?.ease ?? "none",
           delay: position?.delay ?? 0,
-          duration: position.duration,
+          duration: position.duration ?? 0,
           onComplete: () => {
             if (nextPositionId === posTweenId.current)
               posTweenId.current = null;
@@ -66,7 +66,7 @@ function useObjectAnimation(
           z: rotation.z,
           ease: rotation?.ease ?? "none",
           delay: rotation?.delay ?? 0,
-          duration: rotation.duration,
+          duration: rotation.duration ?? 0,
           onComplete: () => {
             if (nextRotationId === rotTweenId.current)
               rotTweenId.current = null;
@@ -79,6 +79,7 @@ function useObjectAnimation(
   }, [state]);
 }
 
-const valueSelector = (actionName, actionProps) => actionProps[actionName];
+const valueSelector = (actionName, actionProps) =>
+  actionProps[actionName] ?? {};
 
 export default useObjectAnimation;

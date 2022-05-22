@@ -7,8 +7,8 @@ export const ceilHingeProps = {
       x: 0,
       y: 0,
       z: 0,
-      duration: 0,
-      ease: "none",
+      duration: 2.5,
+      ease: "power3.inOut",
     },
   },
   // PreOpen
@@ -50,8 +50,8 @@ export const contentMainProps = {
       x: 0,
       y: 0,
       z: 0,
-      duration: 0,
-      ease: "none",
+      duration: 2.5,
+      ease: "power3.inOut",
     },
   },
   // PreOpen
@@ -94,8 +94,8 @@ export const contentFrontProps = {
       x: 0,
       y: 0,
       z: -Math.PI,
-      duration: 0,
-      ease: "none",
+      duration: 2.5,
+      ease: "power3.inOut",
     },
   },
   // PreOpen
@@ -138,8 +138,8 @@ export const contentBackProps = {
       x: -0.02,
       y: 4.61,
       z: 0,
-      duration: 0,
-      ease: "none",
+      duration: 2.5,
+      ease: "power3.inOut",
     },
   },
   // PreOpen

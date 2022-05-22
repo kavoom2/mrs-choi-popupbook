@@ -21,79 +21,52 @@ Background.defaultProps = {
 
 function Background({ states, sceneBackgrounds }) {
   const depthRef = useRef(null);
-  // const contactShadowRef = useRef(null);
   const openedIdx = getOpenedIdx(states);
 
-  const { bottomColor, topColor, contactShadowColor } = colorSelector(
-    sceneBackgrounds,
-    openedIdx
-  );
+  const { bottomColor, topColor } = colorSelector(sceneBackgrounds, openedIdx);
 
-  const [bColor, tColor, csColor] = useMemo(
-    () => [
-      new THREE.Color(bottomColor),
-      new THREE.Color(topColor),
-      new THREE.Color(contactShadowColor),
-    ],
+  const [bColor, tColor] = useMemo(
+    () => [new THREE.Color(bottomColor), new THREE.Color(topColor)],
     []
   );
 
-  const tempColor = useMemo(() => new THREE.Color(), []);
+  const colorVec = useMemo(() => new THREE.Color(), []);
 
   useFrame(() => {
     bColor.getHex() !== bottomColor &&
-      bColor.lerp(tempColor.set(bottomColor), 0.01);
+      bColor.lerp(colorVec.set(bottomColor), 0.01);
 
-    tColor.getHex() !== topColor && tColor.lerp(tempColor.set(topColor), 0.01);
-
-    // csColor.getHex() !== contactShadowColor &&
-    //   csColor.lerp(tempColor.set(contactShadowColor), 0.01);
+    tColor.getHex() !== topColor && tColor.lerp(colorVec.set(topColor), 0.01);
 
     depthRef.current.colorA = tColor;
     depthRef.current.colorB = bColor;
   });
 
   return (
-    <>
-      {/* Background Mesh */}
-      <mesh scale={100}>
-        <boxGeometry args={[1, 1, 1]} />
-        <LayerMaterial side={THREE.BackSide}>
-          <Depth
-            ref={depthRef}
-            colorB={bColor} // BottomColor
-            colorA={tColor} // TopColor
-            alpha={1}
-            mode="normal"
-            near={0}
-            far={150}
-            origin={[0, 100, -100]}
-          />
-          <Noise
-            mapping="local"
-            type="white"
-            scale={1000}
-            colorA="white"
-            colorB="black"
-            mode="subtract"
-            alpha={0.01}
-          />
-        </LayerMaterial>
-      </mesh>
-
-      {/* Contact Shadow */}
-      {/* <ContactShadows
-        ref={contactShadowRef}
-        frames={1}
-        position={[0, -3, 0]}
-        opacity={1}
-        width={16}
-        height={8}
-        blur={2.5}
-        far={4}
-        color={csColor}
-      /> */}
-    </>
+    <mesh scale={100}>
+      <boxGeometry args={[1, 1, 1]} />
+      <LayerMaterial side={THREE.BackSide}>
+        <Depth
+          ref={depthRef}
+          colorB={bColor} // BottomColor
+          colorA={tColor} // TopColor
+          alpha={1}
+          mode="normal"
+          near={0}
+          far={150}
+          origin={[0, 100, -100]}
+        />
+        <Noise
+          mapping="local"
+          type="white"
+          scale={1000}
+          colorA="white"
+          colorB="black"
+          mode="subtract"
+          alpha={0.01}
+        />
+      </LayerMaterial>
+    </mesh>
   );
 }
 

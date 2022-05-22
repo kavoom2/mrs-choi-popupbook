@@ -1,30 +1,34 @@
-import {
-  Environment,
-  GizmoHelper,
-  GizmoViewport,
-  OrbitControls,
-  Stats,
-} from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { lazy, Suspense, useEffect, useMemo, useRef } from "react";
-import * as THREE from "three";
-import useControl from "./hooks/useControl";
+import { Environment, GizmoHelper, GizmoViewport } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { lazy, Suspense, useEffect } from "react";
+import Camera from "./Camera";
+import usePopupDebugger from "./hooks/usePopupDebugger";
+import useTransitionState from "./hooks/useTransitionState";
+import Stats from "./Stats";
+import { initialTransitionState } from "./_utils/sceneConstants";
 
 const Scenes = lazy(() => import("./Scenes"));
 
 export default function Experience() {
-  const state = useControl();
+  const debugStates = usePopupDebugger();
+
+  const [
+    transitionStates,
+    { navigatePageByNum, navigateToNextPage, navigateToPrevPage },
+  ] = useTransitionState(initialTransitionState);
+
+  useEffect(() => {
+    window.navigateByNum = navigatePageByNum;
+    window.navigateToNext = navigateToNextPage;
+    window.navigateToPrev = navigateToPrevPage;
+  }, [transitionStates]);
 
   return (
     <Canvas
       shadows
       dpr={[1, 2]}
       camera={{
-        position: [state.camera.x, state.camera.y, state.camera.z],
-        fov: state.camera.fov,
-        up: [0, 1, 0],
-        enableZoom: true,
-        zoom: state.camera.zoom,
+        fov: 50,
       }}
       gl={{
         antialias: true,
@@ -39,9 +43,11 @@ export default function Experience() {
         intensity={0.25}
         shadow-bias={-0.0001}
       />
+
       <Suspense>
-        <Scenes />
+        <Scenes transitionStates={transitionStates} />
         <Environment preset="city" />
+        <Camera transitionState={transitionStates[0]} />
       </Suspense>
 
       <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
@@ -51,58 +57,7 @@ export default function Experience() {
         />
       </GizmoHelper>
 
-      <OrbitControls
-        target={[state.orbit.x, state.orbit.y, state.orbit.z]}
-        enableZoom
-        enablePan
-      />
-      <CameraDebugger
-        debug={state.camera.debug}
-        position={state.camera}
-        target={state.orbit}
-        fov={state.camera.fov}
-        up={[0, 1, 0]}
-        enableZoom
-        zoom={state.camera.zoom}
-      />
-      <StatsDebugger />
+      <Stats />
     </Canvas>
   );
-}
-
-/**
- * Debuggers (Camera / Stats)
- */
-
-function CameraDebugger(props) {
-  const vec3 = useMemo(() => new THREE.Vector3(), []);
-
-  useFrame(({ camera }) => {
-    if (props.debug) {
-      camera.position.lerp(
-        vec3.set(props.position.x, props.position.y, props.position.z),
-        0.05
-      );
-
-      camera.zoom = props.zoom;
-
-      camera.updateProjectionMatrix();
-    }
-  });
-
-  return null;
-}
-
-function StatsDebugger() {
-  const node = useRef(document.createElement("div"));
-
-  useEffect(() => {
-    node.current.id = "stats";
-
-    document.body.appendChild(node.current);
-
-    return () => document.body.removeChild(node.current);
-  }, []);
-
-  return <Stats parent={node.current} />;
 }

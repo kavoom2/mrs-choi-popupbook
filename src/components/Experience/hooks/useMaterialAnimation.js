@@ -20,7 +20,7 @@ function useMaterialAnimation(
     /**
      * Initialize Material
      */
-    const actionProp = propSelector(state, actionProps);
+    const actionProp = propSelector(state, actionProps) ?? {};
 
     Object.entries(materials).forEach(([materialName, material]) => {
       const materialProp = actionProp[materialName] ?? {};
@@ -37,7 +37,7 @@ function useMaterialAnimation(
     /**
      * Update Materials by state with GSAP transition
      */
-    const actionProp = propSelector(state, actionProps);
+    const actionProp = propSelector(state, actionProps) ?? {};
 
     Object.entries(materials).forEach(([materialName, material]) => {
       const materialProp = actionProp[materialName] ?? {};

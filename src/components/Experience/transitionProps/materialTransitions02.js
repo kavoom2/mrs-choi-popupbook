@@ -31,27 +31,6 @@ export const materialTransitions = {
         ease: "none",
       },
     },
-    // [materialNames.content_back]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     duration: 0,
-    //     ease: "none",
-    //   },
-    // },
-    // [materialNames.content_main]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     duration: 0,
-    //     ease: "none",
-    //   },
-    // },
-    // [materialNames.content_front]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     duration: 0,
-    //     ease: "none",
-    //   },
-    // },
   },
   // PreOpen
   [animationStateTypes.preOpen]: {
@@ -87,30 +66,6 @@ export const materialTransitions = {
         ease: "power3.inOut",
       },
     },
-    // [materialNames.content_back]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.2,
-    //     duration: 1.2,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_main]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.2,
-    //     duration: 1.2,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_front]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.2,
-    //     duration: 1.2,
-    //     ease: "power3.inOut",
-    //   },
-    // },
   },
   // Open
   [animationStateTypes.open]: {
@@ -142,27 +97,6 @@ export const materialTransitions = {
         ease: "power3.inOut",
       },
     },
-    // [materialNames.content_back]: {
-    //   opacity: {
-    //     value: 1,
-    //     duration: 0.5,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_main]: {
-    //   opacity: {
-    //     value: 1,
-    //     duration: 0.5,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_front]: {
-    //   opacity: {
-    //     value: 1,
-    //     duration: 0.5,
-    //     ease: "power3.inOut",
-    //   },
-    // },
   },
   // Close
   [animationStateTypes.close]: {
@@ -198,29 +132,5 @@ export const materialTransitions = {
         ease: "power3.inOut",
       },
     },
-    // [materialNames.content_back]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.6,
-    //     duration: 0.8,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_main]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.6,
-    //     duration: 0.8,
-    //     ease: "power3.inOut",
-    //   },
-    // },
-    // [materialNames.content_front]: {
-    //   opacity: {
-    //     value: 0.2,
-    //     delay: 1.6,
-    //     duration: 0.8,
-    //     ease: "power3.inOut",
-    //   },
-    // },
   },
 };

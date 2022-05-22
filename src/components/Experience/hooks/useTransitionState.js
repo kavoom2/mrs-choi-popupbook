@@ -4,7 +4,6 @@ import { animationStateTypes, SceneTransitionStates } from "../_utils/types";
 function useTransitionState(initialState: SceneTransitionStates = []): [
   SceneTransitionStates,
   {
-    reset: () => void,
     navigatePageByNum: (number) => void,
     navigateToNextPage: (number) => void,
     navigateToPrevPage: (number) => void,
@@ -18,45 +17,49 @@ function useTransitionState(initialState: SceneTransitionStates = []): [
   /**
    * Transition Handlers
    */
-  const reset = useCallback(() => {
-    const nextState = Array(states.length).fill(animationStateTypes.reset);
-
-    setStates(nextState);
-  }, [states.length]);
-
   const navigateToNextPage = useCallback(() => {
     const prevOpened = states.lastIndexOf(animationStateTypes.open);
-
     let nextOpened = prevOpened + 1;
-    if (nextOpened > states.length - 1) nextOpened = prevOpened;
 
-    const nextState = generateNextState(nextOpened, states.length);
+    if (nextOpened > states.length - 1) {
+      setStates(
+        generateUniformState(states.length, animationStateTypes.preOpen)
+      );
+      return;
+    }
 
-    setStates(nextState);
+    setStates(generateNextState(nextOpened, states.length));
   }, [states]);
 
   const navigateToPrevPage = useCallback(() => {
     const prevOpened = states.lastIndexOf(animationStateTypes.open);
-
     let nextOpened = prevOpened - 1;
 
-    if (nextOpened < 0) nextOpened = -1;
+    if (nextOpened < -1) {
+      setStates(generateNextState(states.length - 1, states.length));
+      return;
+    }
 
-    const nextState = generateNextState(nextOpened, states.length);
-
-    setStates(nextState);
+    setStates(generateNextState(nextOpened, states.length));
   }, [states]);
 
   const navigatePageByNum = useCallback(
     (pageIdx) => {
-      if (pageIdx < -1 || pageIdx > states.length) {
-        console.warn("정상적인 페이지 범위를 벗어난 요청입니다.");
+      if (pageIdx < -1) {
+        setStates(
+          generateUniformState(states.length, animationStateTypes.close)
+        );
         return;
       }
 
-      const nextState = generateNextState(pageIdx, states.length);
+      if (pageIdx > states.length - 1) {
+        setStates(
+          generateUniformState(states.length, animationStateTypes.preOpen)
+        );
+        return;
+      }
 
-      setStates(nextState);
+      setStates(generateNextState(pageIdx, states.length));
     },
     [states.length]
   );
@@ -67,7 +70,6 @@ function useTransitionState(initialState: SceneTransitionStates = []): [
   return [
     states,
     {
-      reset,
       navigatePageByNum,
       navigateToNextPage,
       navigateToPrevPage,
@@ -84,6 +86,14 @@ function generateNextState(nextOpened = [], length = 0) {
       if (idx === nextOpened) return animationStateTypes.open;
 
       return animationStateTypes.preOpen;
+    });
+}
+
+function generateUniformState(length, type) {
+  return Array(length)
+    .fill(null)
+    .map((_, idx) => {
+      return type;
     });
 }
 

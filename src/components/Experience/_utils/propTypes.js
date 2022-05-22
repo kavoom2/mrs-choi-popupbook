@@ -7,6 +7,7 @@ export const transitionStatesPropTypes = PropTypes.arrayOf(
     animationStateTypes.preOpen,
     animationStateTypes.open,
     animationStateTypes.close,
+    animationStateTypes.preReset,
   ])
 ).isRequired;
 
