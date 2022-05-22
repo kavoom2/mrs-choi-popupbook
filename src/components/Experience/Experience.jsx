@@ -5,6 +5,7 @@ import Camera from "./Camera";
 import usePopupDebugger from "./hooks/usePopupDebugger";
 import useTransitionState from "./hooks/useTransitionState";
 import Stats from "./Stats";
+import { defaultCameraPos } from "./transitionProps/mainObjectTransitions";
 import { initialTransitionState } from "./_utils/sceneConstants";
 
 const Scenes = lazy(() => import("./Scenes"));
@@ -29,11 +30,13 @@ export default function Experience() {
       dpr={[1, 2]}
       camera={{
         fov: 50,
+        position: [defaultCameraPos.x, defaultCameraPos.y, defaultCameraPos.z],
       }}
       gl={{
         antialias: true,
       }}
     >
+      {/* Environments */}
       <ambientLight intensity={0.2} />
       <spotLight
         position={[0, 5, 30]}
@@ -45,19 +48,28 @@ export default function Experience() {
       />
 
       <Suspense>
+        {/* Main Scenes */}
         <Scenes transitionStates={transitionStates} />
         <Environment preset="city" />
         <Camera transitionState={transitionStates[0]} />
       </Suspense>
 
-      <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-        <GizmoViewport
-          axisColors={["hotpink", "aquamarine", "#3498DB"]}
-          labelColor="black"
-        />
-      </GizmoHelper>
-
+      {/* Debugger */}
+      <AxisDebugger />
       <Stats />
     </Canvas>
+  );
+}
+
+function AxisDebugger({ debug = false }) {
+  if (!debug) return null;
+
+  return (
+    <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
+      <GizmoViewport
+        axisColors={["hotpink", "aquamarine", "#3498DB"]}
+        labelColor="black"
+      />
+    </GizmoHelper>
   );
 }

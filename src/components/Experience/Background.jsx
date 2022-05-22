@@ -76,19 +76,23 @@ function getOpenedIdx(states = []) {
 
   const idx = states.lastIndexOf(animationStateTypes.open);
 
-  if (idx < min) return min;
-  if (idx > max) return max;
+  if (idx < min) return -1;
+  if (idx > max) return -1;
   return idx;
 }
 
 function colorSelector(sceneBackgrounds, idx) {
-  const { bottomColor, topColor, contactShadowColor } = sceneBackgrounds[idx];
+  const { bottomColor, topColor } = sceneBackgrounds[idx] ?? introBackgrounds;
 
   return {
     bottomColor,
     topColor,
-    contactShadowColor,
   };
 }
+
+const introBackgrounds = {
+  bottomColor: 0xe3cc94,
+  topColor: 0xcde5df,
+};
 
 export default Background;

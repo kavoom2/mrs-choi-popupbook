@@ -64,6 +64,7 @@ function Model({
           geometry={nodes.floor_01.geometry}
           material={materials.sheet_floor}
           position={[-0.05, 3.31, 0]}
+          rotation={[0, 0, -Math.PI]}
         />
 
         <group>

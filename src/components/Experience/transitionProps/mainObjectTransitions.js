@@ -3,7 +3,7 @@ import { animationStateTypes } from "../_utils/types";
 export const defaultCameraPos = {
   x: 0,
   y: 0,
-  z: 18,
+  z: 15,
 };
 
 export const defaultCameraLookAt = {

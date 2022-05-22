@@ -15,6 +15,5 @@ export const sceneBgPropTypes = PropTypes.arrayOf(
   PropTypes.shape({
     bottomColor: PropTypes.any.isRequired,
     topColor: PropTypes.any.isRequired,
-    contactShadowColor: PropTypes.any.isRequired,
   })
 ).isRequired;
