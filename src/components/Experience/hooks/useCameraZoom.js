@@ -9,6 +9,7 @@ function useCameraZoom(camera) {
       if (camera) camera.zoom = nextZoom;
     };
 
+    onResizeHandler();
     window.addEventListener("resize", onResizeHandler);
 
     return () => window.removeEventListener("resize", onResizeHandler);
@@ -21,7 +22,7 @@ const zoomConfigs = {
   maxWidth: 1100,
   minWidth: 550,
   maxZoom: 1.1,
-  minZoom: 0.55,
+  minZoom: 0.6,
 };
 
 zoomConfigs.calResponsiveFuns = function (width) {
