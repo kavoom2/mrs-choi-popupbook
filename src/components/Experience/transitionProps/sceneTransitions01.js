@@ -1,5 +1,9 @@
 import { animationStateTypes } from "../_utils/types";
 
+/**
+ * 장면 구성 요소의 Animation을 정의합니다.
+ */
+
 export const ceilHingeProps = {
   // Reset
   [animationStateTypes.reset]: {

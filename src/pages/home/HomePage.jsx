@@ -6,7 +6,7 @@ function HomePage(props) {
   return (
     <>
       <Experience />
-      <Loader />
+      <Loader initialState={(active) => false} />
     </>
   );
 }

@@ -3,10 +3,10 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import Background from "./Background";
 import useObjectAnimation from "./hooks/useObjectAnimation";
-import Scene01 from "./Scene_01";
-import Scene02 from "./Scene_02";
-import Scene03 from "./Scene_03";
-import Scene04 from "./Scene_04";
+import Scene01 from "./Scene01";
+import Scene02 from "./Scene02";
+import Scene03 from "./Scene03";
+import Scene04 from "./Scene04";
 import {
   bookPosTransitions,
   bookRotTransitions,
@@ -59,9 +59,8 @@ function Scenes({ transitionStates }) {
   );
 
   /**
-   * Main Book Position and Rotation
+   * (Main) Book Animation
    */
-
   const bookPosRef = useRef(null);
   const bookRotRef = useRef(null);
 
@@ -69,9 +68,8 @@ function Scenes({ transitionStates }) {
   useObjectAnimation(bookRotRef, transitionStates[0], bookRotTransitions);
 
   /**
-   * Scene(Sheet) Posisition, Rotation
+   * (Inner) Scenes Animation
    */
-
   const scene1Ref = useRef(null);
   const scene2Ref = useRef(null);
   const scene3Ref = useRef(null);
@@ -153,6 +151,6 @@ function propsSelector(object, keys = []) {
   return selectedProps;
 }
 
-// useGLTF.preload("/static/models/glb/popup_book.glb");
+useGLTF.preload("/static/models/glb/popup_book.glb");
 
 export default Scenes;

@@ -1,5 +1,9 @@
 import { animationStateTypes } from "../_utils/types";
 
+/**
+ * 장면 구성 요소의 Animation을 정의합니다.
+ */
+
 export const ceilHingeProps = {
   // Reset
   [animationStateTypes.reset]: {
@@ -7,8 +11,8 @@ export const ceilHingeProps = {
       x: 0,
       y: 0,
       z: 0,
-      duration: 2.5,
-      ease: "power3.inOut",
+      duration: 0,
+      ease: "none",
     },
   },
   // PreOpen
@@ -94,8 +98,8 @@ export const contentFrontProps = {
       x: 0,
       y: 0,
       z: -Math.PI,
-      duration: 2.5,
-      ease: "power3.inOut",
+      duration: 0,
+      ease: "none",
     },
   },
   // PreOpen
@@ -138,8 +142,8 @@ export const contentBackProps = {
       x: -0.02,
       y: 4.61,
       z: 0,
-      duration: 2.5,
-      ease: "power3.inOut",
+      duration: 0,
+      ease: "none",
     },
   },
   // PreOpen

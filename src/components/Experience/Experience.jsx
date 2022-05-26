@@ -1,6 +1,7 @@
-import { Environment, GizmoHelper, GizmoViewport } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { lazy, Suspense, useEffect } from "react";
+import AxisDebugger from "./AxisDebugger";
 import Camera from "./Camera";
 import usePopupDebugger from "./hooks/usePopupDebugger";
 import useTransitionState from "./hooks/useTransitionState";
@@ -58,18 +59,5 @@ export default function Experience() {
       <AxisDebugger />
       <Stats />
     </Canvas>
-  );
-}
-
-function AxisDebugger({ debug = false }) {
-  if (!debug) return null;
-
-  return (
-    <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-      <GizmoViewport
-        axisColors={["hotpink", "aquamarine", "#3498DB"]}
-        labelColor="black"
-      />
-    </GizmoHelper>
   );
 }

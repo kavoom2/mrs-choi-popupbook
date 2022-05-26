@@ -7,8 +7,8 @@ export const pageTransitions = {
       x: 0,
       y: 0,
       z: 0,
-      duration: 2.5,
-      ease: "power3.inOut",
+      duration: 0,
+      ease: "none",
     },
   },
 

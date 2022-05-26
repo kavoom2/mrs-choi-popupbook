@@ -3,12 +3,6 @@ import { useRef } from "react";
 import { useDidMount, useDidUpdate } from "../../../hooks";
 import { AnimationState, MaterialActionProps } from "../_utils/types";
 
-function useMapRef() {
-  const mapRef = useRef(new Map());
-
-  return mapRef.current;
-}
-
 function useMaterialAnimation(
   materials,
   state: AnimationState,
@@ -20,7 +14,7 @@ function useMaterialAnimation(
     /**
      * Initialize Material
      */
-    const actionProp = propSelector(state, actionProps) ?? {};
+    const actionProp = propSelector(state, actionProps);
 
     Object.entries(materials).forEach(([materialName, material]) => {
       const materialProp = actionProp[materialName] ?? {};
@@ -37,7 +31,7 @@ function useMaterialAnimation(
     /**
      * Update Materials by state with GSAP transition
      */
-    const actionProp = propSelector(state, actionProps) ?? {};
+    const actionProp = propSelector(state, actionProps);
 
     Object.entries(materials).forEach(([materialName, material]) => {
       const materialProp = actionProp[materialName] ?? {};
@@ -67,6 +61,6 @@ function useMaterialAnimation(
   }, [state]);
 }
 
-const propSelector = (actionName, actionProps) => actionProps[actionName];
+const propSelector = (actionName, actionProps) => actionProps[actionName] ?? {};
 
 export default useMaterialAnimation;
