@@ -16,13 +16,13 @@ function Subtitle({ content, visible = true, className, ...restProps }) {
 
   const paragraphClassNames = classNames({
     [`subtitle-paragraph`]: true,
-    [`visible`]: visible,
-    [`hidden`]: !visible,
+    [`entered`]: visible,
+    [`exited`]: !visible,
   });
 
   const { mainTextShadow, subTextShadow } = {
-    mainTextShadow: "#06c09b",
-    subTextShadow: "#005554",
+    mainTextShadow: "#00ffcc",
+    subTextShadow: "#036462",
   };
 
   return (
@@ -84,21 +84,31 @@ const Paragraph = styled.p`
       font-size: 28px;
       line-height: 1.6;
       color: #ffffff;
-      text-shadow: 0px 0px 16px ${mainTextShadow}, 0px 0px 24px ${subTextShadow};
+      text-shadow: 0px 0px 16px ${mainTextShadow}, 0px 0px 24px ${subTextShadow},
+        0px 0px 32px ${subTextShadow};
 
       text-align: center;
       word-break: keep-all;
 
       will-change: opacity;
+      user-select: none;
 
-      &.hidden {
-        opacity: 0;
-        transition: 1s ease;
+      &.entering {
+        opacity: 1;
+        transition: 1000ms ease;
       }
 
-      &.visible {
+      &.entered {
         opacity: 1;
-        transition: 0.5s ease;
+      }
+
+      &.exiting {
+        opacity: 0;
+        transition: 500ms ease;
+      }
+
+      &.exited {
+        opacity: 0;
       }
     `;
   }}
