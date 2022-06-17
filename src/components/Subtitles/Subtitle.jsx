@@ -1,8 +1,28 @@
+import { useActor } from "@xstate/react";
 import classNames from "classnames";
-import React from "react";
+import React, { useContext } from "react";
 import styled, { css } from "styled-components";
+import { scene } from "../../lib/constants/stageMachineStates";
+import { subtitles } from "../../lib/constants/subtitles";
+import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
 
-function Subtitle({ content, visible = true, className, ...restProps }) {
+/**
+ * 자막 컴포넌트는 XState의 상태에 따라 적합한 자막을 렌더링합니다.
+ */
+
+function Subtitle({
+  content,
+  visible = true,
+  className,
+  mainTextShadow,
+  subTextShadow,
+  ...restProps
+}) {
+  const globalService = useContext(GlobalServiceContext);
+  const [state] = useActor(globalService.stageService);
+
+  const { page, curIdx, maxSubtitles, isAnimating } = subtitleSelector(state);
+
   const sectionClassNames = classNames(
     {
       [`subtitle-section`]: true,
@@ -20,20 +40,27 @@ function Subtitle({ content, visible = true, className, ...restProps }) {
     [`exited`]: !visible,
   });
 
-  const { mainTextShadow, subTextShadow } = {
-    mainTextShadow: "#00ffcc",
-    subTextShadow: "#036462",
-  };
+  /**
+   * 자막 컴포넌트 렌더링
+   * page가 유효하지 않으면 렌더링하지 않습니다.
+   */
+  if (page === -1) return null;
+
+  /**
+   * 페이지에 해당하는 자막 컨텐츠를 보여줍니다.
+   */
+  const subtitleContent = subtitles[page][curIdx];
 
   return (
     <Section {...restProps} className={sectionClassNames}>
       <ResponsiveContainer className={responsiveClassName}>
         <Paragraph
+          key={`subtitle-page-${page}-content-${curIdx}`}
           mainTextShadow={mainTextShadow}
           subTextShadow={subTextShadow}
           className={paragraphClassNames}
         >
-          토순이와 곰돌이는 서로 친해지고 싶었어요.
+          {content}
         </Paragraph>
       </ResponsiveContainer>
     </Section>
@@ -41,6 +68,19 @@ function Subtitle({ content, visible = true, className, ...restProps }) {
 }
 
 export default Subtitle;
+
+function subtitleSelector(state) {
+  const { page } = state["context"][scene]["book"];
+  const { curIdx, maxSubtitles, isAnimating } =
+    state["context"][scene]["subtitle"];
+
+  return {
+    page,
+    curIdx,
+    maxSubtitles,
+    isAnimating,
+  };
+}
 
 const Section = styled.section`
   position: fixed;

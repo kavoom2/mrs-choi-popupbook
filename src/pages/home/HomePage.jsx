@@ -3,16 +3,19 @@ import React from "react";
 import styled from "styled-components";
 import Experience from "../../components/Experience";
 import ExperienceLayout from "../../components/ExperienceLayout";
-import Subtitle from "../../components/Subtitle/Subtitle";
+import Subtitles from "../../components/Subtitles/Subtitles";
+import { GlobalServiceProvider } from "./GlobalServiceProvider";
 
 function HomePage(props) {
   return (
-    <Main>
-      <Experience />
-      <Subtitle />
-      <ExperienceLayout></ExperienceLayout>
-      <Loader initialState={(active) => false} />
-    </Main>
+    <GlobalServiceProvider>
+      <Main>
+        <Experience />
+        <Subtitles />
+        <ExperienceLayout></ExperienceLayout>
+        <Loader initialState={(active) => false} />
+      </Main>
+    </GlobalServiceProvider>
   );
 }
 
