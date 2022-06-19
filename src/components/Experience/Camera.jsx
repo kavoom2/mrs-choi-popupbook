@@ -3,17 +3,18 @@ import gsap from "gsap";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import useCameraZoom from "./hooks/useCameraZoom";
+
 import {
   cameraTransitions,
   defaultCameraLookAt,
   defaultCameraPos,
-} from "./transitionProps/mainObjectTransitions";
+} from "../../lib/constants/cameraTransitions";
 
-function Camera({ transitionState }) {
+function Camera({ stageValue }) {
   const { camera } = useThree();
 
   /**
-   * use Camera Zoom
+   * use Camera Zoom: 반응형을 고려하여, 화면 크기에 따라 적정 비율로 보이도록 합니다.
    */
   useCameraZoom(camera);
 
@@ -26,10 +27,7 @@ function Camera({ transitionState }) {
   const lookAtVec3 = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
-    const { lookAt, position } = valueSelector(
-      transitionState,
-      cameraTransitions
-    );
+    const { lookAt, position } = valueSelector(stageValue, cameraTransitions);
 
     if (position) {
       gsap.to(posRef.current, {
@@ -57,7 +55,7 @@ function Camera({ transitionState }) {
           ),
       });
     }
-  }, [transitionState]);
+  }, [stageValue]);
 
   useFrame(({ camera }) => {
     camera.updateProjectionMatrix();

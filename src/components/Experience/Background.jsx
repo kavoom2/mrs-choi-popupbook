@@ -1,13 +1,13 @@
 import { useFrame } from "@react-three/fiber";
 import { Depth, LayerMaterial, Noise } from "lamina";
-import React, { useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { sceneBackgrounds } from "../../lib/constants/backgrounds";
 import {
   sceneBgPropTypes,
   transitionStatesPropTypes,
 } from "./_utils/propTypes";
 import { defaultSceneBackgrounds } from "./_utils/sceneConstants";
-import { animationStateTypes } from "./_utils/types";
 
 Background.propTypes = {
   states: transitionStatesPropTypes,
@@ -19,11 +19,17 @@ Background.defaultProps = {
   sceneBackgrounds: defaultSceneBackgrounds,
 };
 
-function Background({ states, sceneBackgrounds }) {
+function Background({ stageValue, states }) {
+  /**
+   * 색상 값에 접근하기 위한 Ref 선언
+   */
   const depthRef = useRef(null);
-  const openedIdx = getOpenedIdx(states);
 
-  const { bottomColor, topColor } = colorSelector(sceneBackgrounds, openedIdx);
+  /**
+   * 현재 색상에 대한 값과
+   * Lerp에 사용할 Singleton Vector 선언
+   */
+  const { bottomColor, topColor } = colorSelector(sceneBackgrounds, stageValue);
 
   const [bColor, tColor] = useMemo(
     () => [new THREE.Color(bottomColor), new THREE.Color(topColor)],
@@ -32,6 +38,9 @@ function Background({ states, sceneBackgrounds }) {
 
   const colorVec = useMemo(() => new THREE.Color(), []);
 
+  /**
+   * 색상이 변경될 경우 lerp를 수행합니다.
+   */
   useFrame(() => {
     bColor.getHex() !== bottomColor &&
       bColor.lerp(colorVec.set(bottomColor), 0.01);
@@ -42,6 +51,9 @@ function Background({ states, sceneBackgrounds }) {
     depthRef.current.colorB = bColor;
   });
 
+  /**
+   * 배경 Object 렌더링
+   */
   return (
     <mesh scale={100}>
       <boxGeometry args={[1, 1, 1]} />
@@ -70,19 +82,9 @@ function Background({ states, sceneBackgrounds }) {
   );
 }
 
-function getOpenedIdx(states = []) {
-  const min = 0;
-  const max = states.length - 1;
-
-  const idx = states.lastIndexOf(animationStateTypes.open);
-
-  if (idx < min) return -1;
-  if (idx > max) return -1;
-  return idx;
-}
-
-function colorSelector(sceneBackgrounds, idx) {
-  const { bottomColor, topColor } = sceneBackgrounds[idx] ?? introBackgrounds;
+function colorSelector(sceneBackgrounds, stageState) {
+  const { bottomColor, topColor } =
+    sceneBackgrounds[stageState] ?? introBackgrounds;
 
   return {
     bottomColor,

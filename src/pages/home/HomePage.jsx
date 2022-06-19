@@ -1,8 +1,7 @@
 import { Loader } from "@react-three/drei";
-import React from "react";
 import styled from "styled-components";
 import Experience from "../../components/Experience";
-import ExperienceLayout from "../../components/ExperienceLayout";
+import ExperienceInterface from "../../components/ExperienceInterface";
 import Subtitles from "../../components/Subtitles/Subtitles";
 import { GlobalServiceProvider } from "./GlobalServiceProvider";
 
@@ -12,7 +11,7 @@ function HomePage(props) {
       <Main>
         <Experience />
         <Subtitles />
-        <ExperienceLayout></ExperienceLayout>
+        <ExperienceInterface />
         <Loader initialState={(active) => false} />
       </Main>
     </GlobalServiceProvider>

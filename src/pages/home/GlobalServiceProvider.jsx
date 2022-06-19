@@ -1,5 +1,5 @@
 import { useInterpret } from "@xstate/react";
-import React, { createContext } from "react";
+import { createContext } from "react";
 import stageMachine from "./_stateMachine/stageMachine";
 
 /**
@@ -10,7 +10,7 @@ import stageMachine from "./_stateMachine/stageMachine";
 export const GlobalServiceContext = createContext({});
 
 export const GlobalServiceProvider = (props) => {
-  const stageService = useInterpret(stageMachine);
+  const stageService = useInterpret(stageMachine, { devTools: true });
 
   return (
     <GlobalServiceContext.Provider value={{ stageService }}>
