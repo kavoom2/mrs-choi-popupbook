@@ -2,6 +2,7 @@ import { useActor } from "@xstate/react";
 import classNames from "classnames";
 import { useContext } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { usePreviousImmediate } from "rooks";
 import styled from "styled-components";
 import { useDidUpdate } from "../../hooks";
 import { scene } from "../../lib/constants/stageMachineStates";
@@ -12,9 +13,11 @@ import Subtitle from "./Subtitle";
 
 const transitionClassName = "subtitle-item";
 const timeout = {
-  enter: 1000,
-  exit: 500,
+  enter: 1500,
+  exit: 750,
 };
+
+const enterDelay = 2500;
 
 /**
  * 자막들을 스테이지 상태에 따라 렌더링합니다.
@@ -29,6 +32,7 @@ function Subtitles({ className, ...restProps }) {
   const { send } = globalService.stageService;
 
   const { page, curIdx, isAnimating } = subtitleContextSelector(stageState);
+  const prevPage = usePreviousImmediate(page);
 
   /**
    * Side Effect: 자막을 전환하는 동안 조작을 방지합니다.
@@ -37,7 +41,14 @@ function Subtitles({ className, ...restProps }) {
    */
   useDidUpdate(() => {
     if (isAnimating) {
-      const timeoutId = setTimeout(() => send(SUBTITLE_END_ANIMATION), 2000);
+      // Case 1. 페이지 넘김이 발생하는 경우
+      let delay;
+      if (page < prevPage || page > prevPage)
+        delay = enterDelay + timeout.enter;
+      // Case 2. 동일한 페이지 내에서 자막만 변경되는 경우
+      else delay = timeout.enter;
+
+      const timeoutId = setTimeout(() => send(SUBTITLE_END_ANIMATION), delay);
 
       return () => timeoutId && clearTimeout(timeoutId);
     }
@@ -95,6 +106,10 @@ function Subtitles({ className, ...restProps }) {
                 mainTextShadow={mainTextShadow}
                 subTextShadow={subTextShadow}
                 className={itemClassName}
+                style={{
+                  transitionDelay:
+                    prevPage !== page ? `${enterDelay}ms` : "0ms",
+                }}
               />
             </CSSTransition>
           )}

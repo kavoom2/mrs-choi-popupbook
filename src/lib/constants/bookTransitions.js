@@ -8,8 +8,8 @@ import { home, intro, outro, scene } from "./stageMachineStates";
 export const bookPositionTransitions = {
   [home]: {
     position: {
-      x: 0,
-      y: -3.5,
+      x: 20,
+      y: -6.5,
       z: 0,
       duration: 5,
       ease: "power3.inOut",
@@ -21,7 +21,7 @@ export const bookPositionTransitions = {
       x: 0,
       y: -3.5,
       z: 0,
-      duration: 3,
+      duration: 5.6,
       ease: "power3.inOut",
     },
   },
@@ -53,7 +53,7 @@ export const bookRotationTranstitions = {
     rotation: {
       x: 0,
       y: 0,
-      z: -Math.PI / 2 + Math.PI * 2,
+      z: Math.PI / 2 + Math.PI * 1.3,
       duration: 5,
       ease: "power3.inOut",
     },
@@ -64,7 +64,7 @@ export const bookRotationTranstitions = {
       x: 0,
       y: 0,
       z: -Math.PI / 2 + Math.PI * 2,
-      duration: 3,
+      duration: 5,
       ease: "power3.inOut",
     },
   },

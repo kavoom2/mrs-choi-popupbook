@@ -21,6 +21,7 @@ function Subtitle({
       mainTextShadow={mainTextShadow}
       subTextShadow={subTextShadow}
       className={paragraphClassNames}
+      {...restProps}
     >
       {content}
     </Paragraph>

@@ -1,7 +1,8 @@
 import { assign, createMachine } from "xstate";
+import { pageKeyList } from "../../../lib/constants/scenes";
 import {
   // assetLoader,
-  // home,
+  home,
   intro,
   outro,
   scene,
@@ -19,9 +20,11 @@ import {
 } from "../../../lib/constants/stateMachineActions";
 import { subtitles } from "../../../lib/constants/subtitles";
 
+const maxPages = pageKeyList.length;
+
 const id = "stage";
 
-const initial = intro;
+const initial = home;
 
 const context = {
   // [assetLoader]: {
@@ -39,7 +42,7 @@ const context = {
   [scene]: {
     book: {
       page: -1,
-      maxPages: 4,
+      maxPages,
       isAnimating: false,
     },
     subtitle: {
@@ -89,44 +92,39 @@ const states = {
   //   },
   // },
 
-  // [home]: {
-  //   on: {
-  //     [STEP]: {
-  //       target: intro,
-  //       cond: (ctx, event) => ctx[home].isAnimationEnd,
-  //       actions: [
-  //         assign({
-  //           [home]: { isAnimating: false, isAnimationEnd: false },
-  //         }),
-  //       ],
-  //     },
-  //     [START_ANIMATION]: {
-  //       actions: [
-  //         assign({
-  //           [home]: { isAnimating: true, isAnimationEnd: false },
-  //         }),
-  //       ],
-  //     },
-  //     [END_ANIMATION]: {
-  //       actions: [
-  //         assign({
-  //           [home]: { isAnimating: false, isAnimationEnd: true },
-  //         }),
-  //       ],
-  //     },
-  //   },
-  // },
+  [home]: {
+    on: {
+      [STEP]: {
+        target: intro,
+        cond: (ctx, event) => ctx[home].isAnimationEnd,
+      },
+      [START_ANIMATION]: {
+        actions: [
+          assign({
+            [home]: { isAnimating: true, isAnimationEnd: false },
+          }),
+        ],
+      },
+      [END_ANIMATION]: {
+        actions: [
+          assign({
+            [home]: { isAnimating: false, isAnimationEnd: true },
+          }),
+        ],
+      },
+    },
+    exit: [
+      assign({
+        [home]: { isAnimating: false, isAnimationEnd: false },
+      }),
+    ],
+  },
 
   [intro]: {
     on: {
       [STEP]: {
         target: scene,
         cond: (ctx, event) => ctx[intro].isAnimationEnd,
-        actions: [
-          assign({
-            [intro]: { isAnimating: false, isAnimationEnd: false },
-          }),
-        ],
       },
       [START_ANIMATION]: {
         actions: [
@@ -143,29 +141,58 @@ const states = {
         ],
       },
     },
+    exit: [
+      assign({
+        [intro]: { isAnimating: false, isAnimationEnd: false },
+      }),
+    ],
   },
 
   [scene]: {
+    entry: [
+      assign((ctx, event) => {
+        const page = 0;
+        const curIdx = 0;
+        const maxIdx = subtitles[page]?.length - 1 ?? 0;
+
+        return {
+          ...ctx,
+          [scene]: {
+            book: {
+              ...ctx[scene].book,
+              page,
+              isAnimating: true,
+            },
+            subtitle: {
+              ...ctx[scene].subtitle,
+              curIdx,
+              maxIdx,
+              isAnimating: true,
+            },
+          },
+        };
+      }),
+    ],
+    exit: [
+      assign({
+        [scene]: {
+          book: {
+            page: -1,
+            maxPages,
+            isAnimating: false,
+          },
+          subtitle: {
+            curIdx: 0,
+            maxIdx: 0,
+            isAnimating: false,
+          },
+        },
+      }),
+    ],
     on: {
       [STEP]: {
         target: outro,
         cond: (ctx, event) => ctx[scene].book.page >= ctx[scene].book.maxPages,
-        actions: [
-          assign({
-            [scene]: {
-              book: {
-                page: -1,
-                maxPages: 4,
-                isAnimating: false,
-              },
-              subtitle: {
-                curIdx: 0,
-                maxIdx: 0,
-                isAnimating: false,
-              },
-            },
-          }),
-        ],
       },
 
       [GO_NEXT_PAGE]: {
