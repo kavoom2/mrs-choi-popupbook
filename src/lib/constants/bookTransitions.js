@@ -39,9 +39,9 @@ export const bookPositionTransitions = {
   [outro]: {
     position: {
       x: 0,
-      y: 0,
+      y: -3.5,
       z: 0,
-      duration: 3,
+      duration: 5.6,
       ease: "power3.inOut",
     },
   },
@@ -83,8 +83,8 @@ export const bookRotationTranstitions = {
     rotation: {
       x: 0,
       y: 0,
-      z: 0,
-      duration: 3,
+      z: -Math.PI / 2 + Math.PI * 2,
+      duration: 5,
       ease: "power3.inOut",
     },
   },

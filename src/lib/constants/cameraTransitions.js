@@ -74,19 +74,16 @@ export const cameraTransitions = {
   // STAGE: OUTRO에서는 막이 종료되며 사라지는 애니메이션과 INTRO로 재진입할 수 있도록 준비할 수 있도록 재조정합니다.
   [outro]: {
     position: {
-      x: 0,
-      y: 1.5,
-      z: 13,
-      duration: 3,
-      delay: 0,
+      ...defaultCameraPos,
+      z: 19,
+      duration: 5.1,
+      delay: 0.5,
       ease: "power3.inOut",
     },
     lookAt: {
-      x: 0,
-      y: 2.5,
-      z: 0,
-      duration: 3,
-      delay: 0,
+      ...defaultCameraLookAt,
+      duration: 5.1,
+      delay: 0.5,
       ease: "power3.inOut",
     },
   },

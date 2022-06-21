@@ -192,7 +192,9 @@ const states = {
     on: {
       [STEP]: {
         target: outro,
-        cond: (ctx, event) => ctx[scene].book.page >= ctx[scene].book.maxPages,
+        cond: (ctx, event) =>
+          ctx[scene].book.page === ctx[scene].book.maxPages - 1 &&
+          ctx[scene].subtitle.curIdx === ctx[scene].subtitle.maxIdx,
       },
 
       [GO_NEXT_PAGE]: {
@@ -228,7 +230,7 @@ const states = {
 
       [GO_PREV_PAGE]: {
         cond: (ctx, event) =>
-          ctx[scene].book.page > -1 &&
+          ctx[scene].book.page > 0 &&
           ctx[scene].subtitle.curIdx === 0 &&
           !ctx[scene].book.isAnimating,
         actions: [

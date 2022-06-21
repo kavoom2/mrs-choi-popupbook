@@ -37,7 +37,7 @@ function useObjectAnimation(
     if (ref.current) {
       const { position, rotation } = valueSelector(state, actionProps);
 
-      if (position) {
+      if (position && ref.current?.position) {
         if (posTweenId.current) posTweenId.current.kill();
 
         const nextPositionId = gsap.to(ref.current.position, {
@@ -47,16 +47,16 @@ function useObjectAnimation(
           ease: position?.ease ?? "none",
           delay: position?.delay ?? 0,
           duration: position.duration ?? 0,
-          onComplete: () => {
-            if (nextPositionId === posTweenId.current)
-              posTweenId.current = null;
-          },
+          // onComplete: () => {
+          //   if (nextPositionId === posTweenId.current)
+          //     posTweenId.current = null;
+          // },
         });
 
         posTweenId.current = nextPositionId;
       }
 
-      if (rotation) {
+      if (rotation && ref.current?.rotation) {
         if (rotTweenId.current) rotTweenId.current.kill();
 
         const nextRotationId = gsap.to(ref.current.rotation, {
@@ -66,10 +66,10 @@ function useObjectAnimation(
           ease: rotation?.ease ?? "none",
           delay: rotation?.delay ?? 0,
           duration: rotation.duration ?? 0,
-          onComplete: () => {
-            if (nextRotationId === rotTweenId.current)
-              rotTweenId.current = null;
-          },
+          // onComplete: () => {
+          //   if (nextRotationId === rotTweenId.current)
+          //     rotTweenId.current = null;
+          // },
         });
 
         rotTweenId.current = nextRotationId;

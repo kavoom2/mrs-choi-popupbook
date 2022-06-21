@@ -17,6 +17,8 @@ import { pageList } from "./pageList";
 function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   const animationStates = getAnimationStates(isStageScene, page, maxPages);
 
+  console.log(animationStates);
+
   /**
    * Node and Materials
    */

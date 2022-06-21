@@ -8,6 +8,7 @@ import {
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
+  STEP,
 } from "../../lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
 
@@ -31,9 +32,10 @@ function ExperienceInterface() {
    */
   const goNextStep = useCallback(() => {
     // 다음 진행 버튼의 Action 함수
-    if (curIdx < maxIdx) send(GO_NEXT_SUBTITLE);
+    if (page === maxPages - 1 && curIdx === maxIdx) send(STEP);
+    else if (curIdx < maxIdx) send(GO_NEXT_SUBTITLE);
     else send(GO_NEXT_PAGE);
-  }, [curIdx, maxIdx, send]);
+  }, [page, maxPages, curIdx, maxIdx, send]);
 
   const goPrevStep = useCallback(() => {
     // 이전 진행 버튼의 Action 함수
@@ -138,6 +140,8 @@ const ControlButton = styled.button`
   border: none;
 
   border-radius: 100%;
+
+  cursor: pointer;
 `;
 
 function sceneContextSelector(state) {
