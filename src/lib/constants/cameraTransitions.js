@@ -22,13 +22,14 @@ export const cameraTransitions = {
   [home]: {
     position: {
       ...defaultCameraPos,
-      duration: 3,
+      z: 19,
+      duration: 0,
       delay: 0,
       ease: "power3.inOut",
     },
     lookAt: {
       ...defaultCameraLookAt,
-      duration: 3,
+      duration: 0,
       delay: 0,
       ease: "power3.inOut",
     },
@@ -38,14 +39,14 @@ export const cameraTransitions = {
   [intro]: {
     position: {
       ...defaultCameraPos,
-      duration: 3,
-      delay: 0,
+      duration: 5.1,
+      delay: 0.5,
       ease: "power3.inOut",
     },
     lookAt: {
       ...defaultCameraLookAt,
-      duration: 3,
-      delay: 0,
+      duration: 5.1,
+      delay: 0.5,
       ease: "power3.inOut",
     },
   },

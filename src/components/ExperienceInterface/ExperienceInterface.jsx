@@ -86,19 +86,24 @@ function ExperienceInterface() {
       </Aside>
 
       <Aside className={asideBottomClassNames}>
-        <button onClick={goPrevStep} className={prevButtonClassNames}>
+        <ControlButton onClick={goPrevStep} className={prevButtonClassNames}>
           이전
-        </button>
+        </ControlButton>
 
-        <button onClick={goNextStep} className={nextButtonClassNames}>
+        <ControlButton onClick={goNextStep} className={nextButtonClassNames}>
           다음
-        </button>
+        </ControlButton>
       </Aside>
     </Section>
   );
 }
 
 export default ExperienceInterface;
+
+// height: 800px;
+// buttonHeight, buttonWidth: 80px;
+// position: right or left 45px;
+// position: bottom 45px; (전체 캔버스 높이의 5.625%)
 
 const Section = styled.section`
   position: fixed;
@@ -114,6 +119,8 @@ const Section = styled.section`
 
   justify-content: space-between;
   align-items: stretch;
+
+  padding: 45px 45px;
 `;
 
 const Aside = styled.aside`
@@ -121,6 +128,16 @@ const Aside = styled.aside`
 
   display: flex;
   justify-content: space-between;
+`;
+
+const ControlButton = styled.button`
+  width: 80px;
+  height: 80px;
+
+  outline: none;
+  border: none;
+
+  border-radius: 100%;
 `;
 
 function sceneContextSelector(state) {
