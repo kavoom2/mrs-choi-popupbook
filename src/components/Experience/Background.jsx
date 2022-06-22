@@ -19,7 +19,7 @@ Background.defaultProps = {
   sceneBackgrounds: defaultSceneBackgrounds,
 };
 
-function Background({ stageValue, states }) {
+function Background({ stageValue, page, states }) {
   /**
    * 색상 값에 접근하기 위한 Ref 선언
    */
@@ -29,7 +29,11 @@ function Background({ stageValue, states }) {
    * 현재 색상에 대한 값과
    * Lerp에 사용할 Singleton Vector 선언
    */
-  const { bottomColor, topColor } = colorSelector(sceneBackgrounds, stageValue);
+  const { bottomColor, topColor } = colorSelector(
+    sceneBackgrounds,
+    stageValue,
+    page
+  );
 
   const [bColor, tColor] = useMemo(
     () => [new THREE.Color(bottomColor), new THREE.Color(topColor)],
@@ -43,9 +47,9 @@ function Background({ stageValue, states }) {
    */
   useFrame(() => {
     bColor.getHex() !== bottomColor &&
-      bColor.lerp(colorVec.set(bottomColor), 0.01);
+      bColor.lerp(colorVec.set(bottomColor), 0.015);
 
-    tColor.getHex() !== topColor && tColor.lerp(colorVec.set(topColor), 0.01);
+    tColor.getHex() !== topColor && tColor.lerp(colorVec.set(topColor), 0.015);
 
     depthRef.current.colorA = tColor;
     depthRef.current.colorB = bColor;
@@ -82,9 +86,18 @@ function Background({ stageValue, states }) {
   );
 }
 
-function colorSelector(sceneBackgrounds, stageState) {
-  const { bottomColor, topColor } =
-    sceneBackgrounds[stageState] ?? introBackgrounds;
+function colorSelector(sceneBackgrounds, stageState, page) {
+  const currentStageProps = sceneBackgrounds[stageState];
+
+  let backgroundProps = sceneBackgrounds[stageState];
+
+  if (currentStageProps.children)
+    backgroundProps = currentStageProps.children[page];
+
+  const { bottomColor, topColor } = {
+    ...introBackgrounds,
+    ...backgroundProps,
+  };
 
   return {
     bottomColor,

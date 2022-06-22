@@ -89,11 +89,11 @@ function ExperienceInterface() {
 
       <Aside className={asideBottomClassNames}>
         <ControlButton onClick={goPrevStep} className={prevButtonClassNames}>
-          이전
+          {"<"}
         </ControlButton>
 
         <ControlButton onClick={goNextStep} className={nextButtonClassNames}>
-          다음
+          {">"}
         </ControlButton>
       </Aside>
     </Section>

@@ -24,3 +24,12 @@ export const pageKeyList = [
   pageKeys.PAGE_03,
   pageKeys.PAGE_04,
 ];
+
+export const pageTimeout = {
+  prev: 3000,
+  next: 3500,
+};
+
+export const pageDelay = {
+  uiDisableDelay: 200,
+};

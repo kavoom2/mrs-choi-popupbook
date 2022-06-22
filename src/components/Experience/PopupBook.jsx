@@ -4,7 +4,7 @@ import * as THREE from "three";
 import {
   bookPositionTransitions,
   bookRotationTranstitions,
-  pageRotationTransitionts,
+  pageRotationTransitions,
 } from "../../lib/constants/bookTransitions";
 import { pageDepthMaterialNames } from "../../lib/constants/materials";
 import { materialTransitions } from "../../lib/constants/materialTransitions";
@@ -12,12 +12,10 @@ import { pageMeshes } from "../../lib/constants/meshs";
 import { CLOSE, OPEN, PREOPEN, RESET } from "../../lib/constants/pageStatus";
 import { sceneTransitions } from "../../lib/constants/sceneTransitions";
 import useObjectAnimation from "./hooks/useObjectAnimation";
-import { pageList } from "./pageList";
+import { pageList } from "./_utils/pageList";
 
 function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   const animationStates = getAnimationStates(isStageScene, page, maxPages);
-
-  console.log(animationStates);
 
   /**
    * Node and Materials
@@ -45,7 +43,6 @@ function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   const gltfs = useMemo(
     () =>
       pageList.reduce((acc, { pageKey }) => {
-        console.log(pageKey);
         const _nodes = propsSelector(nodes, pageMeshes[pageKey].nodes);
         const _materials = propsSelector(
           materials,
@@ -93,22 +90,22 @@ function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   useObjectAnimation(
     page1RotationRef,
     animationStates[0],
-    pageRotationTransitionts
+    pageRotationTransitions
   );
   useObjectAnimation(
     page2RotationRef,
     animationStates[1],
-    pageRotationTransitionts
+    pageRotationTransitions
   );
   useObjectAnimation(
     page3RotationRef,
     animationStates[2],
-    pageRotationTransitionts
+    pageRotationTransitions
   );
   useObjectAnimation(
     page4RotationRef,
     animationStates[3],
-    pageRotationTransitionts
+    pageRotationTransitions
   );
 
   /**

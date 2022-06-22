@@ -1,5 +1,9 @@
-import { assign, createMachine } from "xstate";
-import { pageKeyList } from "../../../lib/constants/scenes";
+import { assign, createMachine, send } from "xstate";
+import {
+  pageDelay,
+  pageKeyList,
+  pageTimeout,
+} from "../../../lib/constants/scenes";
 import {
   // assetLoader,
   home,
@@ -9,6 +13,7 @@ import {
 } from "../../../lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
+  BOOK_START_ANIMATION,
   END_ANIMATION,
   GO_NEXT_PAGE,
   GO_NEXT_SUBTITLE,
@@ -17,11 +22,22 @@ import {
   START_ANIMATION,
   STEP,
   SUBTITLE_END_ANIMATION,
+  SUBTITLE_START_ANIMATION,
 } from "../../../lib/constants/stateMachineActions";
-import { subtitles } from "../../../lib/constants/subtitles";
+import {
+  subtitleDelay,
+  subtitles,
+  subtitleTimeout,
+} from "../../../lib/constants/subtitles";
 
+/**
+ * * 화면단 변수 설정
+ */
 const maxPages = pageKeyList.length;
 
+/**
+ * XState Machine 정의
+ */
 const id = "stage";
 
 const initial = home;
@@ -31,10 +47,10 @@ const context = {
   //   isLoading: true,
   //   isError: false,
   // },
-  // [home]: {
-  //   isAnimating: false,
-  //   isAnimationEnd: false,
-  // },
+  [home]: {
+    isAnimating: false,
+    isAnimationEnd: false,
+  },
   [intro]: {
     isAnimating: false,
     isAnimationEnd: false,
@@ -92,7 +108,11 @@ const states = {
   //   },
   // },
 
+  /**
+   * Home 스테이지
+   */
   [home]: {
+    entry: [send({ type: START_ANIMATION })],
     on: {
       [STEP]: {
         target: intro,
@@ -103,6 +123,7 @@ const states = {
           assign({
             [home]: { isAnimating: true, isAnimationEnd: false },
           }),
+          send({ type: END_ANIMATION }, { delay: 1000 }),
         ],
       },
       [END_ANIMATION]: {
@@ -120,7 +141,11 @@ const states = {
     ],
   },
 
+  /**
+   * Intro 스테이지
+   */
   [intro]: {
+    entry: [send({ type: START_ANIMATION })],
     on: {
       [STEP]: {
         target: scene,
@@ -131,6 +156,7 @@ const states = {
           assign({
             [intro]: { isAnimating: true, isAnimationEnd: false },
           }),
+          send({ type: END_ANIMATION }, { delay: 8000 }),
         ],
       },
       [END_ANIMATION]: {
@@ -148,31 +174,11 @@ const states = {
     ],
   },
 
+  /**
+   * Scene 스테이지
+   */
   [scene]: {
-    entry: [
-      assign((ctx, event) => {
-        const page = 0;
-        const curIdx = 0;
-        const maxIdx = subtitles[page]?.length - 1 ?? 0;
-
-        return {
-          ...ctx,
-          [scene]: {
-            book: {
-              ...ctx[scene].book,
-              page,
-              isAnimating: true,
-            },
-            subtitle: {
-              ...ctx[scene].subtitle,
-              curIdx,
-              maxIdx,
-              isAnimating: true,
-            },
-          },
-        };
-      }),
-    ],
+    entry: [send({ type: GO_NEXT_PAGE })],
     exit: [
       assign({
         [scene]: {
@@ -194,14 +200,17 @@ const states = {
         target: outro,
         cond: (ctx, event) =>
           ctx[scene].book.page === ctx[scene].book.maxPages - 1 &&
-          ctx[scene].subtitle.curIdx === ctx[scene].subtitle.maxIdx,
+          ctx[scene].subtitle.curIdx === ctx[scene].subtitle.maxIdx &&
+          !ctx[scene].book.isAnimating &&
+          !ctx[scene].subtitle.isAnimating,
       },
 
       [GO_NEXT_PAGE]: {
         cond: (ctx, event) =>
           ctx[scene].book.page < ctx[scene].book.maxPages &&
           ctx[scene].subtitle.curIdx >= ctx[scene].subtitle.maxIdx &&
-          !ctx[scene].book.isAnimating,
+          !ctx[scene].book.isAnimating &&
+          !ctx[scene].subtitle.isAnimating,
         actions: [
           assign((ctx, event) => {
             const page = ctx[scene].book.page + 1;
@@ -214,17 +223,35 @@ const states = {
                 book: {
                   ...ctx[scene].book,
                   page,
-                  isAnimating: true,
                 },
                 subtitle: {
                   ...ctx[scene].subtitle,
                   curIdx,
                   maxIdx,
-                  isAnimating: true,
                 },
               },
             };
           }),
+          send({ type: BOOK_START_ANIMATION }),
+          send({ type: SUBTITLE_START_ANIMATION }),
+          send(
+            { type: BOOK_END_ANIMATION },
+            {
+              delay:
+                pageTimeout.next +
+                subtitleTimeout.enter +
+                pageDelay.uiDisableDelay,
+            }
+          ),
+          send(
+            { type: SUBTITLE_END_ANIMATION },
+            {
+              delay:
+                subtitleTimeout.enter +
+                subtitleDelay.pageTransitionDelay +
+                subtitleDelay.uiDisableDelay,
+            }
+          ),
         ],
       },
 
@@ -232,7 +259,8 @@ const states = {
         cond: (ctx, event) =>
           ctx[scene].book.page > 0 &&
           ctx[scene].subtitle.curIdx === 0 &&
-          !ctx[scene].book.isAnimating,
+          !ctx[scene].book.isAnimating &&
+          !ctx[scene].subtitle.isAnimating,
         actions: [
           assign((ctx, event) => {
             const page = ctx[scene].book.page - 1;
@@ -244,24 +272,43 @@ const states = {
               [scene]: {
                 book: {
                   ...ctx[scene].book,
-                  isAnimating: true,
                   page,
                 },
                 subtitle: {
                   ...ctx[scene].subtitle,
                   curIdx,
                   maxIdx,
-                  isAnimating: true,
                 },
               },
             };
           }),
+          send({ type: BOOK_START_ANIMATION }),
+          send({ type: SUBTITLE_START_ANIMATION }),
+          send(
+            { type: BOOK_END_ANIMATION },
+            {
+              delay:
+                pageTimeout.prev +
+                subtitleTimeout.enter +
+                pageDelay.uiDisableDelay,
+            }
+          ),
+          send(
+            { type: SUBTITLE_END_ANIMATION },
+            {
+              delay:
+                subtitleTimeout.enter +
+                subtitleDelay.pageTransitionDelay +
+                subtitleDelay.uiDisableDelay,
+            }
+          ),
         ],
       },
 
       [GO_NEXT_SUBTITLE]: {
         cond: (ctx, event) =>
           ctx[scene].subtitle.curIdx < ctx[scene].subtitle.maxIdx &&
+          !ctx[scene].book.isAnimating &&
           !ctx[scene].subtitle.isAnimating,
         actions: [
           assign((ctx, event) => {
@@ -274,17 +321,25 @@ const states = {
                 subtitle: {
                   ...ctx[scene].subtitle,
                   curIdx,
-                  isAnimating: true,
                 },
               },
             };
           }),
+          send({ type: SUBTITLE_START_ANIMATION }),
+          send(
+            { type: SUBTITLE_END_ANIMATION },
+            {
+              delay: subtitleTimeout.enter + subtitleDelay.uiDisableDelay,
+            }
+          ),
         ],
       },
 
       [GO_PREV_SUBTITLE]: {
         cond: (ctx, event) =>
-          ctx[scene].subtitle.curIdx > 0 && !ctx[scene].subtitle.isAnimating,
+          ctx[scene].subtitle.curIdx > 0 &&
+          !ctx[scene].book.isAnimating &&
+          !ctx[scene].subtitle.isAnimating,
         actions: [
           assign((ctx, event) => {
             const curIdx = ctx[scene].subtitle.curIdx - 1;
@@ -296,10 +351,31 @@ const states = {
                 subtitle: {
                   ...ctx[scene].subtitle,
                   curIdx,
-                  isAnimating: true,
                 },
               },
             };
+          }),
+          send({ type: SUBTITLE_START_ANIMATION }),
+          send(
+            { type: SUBTITLE_END_ANIMATION },
+            {
+              delay: subtitleTimeout.enter + subtitleDelay.uiDisableDelay,
+            }
+          ),
+        ],
+      },
+
+      [BOOK_START_ANIMATION]: {
+        cond: (ctx, event) => !ctx[scene].book.isAnimating,
+        actions: [
+          assign({
+            [scene]: (ctx, event) => ({
+              ...ctx[scene],
+              book: {
+                ...ctx[scene].book,
+                isAnimating: true,
+              },
+            }),
           }),
         ],
       },
@@ -313,6 +389,21 @@ const states = {
               book: {
                 ...ctx[scene].book,
                 isAnimating: false,
+              },
+            }),
+          }),
+        ],
+      },
+
+      [SUBTITLE_START_ANIMATION]: {
+        cond: (ctx, event) => !ctx[scene].subtitle.isAnimating,
+        actions: [
+          assign({
+            [scene]: (ctx, event) => ({
+              ...ctx[scene],
+              subtitle: {
+                ...ctx[scene].subtitle,
+                isAnimating: true,
               },
             }),
           }),
@@ -336,7 +427,11 @@ const states = {
     },
   },
 
+  /**
+   * Outro 스테이지
+   */
   [outro]: {
+    entry: [send({ type: START_ANIMATION })],
     on: {
       [STEP]: {
         target: intro,
@@ -352,6 +447,7 @@ const states = {
           assign({
             [outro]: { isAnimating: true, isAnimationEnd: false },
           }),
+          send({ type: END_ANIMATION }, { delay: 4000 }),
         ],
       },
       [END_ANIMATION]: {
@@ -362,6 +458,11 @@ const states = {
         ],
       },
     },
+    exit: [
+      assign({
+        [outro]: { isAnimating: false, isAnimationEnd: false },
+      }),
+    ],
   },
 };
 

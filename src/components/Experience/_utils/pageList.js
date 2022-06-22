@@ -1,8 +1,8 @@
-import { pageKeys } from "../../lib/constants/scenes";
-import Page_01 from "./bookPages/Page_01";
-import Page_02 from "./bookPages/Page_02";
-import Page_03 from "./bookPages/Page_03";
-import Page_04 from "./bookPages/Page_04";
+import { pageKeys } from "../../../lib/constants/scenes";
+import Page_01 from "../bookPages/Page_01";
+import Page_02 from "../bookPages/Page_02";
+import Page_03 from "../bookPages/Page_03";
+import Page_04 from "../bookPages/Page_04";
 
 export const pageList = [
   {

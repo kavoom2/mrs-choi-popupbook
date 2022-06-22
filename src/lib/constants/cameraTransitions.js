@@ -75,15 +75,15 @@ export const cameraTransitions = {
   [outro]: {
     position: {
       ...defaultCameraPos,
-      z: 19,
-      duration: 5.1,
-      delay: 0.5,
+      z: 20,
+      duration: 3,
+      delay: 0,
       ease: "power3.inOut",
     },
     lookAt: {
       ...defaultCameraLookAt,
-      duration: 5.1,
-      delay: 0.5,
+      duration: 3,
+      delay: 0,
       ease: "power3.inOut",
     },
   },
