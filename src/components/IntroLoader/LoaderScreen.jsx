@@ -1,13 +1,28 @@
 import { interfaceImages } from "@assets/images";
+import useImagePreload from "@hooks/sideEffects/useImagePreload";
 import classNames from "classnames";
 import styled, { css, keyframes } from "styled-components";
 
-function LoaderScreen() {
-  const bearAlt = "moving character(bear)";
-  const rabbitAlt = "moving character(rabbit)";
+const preloadImages = [
+  interfaceImages.loaderBearNormal,
+  interfaceImages.loaderBearSmall,
+  interfaceImages.loaderRabbitNormal,
+  interfaceImages.loaderRabbitSmall,
+];
+
+function LoaderScreen({ children }) {
+  /**
+   * Side effect
+   */
+  useImagePreload(preloadImages);
+
   /**
    * 클래스 이름 선언
    */
+  const sectionClassNames = classNames({
+    [`loader-section`]: true,
+  });
+
   const bearWrapperClassName = classNames({
     "character-bear-wrapper": true,
     bear: true,
@@ -43,12 +58,17 @@ function LoaderScreen() {
     animationDelay: 0,
   };
 
+  const bearAlt = "moving character(bear)";
+  const rabbitAlt = "moving character(rabbit)";
+
   /**
    * 컴포넌트 렌더링
    */
   return (
-    <Screen>
+    <Screen className={sectionClassNames}>
       <PositionProvider>
+        {children}
+
         <AnimationPositioner className={bearWrapperClassName}>
           <CharacterImg {...bearCharProps} className={bearClassNames}>
             <source
@@ -77,7 +97,7 @@ function LoaderScreen() {
 
 export default LoaderScreen;
 
-const Screen = styled.div`
+const Screen = styled.section`
   position: fixed;
 
   top: 50%;

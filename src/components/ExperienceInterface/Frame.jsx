@@ -1,11 +1,22 @@
+import { interfaceImages } from "@assets/images";
+import { useImagePreload } from "@hooks/sideEffects";
 import classNames from "classnames";
 import { memo } from "react";
 import styled, { css } from "styled-components";
-import { interfaceImages } from "../../assets/images";
+
+const preloadImages = [
+  interfaceImages.frameDesktop1080,
+  interfaceImages.frameDesktop1920,
+  interfaceImages.frameMobile600,
+  interfaceImages.frameMobile900,
+];
 
 function Frame() {
+  /**
+   * 클래스 이름 선언
+   */
   const wrapperClassNames = classNames({
-    [`frame-wrapper`]: true,
+    [`frame-section`]: true,
   });
 
   const imageClassNames = classNames({
@@ -14,6 +25,14 @@ function Frame() {
 
   const frameAlt = `interface-frame-image`;
 
+  /**
+   * Side effect
+   */
+  useImagePreload(preloadImages);
+
+  /**
+   * 노드 선언 및 컴포넌트 렌더링
+   */
   return (
     <FrameWrapper className={wrapperClassNames}>
       <BlankFiller flexOrder={1} />

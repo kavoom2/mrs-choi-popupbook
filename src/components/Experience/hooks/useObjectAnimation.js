@@ -1,6 +1,6 @@
-import { useDidMount, useDidUpdate } from "@hooks";
 import gsap from "gsap";
 import { useRef } from "react";
+import { useDidMount, useDidUpdate } from "rooks";
 
 function useObjectAnimation(ref, state, actionProps) {
   const posTweenId = useRef(null);

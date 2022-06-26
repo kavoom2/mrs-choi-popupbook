@@ -34,6 +34,7 @@ export default function Experience() {
       gl={{
         antialias: true,
       }}
+      className={`experience-section`}
     >
       {/* Environments */}
       <ambientLight intensity={0.2} />

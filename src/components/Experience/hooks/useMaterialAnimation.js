@@ -1,6 +1,6 @@
-import { useDidMount, useDidUpdate } from "@hooks";
 import gsap from "gsap";
 import { useRef } from "react";
+import { useDidMount, useDidUpdate } from "rooks";
 
 function useMaterialAnimation(materials, state, actionProps) {
   const mapRef = useRef(new Map());

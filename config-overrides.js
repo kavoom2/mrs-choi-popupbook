@@ -1,5 +1,5 @@
 /**
- * Import
+ * 1. Import
  */
 const {
   override,
@@ -14,7 +14,7 @@ const BundleAnalyzerPlugin =
 const HtmlWebpackInjectPreload = require("@principalstudio/html-webpack-inject-preload");
 
 /**
- * Setup webpack configs
+ * 2. Setup webpack configs
  *
  * CRA에서 eject를 사용하지 않고 Webpack 설정을 덮어 씌우려면
  * customize-cra와 react-app-rewired를 사용해야 합니다.
@@ -49,7 +49,7 @@ module.exports = override(
         },
         {
           match: /(preload600)+.+(.png)$/,
-          attributes: { as: "image", media: "(min-width: 0px)" },
+          attributes: { as: "image", media: "(min-width: 600px)" },
         },
         {
           match: /(preload0)+.+(.png)$/,

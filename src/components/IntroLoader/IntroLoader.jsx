@@ -1,4 +1,5 @@
 import { useProgress } from "@react-three/drei";
+import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
 
 // TODO: Asset이 불러와 지기 전, 로딩 화면을 구성해야 합니다.
@@ -11,7 +12,45 @@ function IntroLoader() {
 
   console.log(active, progress, errors, item, loaded, total);
 
-  return <LoaderScreen />;
+  return (
+    <LoaderScreen>
+      <FallbackBackgrounds />
+
+      <ProgressTextContainer>
+        <span className="content">불러오는 중입니다... {progress}%</span>
+      </ProgressTextContainer>
+    </LoaderScreen>
+  );
 }
 
 export default IntroLoader;
+
+const FallbackBackgrounds = styled.div`
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  transform-origin: center center;
+  transform: scale(1.2);
+
+  background-color: #d6d2bc;
+`;
+
+const ProgressTextContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  word-break: keep-all;
+  text-align: center;
+
+  .content {
+    font-size: 24px;
+    color: teal;
+  }
+`;

@@ -1,4 +1,4 @@
-import { useDidMount } from "@hooks";
+import { useDidMount } from "rooks";
 
 /**
  * 화면 너비에 따라 렌더링 요소의 크기를 반응형으로 적용하기 위한 커스텀 훅입니다.
