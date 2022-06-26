@@ -1,4 +1,4 @@
-import { pageKeys } from "../../../lib/constants/scenes";
+import { pageKeys } from "@lib/constants/scenes";
 import Page_01 from "../bookPages/Page_01";
 import Page_02 from "../bookPages/Page_02";
 import Page_03 from "../bookPages/Page_03";

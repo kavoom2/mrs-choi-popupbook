@@ -1,7 +1,8 @@
 import { useActor } from "@xstate/react";
 import classNames from "classnames";
-import { useCallback, useContext } from "react";
+import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
+import { interfaceImages } from "../../assets/images";
 import { scene } from "../../lib/constants/stageMachineStates";
 import {
   GO_NEXT_PAGE,
@@ -11,6 +12,8 @@ import {
   STEP,
 } from "../../lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
+import ControlButton from "./ControlButton";
+import Frame from "./Frame";
 
 function ExperienceInterface() {
   /**
@@ -66,46 +69,43 @@ function ExperienceInterface() {
     hidden: isInterfaceHidden,
   });
 
-  const prevButtonClassNames = classNames({
-    [`interface-button`]: true,
-    disabled: isPageAnimating || isSubtitleAnimating,
-    hidden: isPrevButtonHidden,
-  });
-
-  const nextButtonClassNames = classNames({
-    [`interface-button`]: true,
-    disabled: isPageAnimating || isSubtitleAnimating,
-    hidden: isNextButtonHidden,
-  });
-
   /**
    * 컴포넌트
    */
   return (
-    <Section className={sectionClassNames}>
-      <Aside className={asideTopClassNames}>
-        {/* //TODO: 홈 버튼 UI가 들어갑니다. */}
-      </Aside>
+    <Fragment>
+      {/* 이미지 프레임 */}
+      <Frame />
 
-      <Aside className={asideBottomClassNames}>
-        <ControlButton onClick={goPrevStep} className={prevButtonClassNames}>
-          {"<"}
-        </ControlButton>
+      {/* 조작 가능한 UI 레이아웃 */}
+      <Section className={sectionClassNames}>
+        <Aside className={asideTopClassNames}>
+          {/* //TODO: 홈 버튼 UI가 들어갑니다. */}
+        </Aside>
 
-        <ControlButton onClick={goNextStep} className={nextButtonClassNames}>
-          {">"}
-        </ControlButton>
-      </Aside>
-    </Section>
+        <Aside className={asideBottomClassNames}>
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowRtl}
+            imageAlt="Go to prev page button"
+            onClick={goPrevStep}
+            visible={!isPrevButtonHidden}
+            loading={isPageAnimating || isSubtitleAnimating}
+          />
+
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowLtr}
+            imageAlt="Go to next page button"
+            onClick={goNextStep}
+            visible={!isNextButtonHidden}
+            loading={isPageAnimating || isSubtitleAnimating}
+          />
+        </Aside>
+      </Section>
+    </Fragment>
   );
 }
 
 export default ExperienceInterface;
-
-// height: 800px;
-// buttonHeight, buttonWidth: 80px;
-// position: right or left 45px;
-// position: bottom 45px; (전체 캔버스 높이의 5.625%)
 
 const Section = styled.section`
   position: fixed;
@@ -123,6 +123,10 @@ const Section = styled.section`
   align-items: stretch;
 
   padding: 45px 45px;
+
+  @media (max-width: 599.98px) {
+    padding: 3vh 2vw;
+  }
 `;
 
 const Aside = styled.aside`
@@ -130,18 +134,6 @@ const Aside = styled.aside`
 
   display: flex;
   justify-content: space-between;
-`;
-
-const ControlButton = styled.button`
-  width: 80px;
-  height: 80px;
-
-  outline: none;
-  border: none;
-
-  border-radius: 100%;
-
-  cursor: pointer;
 `;
 
 function sceneContextSelector(state) {

@@ -1,16 +1,16 @@
-import { useGLTF } from "@react-three/drei";
-import { useMemo, useRef } from "react";
-import * as THREE from "three";
 import {
   bookPositionTransitions,
   bookRotationTranstitions,
   pageRotationTransitions,
-} from "../../lib/constants/bookTransitions";
-import { pageDepthMaterialNames } from "../../lib/constants/materials";
-import { materialTransitions } from "../../lib/constants/materialTransitions";
-import { pageMeshes } from "../../lib/constants/meshs";
-import { CLOSE, OPEN, PREOPEN, RESET } from "../../lib/constants/pageStatus";
-import { sceneTransitions } from "../../lib/constants/sceneTransitions";
+} from "@lib/constants/bookTransitions";
+import { pageDepthMaterialNames } from "@lib/constants/materials";
+import { materialTransitions } from "@lib/constants/materialTransitions";
+import { pageMeshes } from "@lib/constants/meshs";
+import { CLOSE, OPEN, PREOPEN, RESET } from "@lib/constants/pageStatus";
+import { sceneTransitions } from "@lib/constants/sceneTransitions";
+import { useGLTF } from "@react-three/drei";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
 import useObjectAnimation from "./hooks/useObjectAnimation";
 import { pageList } from "./_utils/pageList";
 

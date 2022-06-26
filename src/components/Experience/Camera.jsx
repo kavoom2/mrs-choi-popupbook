@@ -8,7 +8,7 @@ import {
   cameraTransitions,
   defaultCameraLookAt,
   defaultCameraPos,
-} from "../../lib/constants/cameraTransitions";
+} from "@lib/constants/cameraTransitions";
 
 function Camera({ stageValue }) {
   const { camera } = useThree();

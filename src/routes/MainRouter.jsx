@@ -1,5 +1,5 @@
+import { ErrorBoundary } from "@components/Error";
 import { BrowserRouter, Routes } from "react-router-dom";
-import { ErrorBoundary } from "../components/Error";
 import { allFlattenRoutes } from "./routes";
 
 // Nested Routes는 각 페이지 내부에서 관리합니다.

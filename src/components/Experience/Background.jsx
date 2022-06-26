@@ -1,23 +1,8 @@
+import { sceneBackgrounds } from "@lib/constants/backgrounds";
 import { useFrame } from "@react-three/fiber";
 import { Depth, LayerMaterial, Noise } from "lamina";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import { sceneBackgrounds } from "../../lib/constants/backgrounds";
-import {
-  sceneBgPropTypes,
-  transitionStatesPropTypes,
-} from "./_utils/propTypes";
-import { defaultSceneBackgrounds } from "./_utils/sceneConstants";
-
-Background.propTypes = {
-  states: transitionStatesPropTypes,
-  sceneBackgrounds: sceneBgPropTypes,
-};
-
-Background.defaultProps = {
-  states: [],
-  sceneBackgrounds: defaultSceneBackgrounds,
-};
 
 function Background({ stageValue, page, states }) {
   /**

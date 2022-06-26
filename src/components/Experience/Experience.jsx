@@ -1,14 +1,14 @@
+import { defaultCameraPos } from "@lib/constants/cameraTransitions";
+import { scene } from "@lib/constants/stageMachineStates";
+import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useActor } from "@xstate/react";
 import { lazy, Suspense, useContext } from "react";
-import { scene } from "../../lib/constants/stageMachineStates";
-import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
 import AxisDebugger from "./AxisDebugger";
 import Background from "./Background";
 import Camera from "./Camera";
 import Stats from "./Stats";
-import { defaultCameraPos } from "./transitionProps/mainObjectTransitions";
 
 const Popupbook = lazy(() => import("./PopupBook"));
 

@@ -1,17 +1,17 @@
+import { scene } from "@lib/constants/stageMachineStates";
+import {
+  subtitleColorProps,
+  subtitleDelay,
+  subtitles,
+  subtitleTimeout,
+} from "@lib/constants/subtitles";
+import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useActor } from "@xstate/react";
 import classNames from "classnames";
 import { useContext } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { usePreviousImmediate } from "rooks";
 import styled from "styled-components";
-import { scene } from "../../lib/constants/stageMachineStates";
-import {
-  subtitleColorProps,
-  subtitleDelay,
-  subtitles,
-  subtitleTimeout,
-} from "../../lib/constants/subtitles";
-import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
 import Subtitle from "./Subtitle";
 
 const transitionClassName = "subtitle-item";
@@ -30,8 +30,6 @@ function Subtitles({ className, ...restProps }) {
   const { page, curIdx, isBookAnimating, isSubtitleAnimating } =
     subtitleContextSelector(stageState);
   const prevPage = usePreviousImmediate(page);
-
-  console.log(isBookAnimating, isSubtitleAnimating);
 
   /**
    * 변수 선언

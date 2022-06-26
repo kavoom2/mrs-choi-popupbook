@@ -1,16 +1,11 @@
-import { assign, createMachine, send } from "xstate";
-import {
-  pageDelay,
-  pageKeyList,
-  pageTimeout,
-} from "../../../lib/constants/scenes";
+import { pageDelay, pageKeyList, pageTimeout } from "@lib/constants/scenes";
 import {
   // assetLoader,
   home,
   intro,
   outro,
   scene,
-} from "../../../lib/constants/stageMachineStates";
+} from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
   BOOK_START_ANIMATION,
@@ -23,12 +18,13 @@ import {
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-} from "../../../lib/constants/stateMachineActions";
+} from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
   subtitleTimeout,
-} from "../../../lib/constants/subtitles";
+} from "@lib/constants/subtitles";
+import { assign, createMachine, send } from "xstate";
 
 /**
  * * 화면단 변수 설정

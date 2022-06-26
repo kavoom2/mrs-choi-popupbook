@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import { useDidMount } from "@hooks";
 
+/**
+ * 화면 너비에 따라 렌더링 요소의 크기를 반응형으로 적용하기 위한 커스텀 훅입니다.
+ */
 function useCameraZoom(camera) {
-  useEffect(() => {
+  useDidMount(() => {
     const onResizeHandler = () => {
       const width = window.innerWidth;
       const nextZoom = zoomConfigs.calZooms(width);
@@ -13,15 +16,15 @@ function useCameraZoom(camera) {
     window.addEventListener("resize", onResizeHandler);
 
     return () => window.removeEventListener("resize", onResizeHandler);
-  }, []);
+  });
 }
 
 export default useCameraZoom;
 
 const zoomConfigs = {
-  maxWidth: 1100,
+  maxWidth: 1280,
   minWidth: 550,
-  maxZoom: 1.1,
+  maxZoom: 1.0,
   minZoom: 0.6,
 };
 

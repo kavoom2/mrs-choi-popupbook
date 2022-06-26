@@ -1,13 +1,8 @@
+import { useDidMount, useDidUpdate } from "@hooks";
 import gsap from "gsap";
-import React, { useRef } from "react";
-import { useDidMount, useDidUpdate } from "../../../hooks";
-import { ActionProps, AnimationState } from "../_utils/types";
+import { useRef } from "react";
 
-function useObjectAnimation(
-  ref: React.ElementRef,
-  state: AnimationState,
-  actionProps: ActionProps
-): void {
+function useObjectAnimation(ref, state, actionProps) {
   const posTweenId = useRef(null);
   const rotTweenId = useRef(null);
 

@@ -10,9 +10,12 @@ body {
   height: 100%;
 }
 
+/* Blank 상태에서 전경색을 정의합니다. */
+body {
+  background-color: #d6d1b8;
+}
+
 #root {
   width: 100%;
   height: 100%;
-
-  background: #d6d2be;
 }

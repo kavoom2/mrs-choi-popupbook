@@ -1,10 +1,11 @@
+import ExperienceInterface from "@components/ExperienceInterface";
+import IntroLoader from "@components/IntroLoader/IntroLoader";
+import Subtitles from "@components/Subtitles/Subtitles";
 import { lazy, Suspense } from "react";
 import styled from "styled-components";
-import ExperienceInterface from "../../components/ExperienceInterface";
-import IntroLoader from "../../components/IntroLoader/IntroLoader";
-import Subtitles from "../../components/Subtitles/Subtitles";
 import { GlobalServiceProvider } from "./GlobalServiceProvider";
-const Experience = lazy(() => import("../../components/Experience"));
+
+const Experience = lazy(() => import("@components/Experience"));
 
 function HomePage(props) {
   return (
@@ -16,9 +17,10 @@ function HomePage(props) {
         </Suspense>
 
         <Subtitles />
-        <ExperienceInterface />
 
         <IntroLoader />
+
+        <ExperienceInterface />
       </Main>
     </GlobalServiceProvider>
   );
