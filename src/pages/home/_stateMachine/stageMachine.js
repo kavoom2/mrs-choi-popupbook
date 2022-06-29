@@ -1,28 +1,32 @@
 import { pageDelay, pageKeyList, pageTimeout } from "@lib/constants/scenes";
 import {
-  // assetLoader,
+  assetLoader,
   home,
   intro,
   outro,
-  scene,
+  scene
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
   BOOK_START_ANIMATION,
   END_ANIMATION,
+  FAIL_ASSET_LOAD,
   GO_NEXT_PAGE,
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
+  RETRY_ASSET_LOAD,
   START_ANIMATION,
+  START_ASSET_LOAD,
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
+  SUCCEED_ASSET_LOAD
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout,
+  subtitleTimeout
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -30,6 +34,9 @@ import { assign, createMachine, send } from "xstate";
  * * 화면단 변수 설정
  */
 const maxPages = pageKeyList.length;
+
+const homeDelay = 1000;
+const introDelay = 7000;
 
 /**
  * XState Machine 정의
@@ -39,10 +46,11 @@ const id = "stage";
 const initial = home;
 
 const context = {
-  // [assetLoader]: {
-  //   isLoading: true,
-  //   isError: false,
-  // },
+  [assetLoader]: {
+    isAssetLoaded: false,
+    isLoading: false,
+    isError: false,
+  },
   [home]: {
     isAnimating: false,
     isAnimationEnd: false,
@@ -70,39 +78,61 @@ const context = {
 };
 
 const states = {
-  // [assetLoader]: {
-  //   on: {
-  //     [STEP]: {
-  //       target: home,
-  //       cond: (ctx, event) =>
-  //         !ctx[assetLoader].isError && !ctx[assetLoader].isLoading,
-  //     },
-  //     [RETRY_ASSET_LOAD]: {
-  //       actions: [
-  //         assign({
-  //           [assetLoader]: { isLoading: true, isError: false },
-  //         }),
-  //       ],
-  //       cond: (ctx, event) => ctx[assetLoader].isError,
-  //     },
-  //     [SUCCEED_ASSET_LOAD]: {
-  //       actions: [
-  //         assign({
-  //           [assetLoader]: { isLoading: false, isError: false },
-  //         }),
-  //       ],
-  //       cond: (ctx, event) => ctx[assetLoader].isLoading,
-  //     },
-  //     [FAIL_ASSET_LOAD]: {
-  //       actions: [
-  //         assign({
-  //           [assetLoader]: { isLoading: false, isError: true },
-  //         }),
-  //       ],
-  //       cond: (ctx, event) => ctx[assetLoader].isLoading,
-  //     },
-  //   },
-  // },
+  [assetLoader]: {
+    entry: [send({ type: START_ASSET_LOAD })],
+    on: {
+      [STEP]: {
+        target: home,
+        cond: (ctx, event) =>
+          !ctx[assetLoader].isError &&
+          !ctx[assetLoader].isLoading &&
+          ctx[assetLoader].isAssetLoaded,
+      },
+      [START_ASSET_LOAD]: {
+        actions: [
+          assign({
+            [assetLoader]: {
+              isLoading: true,
+              isError: false,
+            },
+          }),
+        ],
+        cond: (ctx, event) => ctx[assetLoader].isError,
+      },
+      [RETRY_ASSET_LOAD]: {
+        actions: [
+          assign({
+            [assetLoader]: { isLoading: true, isError: false },
+          }),
+        ],
+        cond: (ctx, event) => ctx[assetLoader].isError,
+      },
+      [SUCCEED_ASSET_LOAD]: {
+        actions: [
+          assign({
+            [assetLoader]: {
+              isLoading: false,
+              isError: false,
+              isAssetLoaded: true,
+            },
+          }),
+        ],
+        cond: (ctx, event) => ctx[assetLoader].isLoading,
+      },
+      [FAIL_ASSET_LOAD]: {
+        actions: [
+          assign({
+            [assetLoader]: {
+              isLoading: false,
+              isError: true,
+              isAssetLoaded: false,
+            },
+          }),
+        ],
+        cond: (ctx, event) => ctx[assetLoader].isLoading,
+      },
+    },
+  },
 
   /**
    * Home 스테이지
@@ -119,7 +149,7 @@ const states = {
           assign({
             [home]: { isAnimating: true, isAnimationEnd: false },
           }),
-          send({ type: END_ANIMATION }, { delay: 1000 }),
+          send({ type: END_ANIMATION }, { delay: homeDelay }),
         ],
       },
       [END_ANIMATION]: {
@@ -152,7 +182,7 @@ const states = {
           assign({
             [intro]: { isAnimating: true, isAnimationEnd: false },
           }),
-          send({ type: END_ANIMATION }, { delay: 8000 }),
+          send({ type: END_ANIMATION }, { delay: introDelay }),
         ],
       },
       [END_ANIMATION]: {

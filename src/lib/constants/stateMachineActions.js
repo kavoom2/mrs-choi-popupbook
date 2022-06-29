@@ -1,4 +1,5 @@
 export const STEP = "@state/STEP";
+export const START_ASSET_LOAD = "@state/START_ASSET_LOAD";
 export const RETRY_ASSET_LOAD = "@state/RETRY_ASSET_LOAD";
 export const SUCCEED_ASSET_LOAD = "@state/SUCCEED_ASSET_LOAD";
 export const FAIL_ASSET_LOAD = "@state/FAIL_ASSET_LOAD";

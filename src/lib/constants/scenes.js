@@ -26,10 +26,10 @@ export const pageKeyList = [
 ];
 
 export const pageTimeout = {
-  prev: 3000,
-  next: 3500,
+  prev: 2800,
+  next: 3200,
 };
 
 export const pageDelay = {
-  uiDisableDelay: 200,
+  uiDisableDelay: 100,
 };

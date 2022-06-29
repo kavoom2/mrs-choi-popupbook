@@ -8,10 +8,9 @@ import {
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useActor } from "@xstate/react";
 import classNames from "classnames";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { usePreviousImmediate } from "rooks";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Subtitle from "./Subtitle";
 
 const transitionClassName = "subtitle-item";
@@ -29,7 +28,54 @@ function Subtitles({ className, ...restProps }) {
 
   const { page, curIdx, isBookAnimating, isSubtitleAnimating } =
     subtitleContextSelector(stageState);
-  const prevPage = usePreviousImmediate(page);
+
+  /**
+   * 페이지, 자막 인덱스에 따른 애니메이션 속성값 변경
+   *
+   * Timout: enter, exit
+   * Delay: enter, exit
+   *
+   */
+  const timeoutRef = useRef({
+    enter: subtitleTimeout.enter,
+    exit: subtitleTimeout.exit,
+    enterDelay: 0,
+    exitDelay: 0,
+  });
+
+  const prevPageRef = useRef(null);
+  const prevCurIdxRef = useRef(null);
+
+  let enter, exit, enterDelay, exitDelay;
+  if (curIdx !== prevCurIdxRef.current && isSubtitleAnimating) {
+    enter = subtitleTimeout.enter;
+    exit = subtitleTimeout.exit;
+    enterDelay = 0;
+    exitDelay = 0;
+
+    timeoutRef.current = {
+      enter,
+      exit,
+      enterDelay,
+      exitDelay,
+    };
+    prevCurIdxRef.current = curIdx;
+  }
+
+  if (page !== prevPageRef.current && isBookAnimating) {
+    enter = subtitleTimeout.enter + subtitleDelay.pageTransitionDelay;
+    exit = subtitleTimeout.exit;
+    enterDelay = subtitleDelay.pageTransitionDelay;
+    exitDelay = 0;
+
+    timeoutRef.current = {
+      enter,
+      exit,
+      enterDelay,
+      exitDelay,
+    };
+    prevPageRef.current = page;
+  }
 
   /**
    * 변수 선언
@@ -71,25 +117,34 @@ function Subtitles({ className, ...restProps }) {
   return (
     <Section {...restProps} className={sectionClassNames}>
       <ResponsiveContainer className={responsiveClassName}>
-        <TransitionGroup className={listClassNames}>
+        <TransitionGroup component={SubtitleList} className={listClassNames}>
+          {/* // Dummy text for pos-aboluste litem */}
+          <CSSTransition key={`subtitle-item-dummy`} timeout={0}>
+            <DummtText>
+              <p>_dummy_</p>
+            </DummtText>
+          </CSSTransition>
+
           {subtitleContent && (
             <CSSTransition
               key={`subtitle-item-${page}-${curIdx}-${subtitleContent}`}
               classNames={transitionClassName}
-              timeout={subtitleTimeout}
+              timeout={{
+                enter: timeoutRef.current.enter,
+                exit: timeoutRef.current.exit,
+              }}
             >
-              <Subtitle
-                content={subtitleContent}
-                mainTextShadow={mainTextShadow}
-                subTextShadow={subTextShadow}
-                className={itemClassName}
-                style={{
-                  transitionDelay:
-                    prevPage !== page
-                      ? `${subtitleDelay.pageTransitionDelay}ms`
-                      : "0ms",
-                }}
-              />
+              <SubtitlePositioner
+                enterDelay={timeoutRef.current.enterDelay}
+                exitDelay={timeoutRef.current.exitDelay}
+              >
+                <Subtitle
+                  content={subtitleContent}
+                  mainTextShadow={mainTextShadow}
+                  subTextShadow={subTextShadow}
+                  className={itemClassName}
+                />
+              </SubtitlePositioner>
             </CSSTransition>
           )}
         </TransitionGroup>
@@ -137,7 +192,10 @@ const Section = styled.section`
 
   .${transitionClassName}-enter-active {
     opacity: 1;
-    transition: opacity ${subtitleTimeout.enter}ms ease;
+
+    transition-property: opacity;
+    transition-duration: ${subtitleTimeout.enter}ms;
+    transition-timing-function: ease;
   }
 
   .${transitionClassName}-exit {
@@ -146,20 +204,100 @@ const Section = styled.section`
 
   .${transitionClassName}-exit-active {
     opacity: 0;
-    transition: opacity ${subtitleTimeout.exit}ms ease;
+
+    transition-property: opacity;
+    transition-duration: ${subtitleTimeout.exit}ms;
+    transition-timing-function: ease;
   }
 `;
 
 const ResponsiveContainer = styled.div`
-  width: 70vw;
-  min-width: 400px;
-  max-width: 760px;
+  width: 1220px;
+  height: 800px;
 
-  height: 50vw;
-  min-height: 290px;
-  max-height: 540px;
+  @media (max-width: 1279.98px) {
+    width: 680px;
+    height: 800px;
+  }
+
+  @media (max-width: 899.98px) {
+    width: 480px;
+    height: 640px;
+  }
+
+  @media (max-width: 599.98px) {
+    width: 94vw;
+    height: 125vw;
+  }
 
   display: flex;
   align-items: flex-end;
   justify-content: center;
+`;
+
+const SubtitleList = styled.ul`
+  font-family: "UhBeenamsoyoung";
+
+  position: relative;
+  width: 100%;
+
+  padding: 0 0 60px 0;
+
+  font-size: 28px;
+  line-height: 1.6;
+
+  text-align: center;
+  word-break: keep-all;
+
+  will-change: opacity;
+  user-select: none;
+
+  li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    p {
+      margin: 0px;
+    }
+  }
+
+  @media (max-width: 899.98px) {
+    padding: 0 0 40px 0;
+    font-size: 22px;
+  }
+
+  @media (max-width: 599.98px) {
+    padding: 0 0 30px 0;
+    font-size: 18px;
+  }
+`;
+
+const DummtText = styled.li`
+  color: transparent;
+`;
+
+const SubtitlePositioner = styled.li`
+  ${(props) => {
+    const { enterDelay, exitDelay } = props;
+
+    return css`
+      position: absolute;
+
+      width: 100%;
+
+      top: 0;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      &.${transitionClassName}-enter-active {
+        transition-delay: ${enterDelay}ms;
+      }
+
+      &.${transitionClassName}-exit-active {
+        transition-delay: ${exitDelay}ms;
+      }
+    `;
+  }}
 `;

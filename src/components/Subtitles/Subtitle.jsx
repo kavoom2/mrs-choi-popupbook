@@ -35,27 +35,8 @@ const Paragraph = styled.p`
     const { mainTextShadow, subTextShadow } = props;
 
     return css`
-      font-family: "UhBeenamsoyoung";
-      margin: 0px;
-
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-
-      width: 100%;
-      max-height: 44.8px;
-
-      font-size: 28px;
-      line-height: 1.6;
       color: #ffffff;
-      text-shadow: 0px 0px 16px ${mainTextShadow}, 0px 0px 24px ${subTextShadow},
-        0px 0px 32px ${subTextShadow};
-
-      text-align: center;
-      word-break: keep-all;
-
-      will-change: opacity;
-      user-select: none;
+      text-shadow: 0px 0px 14px ${mainTextShadow}, 0px 0px 24px ${subTextShadow};
     `;
   }}
 `;

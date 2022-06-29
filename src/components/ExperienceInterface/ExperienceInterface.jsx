@@ -1,17 +1,17 @@
-import { useActor } from "@xstate/react";
-import classNames from "classnames";
-import { Fragment, useCallback, useContext } from "react";
-import styled from "styled-components";
-import { interfaceImages } from "../../assets/images";
-import { scene } from "../../lib/constants/stageMachineStates";
+import { interfaceImages } from "@assets/images";
+import { scene } from "@lib/constants/stageMachineStates";
 import {
   GO_NEXT_PAGE,
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
   STEP,
-} from "../../lib/constants/stateMachineActions";
-import { GlobalServiceContext } from "../../pages/home/GlobalServiceProvider";
+} from "@lib/constants/stateMachineActions";
+import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
+import { useActor } from "@xstate/react";
+import classNames from "classnames";
+import { Fragment, useCallback, useContext } from "react";
+import styled from "styled-components";
 import ControlButton from "./ControlButton";
 import Frame from "./Frame";
 
@@ -49,9 +49,11 @@ function ExperienceInterface() {
   /**
    * 변수 선언
    */
-  const isInterfaceHidden = !isStageScene;
-  const isPrevButtonHidden = page === -1 && curIdx === 0;
-  const isNextButtonHidden = page === maxPages;
+
+  const isInterfaceHidden = !isStageScene || isPageAnimating;
+
+  const isPrevButtonHidden = (page === -1 && curIdx === 0) || isInterfaceHidden;
+  const isNextButtonHidden = page === maxPages || isInterfaceHidden;
 
   /**
    * 클래스 명 선언
@@ -124,6 +126,10 @@ const Section = styled.section`
 
   padding: 45px 45px;
 
+  /* 프레임은 이전 Fixed 요소의 클릭 이벤트를 방해하면 안됩니다. */
+  pointer-events: none;
+  touch-action: none;
+
   @media (max-width: 599.98px) {
     padding: 3vh 2vw;
   }
@@ -134,6 +140,9 @@ const Aside = styled.aside`
 
   display: flex;
   justify-content: space-between;
+
+  pointer-events: auto;
+  touch-action: auto;
 `;
 
 function sceneContextSelector(state) {

@@ -23,7 +23,7 @@ assetPreloader.preload = async function (nextAssets = []) {
     );
 
   try {
-    const settled = await Promise.settled(promiseList);
+    const settled = await Promise.allSettled(promiseList);
 
     settled.forEach(({ status, value }) => {
       if (status === "fulfilled") {

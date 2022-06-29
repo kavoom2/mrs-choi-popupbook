@@ -27,6 +27,7 @@ function ControlButton({
   const buttonClassNames = classNames(
     {
       [`interface-button`]: true,
+      [`visible`]: visible,
       [`hidden`]: !visible,
       [`loading`]: loading,
       [`disabled`]: disabled,
@@ -87,8 +88,8 @@ const Button = styled.button`
   }
 
   /* 애니메이션 스타일 정의 */
-
-  transition: 500ms ease, transform 200ms ease, filter 200ms ease;
+  transform: scale(0.0001);
+  transition: 500ms ease, filter 200ms ease;
 
   opacity: 1;
   visibility: visible;
@@ -99,6 +100,7 @@ const Button = styled.button`
     /* Mobile device hover issue: https://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices */
     &:hover:not(.loading):not(.disabled) {
       transform: translateY(-5px);
+      transition: 200ms ease;
       filter: drop-shadow(0px 4px 5px rgba(30, 50, 0, 0.5));
     }
   }
@@ -114,9 +116,17 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 
+  &.visible {
+    transform: scale(1);
+  }
+
+  &.visible:not(:hover) {
+    transition: transform 300ms cubic-bezier(0.54, 1.66, 0.81, 1);
+  }
+
   &.hidden {
-    opacity: 0;
-    visibility: hidden;
+    transform: scale(0.0001);
+    transition: transform 300ms cubic-bezier(0.36, 0, 0.66, -0.56);
 
     user-select: none;
     pointer-events: none;

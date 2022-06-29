@@ -1,8 +1,8 @@
 export const subtitles = [
-  ["_1막_자막 내용 1", "_1막 자막 내용 2"],
-  ["_2막_자막 내용 1", "_2막 자막 내용 2"],
-  ["_3막_자막 내용 1", "_3막 자막 내용 2"],
-  ["_4막_자막 내용 1", "_4막 자막 내용 2"],
+  ["맑은 날 함께한 우리의 첫날이에요.", "설렘에 날아갈 것 같던 마음."],
+  ["떡볶이를 좋아하는 토리니와", "점점 입맛이 닮아가기도 했어요."],
+  ["토리니가 울던 그 날에는", "나도 함께 울었어요."],
+  ["100일 동안 더 가까워진 우리는", "앞으로도 같이 있을 거에요."],
 ];
 
 export const subtitleColorProps = [
@@ -11,16 +11,16 @@ export const subtitleColorProps = [
     subTextShadow: "#036462",
   },
   {
-    mainTextShadow: "#00ffcc",
-    subTextShadow: "#036462",
+    mainTextShadow: "#ffe700",
+    subTextShadow: "#450108",
   },
   {
-    mainTextShadow: "#00ffcc",
-    subTextShadow: "#036462",
+    mainTextShadow: "#00cbe6",
+    subTextShadow: "#791ba3",
   },
   {
-    mainTextShadow: "#00ffcc",
-    subTextShadow: "#036462",
+    mainTextShadow: "#ffbc63",
+    subTextShadow: "#a7030e",
   },
 ];
 
@@ -31,5 +31,5 @@ export const subtitleTimeout = {
 
 export const subtitleDelay = {
   pageTransitionDelay: 3000,
-  uiDisableDelay: 200,
+  uiDisableDelay: 100,
 };
