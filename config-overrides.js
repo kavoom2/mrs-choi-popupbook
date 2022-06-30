@@ -1,6 +1,3 @@
-/**
- * 1. Import
- */
 const {
   override,
   addWebpackAlias,
@@ -34,26 +31,41 @@ module.exports = override(
    * Plugin: Html link preload injector
    * [Reference] https://www.wiktorwisniewski.dev/blog/preloading-assets-with-webpack5
    *
-   * 로딩 화면에서 사용하는 Asset들은 js파일보다 먼저 불러와져야 합니다.
+   * 로딩 화면에서 사용하는 Asset들은 js파일보다 먼저 불러와야 합니다.
    */
   addWebpackPlugin(
     new HtmlWebpackInjectPreload({
       files: [
+        // Preload: 이미지
         {
-          match: /(preload1280)+.+(.png)$/,
+          match: /^(preload1280)+.+(.png)$/,
           attributes: { as: "image", media: "(min-width: 1280px)" },
         },
         {
-          match: /(preload900)+.+(.png)$/,
+          match: /^(preload900)+.+(.png)$/,
           attributes: { as: "image", media: "(min-width: 900px)" },
         },
         {
-          match: /(preload600)+.+(.png)$/,
+          match: /^(preload600)+.+(.png)$/,
           attributes: { as: "image", media: "(min-width: 600px)" },
         },
         {
-          match: /(preload0)+.+(.png)$/,
+          match: /^(preload0)+.+(.png)$/,
           attributes: { as: "image", media: "(max-width: 599.98px)" },
+        },
+
+        // Preload: 폰트
+        // TODO: 웹 폰트를 Preload하여 사용할 경우, 경량화가 필요합니다.
+        // woff - > woff2
+        // [Reference 1] https://spoqa.github.io/2015/10/14/making-spoqa-han-sans.html
+        // [Refernece 2] https://web.dev/i18n/ko/optimize-webfont-loading/#lighthouse-webfont
+        {
+          match: /.+(.woff)$/,
+          attributes: {
+            as: "font",
+            crossorigin: "anonymous",
+            type: "font/woff",
+          },
         },
       ],
     })

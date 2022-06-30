@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
 import React from "react";
-import ChunkErrorScreen from "./ChunkErrorSceen";
+import ChunkErrorSceen from "./ChunkErrorSceen";
 import CrashErrorScreen from "./CrashErrorScreen";
 
 const isDeployed = process.env.NODE_ENV === "production";
+
+// TODO: ChunkErrorScreen, CrashErrorScreen을 단순한 Retry 버튼이 있는 페이지 컴포넌트로 재작업합니다.
 
 class ErroyBoundary extends React.Component {
   constructor(props) {
@@ -43,7 +45,7 @@ class ErroyBoundary extends React.Component {
   };
 
   render() {
-    if (this.state.chunkError) return <ChunkErrorScreen />;
+    if (this.state.chunkError) return <ChunkErrorSceen />;
 
     if (this.state.hasError)
       return <CrashErrorScreen onResolve={this.handleResolveError} />;

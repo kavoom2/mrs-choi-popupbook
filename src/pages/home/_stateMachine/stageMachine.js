@@ -4,7 +4,7 @@ import {
   home,
   intro,
   outro,
-  scene
+  scene,
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
@@ -15,18 +15,16 @@ import {
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
-  RETRY_ASSET_LOAD,
   START_ANIMATION,
-  START_ASSET_LOAD,
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-  SUCCEED_ASSET_LOAD
+  SUCCEED_ASSET_LOAD,
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout
+  subtitleTimeout,
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -43,13 +41,11 @@ const introDelay = 7000;
  */
 const id = "stage";
 
-const initial = home;
+const initial = assetLoader;
 
 const context = {
   [assetLoader]: {
     isAssetLoaded: false,
-    isLoading: false,
-    isError: false,
   },
   [home]: {
     isAnimating: false,
@@ -79,40 +75,12 @@ const context = {
 
 const states = {
   [assetLoader]: {
-    entry: [send({ type: START_ASSET_LOAD })],
     on: {
-      [STEP]: {
-        target: home,
-        cond: (ctx, event) =>
-          !ctx[assetLoader].isError &&
-          !ctx[assetLoader].isLoading &&
-          ctx[assetLoader].isAssetLoaded,
-      },
-      [START_ASSET_LOAD]: {
-        actions: [
-          assign({
-            [assetLoader]: {
-              isLoading: true,
-              isError: false,
-            },
-          }),
-        ],
-        cond: (ctx, event) => ctx[assetLoader].isError,
-      },
-      [RETRY_ASSET_LOAD]: {
-        actions: [
-          assign({
-            [assetLoader]: { isLoading: true, isError: false },
-          }),
-        ],
-        cond: (ctx, event) => ctx[assetLoader].isError,
-      },
       [SUCCEED_ASSET_LOAD]: {
+        target: home,
         actions: [
           assign({
             [assetLoader]: {
-              isLoading: false,
-              isError: false,
               isAssetLoaded: true,
             },
           }),
@@ -123,8 +91,6 @@ const states = {
         actions: [
           assign({
             [assetLoader]: {
-              isLoading: false,
-              isError: true,
               isAssetLoaded: false,
             },
           }),

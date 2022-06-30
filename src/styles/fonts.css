@@ -1,7 +1,21 @@
 @font-face {
   font-family: "UhBeenamsoyoung";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeenamsoyoung.woff")
-    format("woff");
-  font-weight: normal;
+  src: url("@assets/fonts/UhBeenamsoyoung.eot");
+  src: local("UhBeenamsoyoung"),
+    url("@assets/fonts/UhBeenamsoyoung.woff") format("woff"),
+    url("@assets/fonts/UhBeenamsoyoung.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "UhBeenamsoyoung";
+  src: url("@assets/fonts/UhBeenamsoyoung.eot");
+  src: local("UhBeenamsoyoung"),
+    url("@assets/fonts/UhBeenamsoyoung.woff") format("woff"),
+    url("@assets/fonts/UhBeenamsoyoung_Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
   font-style: normal;
 }

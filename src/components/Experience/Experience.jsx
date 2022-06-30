@@ -1,8 +1,8 @@
 import { defaultCameraPos } from "@lib/constants/cameraTransitions";
-import { scene } from "@lib/constants/stageMachineStates";
+import { assetLoader, scene } from "@lib/constants/stageMachineStates";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useActor } from "@xstate/react";
 import { lazy, Suspense, useContext } from "react";
 import AxisDebugger from "./AxisDebugger";
@@ -20,9 +20,14 @@ export default function Experience() {
 
   const [stageState] = useActor(globalService.stageService);
 
+  const { isAssetLoaded } = assetLoaderSelector(stageState);
   const { page, maxPages } = bookContextSelector(stageState);
+
   const isStageScene = isStageSceneSelector(stageState);
 
+  /**
+   * Render WebGL Elements
+   */
   return (
     <Canvas
       shadows
@@ -36,6 +41,9 @@ export default function Experience() {
       }}
       className={`experience-section`}
     >
+      {/* Conditional Render Controller */}
+      {!isAssetLoaded && <DisableRender />}
+
       {/* Environments */}
       <ambientLight intensity={0.2} />
       <spotLight
@@ -65,6 +73,29 @@ export default function Experience() {
       <Stats />
     </Canvas>
   );
+}
+
+function DisableRender() {
+  /**
+   * 페이지 불러오기 직 후, WebGL Renderer를 바로 사용하게 되면 급격한 프레임 드랍 이슈가 발생합니다.
+   * 따라서, XState의 isAssetLoaded가 TRUE가 된 이후에 WebGL Renderer를 사용하도록 합니다.
+   *
+   * - HTML preload 요소가 불러와진 이후에 렌더링을 허용해도 되지만, Network Water Flow상으로 크게 유의미하지는 않습니다.
+   *
+   * [Reference] https://github.com/pmndrs/react-three-fiber/discussions/769
+   *
+   */
+  useFrame(() => null, 1000);
+
+  return null;
+}
+
+function assetLoaderSelector(state) {
+  const { isAssetLoaded } = state["context"][assetLoader];
+
+  return {
+    isAssetLoaded,
+  };
 }
 
 function bookContextSelector(state) {

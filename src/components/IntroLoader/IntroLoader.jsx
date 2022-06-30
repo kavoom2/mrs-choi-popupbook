@@ -1,10 +1,11 @@
 import { interfaceImages } from "@assets/images";
 import ControlButton from "@components/ExperienceInterface/ControlButton";
 import { assetLoader, home } from "@lib/constants/stageMachineStates";
+import { STEP } from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useProgress } from "@react-three/drei";
 import { useActor } from "@xstate/react";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
 
@@ -15,13 +16,13 @@ import LoaderScreen from "./LoaderScreen";
 
 function IntroLoader() {
   /**
-   * WebGL Asset 로더
+   * WebGL Asset Loader
    */
   const { active, progress, errors, item, loaded, total } = useProgress();
 
-  const isSuccess = loaded === total && errors?.length === 0;
-  const isLoading = loaded < total && errors?.length === 0;
-  const isError = errors?.length > 0;
+  const isSuccess = loaded === total && errors?.length === 0 && total > 0;
+  const isLoading = loaded < total && errors?.length === 0 && total > 0;
+  const isError = errors?.length > 0 && total > 0;
 
   /**
    * XState
@@ -31,21 +32,12 @@ function IntroLoader() {
   const [stageState] = useActor(globalService.stageService);
   const { send } = globalService.stageService;
 
-  const {
-    isAssetLoaded: isAssetContextLoaded,
-    isLoading: isAssetContextLoading,
-    isError: isAssetContextError,
-  } = assetLoaderContextSelector(stageState);
-
-  const isAssetLoaderOrHome = isAssetLoaderOrHomeSelector(stageState);
-
   /**
    * 함수 선언
    */
+
   const playApp = (event) => {
-    // XState
-    if (isSuccess) {
-    }
+    if (isSuccess) send(STEP);
   };
 
   const retryApp = (event) => {
@@ -60,20 +52,12 @@ function IntroLoader() {
   const isRetryHidden = !isError;
 
   /**
-   * Side Effect
-   */
-  useEffect(() => {
-    if (isSuccess) {
-    }
-  }, [isSuccess]);
-
-  /**
    * 노드 선언 및 컴포넌트 렌더링
    */
   const loadingRenderNode = (
     <span className="content">
       우리의 <span className="dear">예쁜 추억</span>을{" "}
-      <span className="percent">{progress}%</span>만큼 불러왔어요!
+      <span className="percent">{parseInt(progress, 10)}%</span>만큼 불러왔어요!
     </span>
   );
 
@@ -81,9 +65,11 @@ function IntroLoader() {
     <LoaderScreen>
       <FallbackBackgrounds />
       <ProgressTextContainer>
-        {!errors && loadingRenderNode}
+        {(isLoading || isSuccess) && loadingRenderNode}
       </ProgressTextContainer>
       <ButtonWrapper>
+        {/* // TODO: 기능에 적합한 버튼 asset을 제작해야 합니다. */}
+        {/* 또는, 필요에 맞게 사용합니다. */}
         <ControlButton
           imagePath={interfaceImages.buttonArrowLtr}
           imageAlt="Play game"
@@ -167,16 +153,6 @@ const ButtonWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
-
-function assetLoaderContextSelector(state) {
-  const { isAssetLoaded, isLoading, isError } = state["context"][assetLoader];
-
-  return {
-    isAssetLoaded,
-    isLoading,
-    isError,
-  };
-}
 
 function isAssetLoaderOrHomeSelector(state) {
   return state.matches(assetLoader) || state.matches(home);

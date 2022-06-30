@@ -72,12 +72,13 @@ function Background({ stageValue, page, states }) {
 }
 
 function colorSelector(sceneBackgrounds, stageState, page) {
-  const currentStageProps = sceneBackgrounds[stageState];
+  const currentStageProps = sceneBackgrounds?.[stageState] ?? null;
 
   let backgroundProps = sceneBackgrounds[stageState];
 
-  if (currentStageProps.children)
+  if (currentStageProps?.children) {
     backgroundProps = currentStageProps.children[page];
+  }
 
   const { bottomColor, topColor } = {
     ...introBackgrounds,
