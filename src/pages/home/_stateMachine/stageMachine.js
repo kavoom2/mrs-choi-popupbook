@@ -33,6 +33,7 @@ import { assign, createMachine, send } from "xstate";
  */
 const maxPages = pageKeyList.length;
 
+const assetLoaderDelay = 20000;
 const homeDelay = 1000;
 const introDelay = 7000;
 
@@ -74,8 +75,15 @@ const context = {
 };
 
 const states = {
+  /**
+   * Asset Loading 스테이지
+   */
   [assetLoader]: {
     on: {
+      [STEP]: {
+        target: home,
+        cond: (ctx, event) => ctx[assetLoader].isAssetLoaded,
+      },
       [SUCCEED_ASSET_LOAD]: {
         target: home,
         actions: [
@@ -84,8 +92,8 @@ const states = {
               isAssetLoaded: true,
             },
           }),
+          send({ type: STEP, delay: assetLoaderDelay }),
         ],
-        cond: (ctx, event) => ctx[assetLoader].isLoading,
       },
       [FAIL_ASSET_LOAD]: {
         actions: [
@@ -95,7 +103,6 @@ const states = {
             },
           }),
         ],
-        cond: (ctx, event) => ctx[assetLoader].isLoading,
       },
     },
   },

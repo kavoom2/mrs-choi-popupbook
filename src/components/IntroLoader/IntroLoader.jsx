@@ -1,13 +1,15 @@
 import { interfaceImages } from "@assets/images";
 import ControlButton from "@components/ExperienceInterface/ControlButton";
 import { assetLoader, home } from "@lib/constants/stageMachineStates";
-import { STEP } from "@lib/constants/stateMachineActions";
+import { STEP, SUCCEED_ASSET_LOAD } from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useProgress } from "@react-three/drei";
 import { useActor } from "@xstate/react";
 import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
+
+import { useEffect } from "react";
 
 // TODO: Asset이 불러와 지기 전, 로딩 화면을 구성해야 합니다.
 // 1. 전경 색상을 로딩 화면 색상과 동일하게 하여 빈 화면이 아니도록 판단하게 해야 합니다.
@@ -30,6 +32,8 @@ function IntroLoader() {
   const globalService = useContext(GlobalServiceContext);
 
   const [stageState] = useActor(globalService.stageService);
+
+  const { isAssetLoaded } = assetLoaderSelector(stageState);
   const { send } = globalService.stageService;
 
   /**
@@ -50,6 +54,13 @@ function IntroLoader() {
 
   const isPlayButtonHidden = !isSuccess;
   const isRetryHidden = !isError;
+
+  /**
+   * Side Effect
+   */
+  useEffect(() => {
+    if (isSuccess && !isAssetLoaded) send(SUCCEED_ASSET_LOAD);
+  }, [isSuccess]);
 
   /**
    * 노드 선언 및 컴포넌트 렌더링
@@ -153,6 +164,14 @@ const ButtonWrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
+
+function assetLoaderSelector(state) {
+  const { isAssetLoaded } = state["context"][assetLoader];
+
+  return {
+    isAssetLoaded,
+  };
+}
 
 function isAssetLoaderOrHomeSelector(state) {
   return state.matches(assetLoader) || state.matches(home);
