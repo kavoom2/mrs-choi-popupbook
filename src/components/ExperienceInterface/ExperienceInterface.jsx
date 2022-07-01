@@ -8,7 +8,7 @@ import {
   STEP,
 } from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import classNames from "classnames";
 import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
@@ -21,14 +21,18 @@ function ExperienceInterface() {
    */
   const globalService = useContext(GlobalServiceContext);
 
-  const [stageState] = useActor(globalService.stageService);
   const { send } = globalService.stageService;
 
-  const { book, subtitle } = sceneContextSelector(stageState);
+  const book = useSelector(globalService.stageService, bookSelector);
+  const subtitle = useSelector(globalService.stageService, subtitleSelector);
+
   const { page, maxPages, isAnimating: isPageAnimating } = book;
   const { curIdx, maxIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
-  const isStageScene = isStageSceneSelector(stageState);
+  const isStageScene = useSelector(
+    globalService.stageService,
+    isStageSceneSelector
+  );
 
   /**
    * 함수 선언
@@ -145,13 +149,16 @@ const Aside = styled.aside`
   touch-action: auto;
 `;
 
-function sceneContextSelector(state) {
-  const { book, subtitle } = state["context"][scene];
+function subtitleSelector(state) {
+  const subtitle = state["context"][scene]["subtitle"];
 
-  return {
-    book,
-    subtitle,
-  };
+  return subtitle;
+}
+
+function bookSelector(state) {
+  const book = state["context"][scene]["book"];
+
+  return book;
 }
 
 function isStageSceneSelector(state) {

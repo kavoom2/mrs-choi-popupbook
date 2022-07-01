@@ -6,7 +6,7 @@ import {
   subtitleTimeout,
 } from "@lib/constants/subtitles";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import classNames from "classnames";
 import { useContext, useRef } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -24,10 +24,11 @@ function Subtitles({ className, ...restProps }) {
    */
   const globalService = useContext(GlobalServiceContext);
 
-  const [stageState] = useActor(globalService.stageService);
+  const book = useSelector(globalService.stageService, bookSelector);
+  const subtitle = useSelector(globalService.stageService, subtitleSelector);
 
-  const { page, curIdx, isBookAnimating, isSubtitleAnimating } =
-    subtitleContextSelector(stageState);
+  const { page, isAnimating: isPageAnimating } = book;
+  const { curIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
   /**
    * 페이지, 자막 인덱스에 따른 애니메이션 속성값 변경
@@ -62,7 +63,7 @@ function Subtitles({ className, ...restProps }) {
     prevCurIdxRef.current = curIdx;
   }
 
-  if (page !== prevPageRef.current && isBookAnimating) {
+  if (page !== prevPageRef.current && isPageAnimating) {
     enter = subtitleTimeout.enter + subtitleDelay.pageTransitionDelay;
     exit = subtitleTimeout.exit;
     enterDelay = subtitleDelay.pageTransitionDelay;
@@ -153,22 +154,16 @@ function Subtitles({ className, ...restProps }) {
   );
 }
 
-function subtitleContextSelector(state) {
-  const { page, isAnimating: isBookAnimating } =
-    state["context"][scene]["book"];
-  const {
-    curIdx,
-    maxSubtitles,
-    isAnimating: isSubtitleAnimating,
-  } = state["context"][scene]["subtitle"];
+function subtitleSelector(state) {
+  const subtitle = state["context"][scene]["subtitle"];
 
-  return {
-    page,
-    curIdx,
-    maxSubtitles,
-    isBookAnimating,
-    isSubtitleAnimating,
-  };
+  return subtitle;
+}
+
+function bookSelector(state) {
+  const book = state["context"][scene]["book"];
+
+  return book;
 }
 
 export default Subtitles;

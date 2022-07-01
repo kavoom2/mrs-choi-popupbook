@@ -33,7 +33,7 @@ import { assign, createMachine, send } from "xstate";
  */
 const maxPages = pageKeyList.length;
 
-const assetLoaderDelay = 20000;
+const assetLoaderDelay = 4000;
 const homeDelay = 1000;
 const introDelay = 7000;
 
@@ -85,14 +85,13 @@ const states = {
         cond: (ctx, event) => ctx[assetLoader].isAssetLoaded,
       },
       [SUCCEED_ASSET_LOAD]: {
-        target: home,
         actions: [
           assign({
             [assetLoader]: {
               isAssetLoaded: true,
             },
           }),
-          send({ type: STEP, delay: assetLoaderDelay }),
+          send({ type: STEP }, { delay: assetLoaderDelay }),
         ],
       },
       [FAIL_ASSET_LOAD]: {

@@ -1,10 +1,10 @@
 import { interfaceImages } from "@assets/images";
 import ControlButton from "@components/ExperienceInterface/ControlButton";
-import { assetLoader, home } from "@lib/constants/stageMachineStates";
+import { assetLoader } from "@lib/constants/stageMachineStates";
 import { STEP, SUCCEED_ASSET_LOAD } from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useProgress } from "@react-three/drei";
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
@@ -20,40 +20,34 @@ function IntroLoader() {
   /**
    * WebGL Asset Loader
    */
-  const { active, progress, errors, item, loaded, total } = useProgress();
+  const { progress, errors, loaded, total } = useProgress();
 
   const isSuccess = loaded === total && errors?.length === 0 && total > 0;
   const isLoading = loaded < total && errors?.length === 0 && total > 0;
-  const isError = errors?.length > 0 && total > 0;
 
   /**
    * XState
    */
   const globalService = useContext(GlobalServiceContext);
 
-  const [stageState] = useActor(globalService.stageService);
-
-  const { isAssetLoaded } = assetLoaderSelector(stageState);
   const { send } = globalService.stageService;
+
+  const isAssetLoaded = useSelector(
+    globalService.stageService,
+    assetLoaderSelector
+  );
 
   /**
    * 함수 선언
    */
-
   const playApp = (event) => {
     if (isSuccess) send(STEP);
-  };
-
-  const retryApp = (event) => {
-    if (isError) window.location.reload();
   };
 
   /**
    * 변수 선언
    */
-
   const isPlayButtonHidden = !isSuccess;
-  const isRetryHidden = !isError;
 
   /**
    * Side Effect
@@ -86,15 +80,6 @@ function IntroLoader() {
           imageAlt="Play game"
           onClick={playApp}
           visible={!isPlayButtonHidden}
-        />
-      </ButtonWrapper>
-
-      <ButtonWrapper>
-        <ControlButton
-          imagePath={interfaceImages.buttonArrowLtr}
-          imageAlt="Retry "
-          onClick={retryApp}
-          visible={!isRetryHidden}
         />
       </ButtonWrapper>
     </LoaderScreen>
@@ -166,13 +151,7 @@ const ButtonWrapper = styled.div`
 `;
 
 function assetLoaderSelector(state) {
-  const { isAssetLoaded } = state["context"][assetLoader];
+  const isAssetLoaded = state["context"][assetLoader]["isAssetLoaded"];
 
-  return {
-    isAssetLoaded,
-  };
-}
-
-function isAssetLoaderOrHomeSelector(state) {
-  return state.matches(assetLoader) || state.matches(home);
+  return isAssetLoaded;
 }

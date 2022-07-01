@@ -1,11 +1,10 @@
 import { defaultCameraPos } from "@lib/constants/cameraTransitions";
-import { assetLoader, scene } from "@lib/constants/stageMachineStates";
+import { home, intro, outro, scene } from "@lib/constants/stageMachineStates";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useActor } from "@xstate/react";
+import { useSelector } from "@xstate/react";
 import { lazy, Suspense, useContext } from "react";
-import AxisDebugger from "./AxisDebugger";
 import Background from "./Background";
 import Camera from "./Camera";
 import Stats from "./Stats";
@@ -18,12 +17,26 @@ export default function Experience() {
    */
   const globalService = useContext(GlobalServiceContext);
 
-  const [stageState] = useActor(globalService.stageService);
+  /**
+   * 불필요한 Rerender가 발생하지 않도록, XState useSelector를 사용해야 합니다.
+   */
+  const stageValue = useSelector(
+    globalService.stageService,
+    stageValueSelector
+  );
 
-  const { isAssetLoaded } = assetLoaderSelector(stageState);
-  const { page, maxPages } = bookContextSelector(stageState);
-
-  const isStageScene = isStageSceneSelector(stageState);
+  const { page, maxPages } = useSelector(
+    globalService.stageService,
+    bookContextSelector
+  );
+  const isStageScene = useSelector(
+    globalService.stageService,
+    isStageSceneSelector
+  );
+  const isWebGLReady = useSelector(
+    globalService.stageService,
+    isWebGLReadySelector
+  );
 
   /**
    * Render WebGL Elements
@@ -42,7 +55,7 @@ export default function Experience() {
       className={`experience-section`}
     >
       {/* Conditional Render Controller */}
-      {!isAssetLoaded && <DisableRender />}
+      {!isWebGLReady && <DisableRender />}
 
       {/* Environments */}
       <ambientLight intensity={0.2} />
@@ -57,19 +70,19 @@ export default function Experience() {
 
       <Suspense>
         {/* Main Scenes */}
-        <Background stageValue={stageState.value} page={page} />
+        <Background stageValue={stageValue} page={page} />
         <Popupbook
           page={page}
           maxPages={maxPages}
-          stageValue={stageState.value}
+          stageValue={stageValue}
           isStageScene={isStageScene}
         />
         <Environment preset="city" />
-        <Camera stageValue={stageState.value} />
+        <Camera stageValue={stageValue} />
       </Suspense>
 
       {/* Debugger */}
-      <AxisDebugger />
+      {/* <AxisDebugger /> */}
       <Stats />
     </Canvas>
   );
@@ -90,14 +103,6 @@ function DisableRender() {
   return null;
 }
 
-function assetLoaderSelector(state) {
-  const { isAssetLoaded } = state["context"][assetLoader];
-
-  return {
-    isAssetLoaded,
-  };
-}
-
 function bookContextSelector(state) {
   const { maxPages, page } = state["context"][scene]["book"];
 
@@ -107,6 +112,19 @@ function bookContextSelector(state) {
   };
 }
 
+function isWebGLReadySelector(state) {
+  return (
+    state.matches(home) ||
+    state.matches(intro) ||
+    state.matches(scene) ||
+    state.matches(outro)
+  );
+}
+
 function isStageSceneSelector(state) {
   return state.matches(scene);
+}
+
+function stageValueSelector(state) {
+  return state.value;
 }
