@@ -56,7 +56,7 @@ function Experience() {
         position: [defaultCameraPos.x, defaultCameraPos.y, defaultCameraPos.z],
       }}
       gl={{
-        antialias: true,
+        antialias: false,
       }}
       className={`experience-section`}
     >

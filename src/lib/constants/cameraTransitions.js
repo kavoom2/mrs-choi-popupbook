@@ -39,13 +39,13 @@ export const cameraTransitions = {
   [intro]: {
     position: {
       ...defaultCameraPos,
-      duration: 5.1,
+      duration: 4.1,
       delay: 0.5,
       ease: "power3.inOut",
     },
     lookAt: {
       ...defaultCameraLookAt,
-      duration: 5.1,
+      duration: 4.1,
       delay: 0.5,
       ease: "power3.inOut",
     },

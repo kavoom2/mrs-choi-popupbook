@@ -4,7 +4,7 @@ import {
   home,
   intro,
   outro,
-  scene
+  scene,
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
@@ -20,12 +20,12 @@ import {
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-  SUCCEED_ASSET_LOAD
+  SUCCEED_ASSET_LOAD,
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout
+  subtitleTimeout,
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -34,10 +34,10 @@ import { assign, createMachine, send } from "xstate";
  */
 const maxPages = pageKeyList.length;
 
-const assetLoaderDelay = 1000;
-const homeDelay = 1000;
-const homeExitDelay = 500;
-const introDelay = 7000;
+const assetLoaderDelay = 200;
+const homeDelay = 800;
+const homeExitDelay = 200;
+const introDelay = 6000;
 
 /**
  * XState Machine 정의

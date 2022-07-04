@@ -13,6 +13,7 @@ const preloadImages = [
 function LoaderScreen({
   isCharacterIdle,
   isCharacterExit,
+  fallback,
   children,
   ...restProps
 }) {
@@ -62,7 +63,7 @@ function LoaderScreen({
    */
   const bearCharProps = {
     animationDuration: 2600,
-    animationDelay: 100,
+    animationDelay: 0,
   };
 
   const rabbitCharProps = {
@@ -79,7 +80,7 @@ function LoaderScreen({
   return (
     <Screen className={sectionClassNames}>
       <PositionProvider>
-        {children}
+        {fallback}
 
         <CharacterAnimationOrigin className={bearWrapperClassName}>
           <CharacterPositioner
@@ -112,6 +113,8 @@ function LoaderScreen({
             </CharacterImg>
           </CharacterPositioner>
         </CharacterAnimationOrigin>
+
+        {children}
       </PositionProvider>
     </Screen>
   );
@@ -194,7 +197,7 @@ const characterPositionBtt = keyframes`
 0% {
   transform: translate3d(0, 0px, 0);
 } 100% {
-  transform: translate3d(300px, -600px, 0);
+  transform: translate3d(250px, -500px, 0);
 }
 `;
 
@@ -202,7 +205,7 @@ const characterPositionBttMax500 = keyframes`
 0% {
   transform: translate3d(0, 0px, 0);
 } 100% {
-  transform: translate3d(150px, -300px, 0);
+  transform: translate3d(125px, -250px, 0);
 }
 `;
 
@@ -210,7 +213,7 @@ const characterPositionTtb = keyframes`
 0% {
   transform: translate3d(0, 0px, 0);
 } 100% {
-  transform: translate3d(-300px, 600px, 0);
+  transform: translate3d(-250px, 500px, 0);
 }
 `;
 
@@ -218,7 +221,7 @@ const characterPositionTtbMax500 = keyframes`
 0% {
   transform: translate3d(0, 0px, 0);
 } 100% {
-  transform: translate3d(-150px, 300px, 0);
+  transform: translate3d(-125px, 250px, 0);
 }
 `;
 

@@ -7,7 +7,7 @@ import { lazy, Suspense, useContext } from "react";
 import styled from "styled-components";
 import {
   GlobalServiceContext,
-  GlobalServiceProvider
+  GlobalServiceProvider,
 } from "./GlobalServiceProvider";
 import { stageValueSelector } from "./_utils/stateMachineUtils";
 

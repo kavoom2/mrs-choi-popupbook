@@ -15,7 +15,7 @@ import ControlButton from "./ControlButton";
 import Frame from "./Frame";
 import {
   bookContextSelector,
-  isStageSceneSelector,
+  isSceneStageSelector,
   subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
 
@@ -36,9 +36,9 @@ function ExperienceInterface() {
   const { page, maxPages, isAnimating: isPageAnimating } = book;
   const { curIdx, maxIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
-  const isStageScene = useSelector(
+  const isSceneStage = useSelector(
     globalService.stageService,
-    isStageSceneSelector
+    isSceneStageSelector
   );
 
   /**
@@ -61,7 +61,7 @@ function ExperienceInterface() {
    * 변수 선언
    */
 
-  const isInterfaceHidden = !isStageScene || isPageAnimating;
+  const isInterfaceHidden = !isSceneStage || isPageAnimating;
 
   const isPrevButtonHidden = (page === -1 && curIdx === 0) || isInterfaceHidden;
   const isNextButtonHidden = page === maxPages || isInterfaceHidden;

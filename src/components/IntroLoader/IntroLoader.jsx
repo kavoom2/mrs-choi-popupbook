@@ -102,11 +102,10 @@ function IntroLoader() {
     <LoaderScreen
       isCharacterIdle={isCharacterIdle}
       isCharacterExit={isCharacterExit}
+      fallback={<FallbackBackgrounds className={fallbackBgClassNames} />}
     >
-      <FallbackBackgrounds />
-
-      <ProgressTextContainer>
-        {(isLoading || isSuccess) && loadingRenderNode}
+      <ProgressTextContainer className={progressTextClassNames}>
+        {loadingRenderNode}
       </ProgressTextContainer>
 
       <ButtonWrapper>
@@ -138,6 +137,13 @@ const FallbackBackgrounds = styled.div`
   transform: scale(1.2);
 
   background-color: #d6d2bc;
+
+  transition: opacity 800ms ease, visibility 800ms ease;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
 `;
 
 const ProgressTextContainer = styled.div`
@@ -177,6 +183,13 @@ const ProgressTextContainer = styled.div`
     .content {
       font-size: 20px;
     }
+  }
+
+  transition: opacity 800ms ease, visibility 800ms ease;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
   }
 `;
 
