@@ -1,7 +1,9 @@
 import { interfaceImages } from "@assets/images";
 import ControlButton from "@components/ExperienceInterface/ControlButton";
-import { assetLoader } from "@lib/constants/stageMachineStates";
-import { STEP, SUCCEED_ASSET_LOAD } from "@lib/constants/stateMachineActions";
+import {
+  PLAY_APP,
+  SUCCEED_ASSET_LOAD,
+} from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useProgress } from "@react-three/drei";
 import { useSelector } from "@xstate/react";
@@ -9,7 +11,12 @@ import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
 
+import classNames from "classnames";
 import { useEffect } from "react";
+import {
+  assetLoaderContextSelector,
+  homeContextSelector,
+} from "./_utils/stateMachineUtils";
 
 // TODO: Asset이 불러와 지기 전, 로딩 화면을 구성해야 합니다.
 // 1. 전경 색상을 로딩 화면 색상과 동일하게 하여 빈 화면이 아니도록 판단하게 해야 합니다.
@@ -34,26 +41,51 @@ function IntroLoader() {
 
   const isAssetLoaded = useSelector(
     globalService.stageService,
-    assetLoaderSelector
+    assetLoaderContextSelector
   );
 
+  const home = useSelector(globalService.stageService, homeContextSelector);
+
+  const {
+    isAnimating: isHomeExitAnimating,
+    isAnimationEnd: isHomeExitAnimationEnd,
+  } = home;
+
   /**
-   * 함수 선언
+   * 내부 함수 선언
    */
   const playApp = (event) => {
-    if (isSuccess) send(STEP);
+    if (isSuccess && !isHomeExitAnimating) send(PLAY_APP);
   };
 
   /**
    * 변수 선언
    */
-  const isPlayButtonHidden = !isSuccess;
+  const isCharacterIdle = !(isHomeExitAnimating || isHomeExitAnimationEnd);
+  const isCharacterExit = isHomeExitAnimating || isHomeExitAnimationEnd;
+  const isUiFaded = isHomeExitAnimating || isHomeExitAnimationEnd;
+
+  const isPlayButtonHidden = !isSuccess || isUiFaded;
+
+  /**
+   * 클래스 명 선언
+   */
+  const fallbackBgClassNames = classNames({
+    "loader-fallback-background": true,
+    hidden: isUiFaded,
+  });
+
+  const progressTextClassNames = classNames({
+    "loader-progress-text": true,
+    hidden: isUiFaded,
+  });
 
   /**
    * Side Effect
    */
   useEffect(() => {
     if (isSuccess && !isAssetLoaded) send(SUCCEED_ASSET_LOAD);
+    // eslint-disable-next-line
   }, [isSuccess]);
 
   /**
@@ -67,11 +99,16 @@ function IntroLoader() {
   );
 
   return (
-    <LoaderScreen>
+    <LoaderScreen
+      isCharacterIdle={isCharacterIdle}
+      isCharacterExit={isCharacterExit}
+    >
       <FallbackBackgrounds />
+
       <ProgressTextContainer>
         {(isLoading || isSuccess) && loadingRenderNode}
       </ProgressTextContainer>
+
       <ButtonWrapper>
         {/* // TODO: 기능에 적합한 버튼 asset을 제작해야 합니다. */}
         {/* 또는, 필요에 맞게 사용합니다. */}
@@ -148,10 +185,6 @@ const ButtonWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  z-index: 2000;
 `;
-
-function assetLoaderSelector(state) {
-  const isAssetLoaded = state["context"][assetLoader]["isAssetLoaded"];
-
-  return isAssetLoaded;
-}

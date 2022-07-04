@@ -10,7 +10,12 @@ const preloadImages = [
   interfaceImages.loaderRabbitSmall,
 ];
 
-function LoaderScreen({ children }) {
+function LoaderScreen({
+  isCharacterIdle,
+  isCharacterExit,
+  children,
+  ...restProps
+}) {
   /**
    * Side effect
    */
@@ -33,15 +38,22 @@ function LoaderScreen({ children }) {
     rabbit: true,
   });
 
+  const commonPositionerClassNames = classNames({
+    "character-positioner": true,
+    "animation-paused": isCharacterIdle,
+  });
+
   const bearClassNames = classNames({
     "character-bear": true,
     [`position-abs bottom-0 left-0`]: true,
+    "animation-paused": isCharacterExit,
     ltr: true,
   });
 
   const rabbitClassNames = classNames({
     "character-rabbit": true,
     [`position-abs bottom-0 right-0`]: true,
+    "animation-paused": isCharacterExit,
     rtl: true,
   });
 
@@ -69,27 +81,37 @@ function LoaderScreen({ children }) {
       <PositionProvider>
         {children}
 
-        <AnimationPositioner className={bearWrapperClassName}>
-          <CharacterImg {...bearCharProps} className={bearClassNames}>
-            <source
-              media="(min-width:600px)"
-              srcSet={interfaceImages.loaderBearNormal}
-              alt={bearAlt}
-            />
-            <img src={interfaceImages.loaderBearSmall} alt={bearAlt} />
-          </CharacterImg>
-        </AnimationPositioner>
+        <CharacterAnimationOrigin className={bearWrapperClassName}>
+          <CharacterPositioner
+            className={commonPositionerClassNames}
+            outroDirection="ttb"
+          >
+            <CharacterImg {...bearCharProps} className={bearClassNames}>
+              <source
+                media="(min-width:600px)"
+                srcSet={interfaceImages.loaderBearNormal}
+                alt={bearAlt}
+              />
+              <img src={interfaceImages.loaderBearSmall} alt={bearAlt} />
+            </CharacterImg>
+          </CharacterPositioner>
+        </CharacterAnimationOrigin>
 
-        <AnimationPositioner className={rabbitWrapperClassName}>
-          <CharacterImg {...rabbitCharProps} className={rabbitClassNames}>
-            <source
-              media="(min-width:600px)"
-              srcSet={interfaceImages.loaderRabbitNormal}
-              alt={rabbitAlt}
-            />
-            <img src={interfaceImages.loaderRabbitSmall} alt={rabbitAlt} />
-          </CharacterImg>
-        </AnimationPositioner>
+        <CharacterAnimationOrigin className={rabbitWrapperClassName}>
+          <CharacterPositioner
+            className={commonPositionerClassNames}
+            outroDirection="btt"
+          >
+            <CharacterImg {...rabbitCharProps} className={rabbitClassNames}>
+              <source
+                media="(min-width:600px)"
+                srcSet={interfaceImages.loaderRabbitNormal}
+                alt={rabbitAlt}
+              />
+              <img src={interfaceImages.loaderRabbitSmall} alt={rabbitAlt} />
+            </CharacterImg>
+          </CharacterPositioner>
+        </CharacterAnimationOrigin>
       </PositionProvider>
     </Screen>
   );
@@ -150,25 +172,57 @@ const PositionProvider = styled.div`
 
 const characterRotateRtl = keyframes`
     0% {
-      transform: rotate(180deg);
+      transform: rotate(200deg);
     }
 
     100% {
-      transform: rotate(230deg);
+      transform: rotate(250deg);
     }
 `;
 
 const characterRotateLtr = keyframes`
     0% {
-      transform: rotate(-20deg);
+      transform: rotate(10deg);
     }
 
     100% {
-      transform: rotate(28deg);
+      transform: rotate(40deg);
     }
 `;
 
-const AnimationPositioner = styled.div`
+const characterPositionBtt = keyframes`
+0% {
+  transform: translate3d(0, 0px, 0);
+} 100% {
+  transform: translate3d(300px, -600px, 0);
+}
+`;
+
+const characterPositionBttMax500 = keyframes`
+0% {
+  transform: translate3d(0, 0px, 0);
+} 100% {
+  transform: translate3d(150px, -300px, 0);
+}
+`;
+
+const characterPositionTtb = keyframes`
+0% {
+  transform: translate3d(0, 0px, 0);
+} 100% {
+  transform: translate3d(-300px, 600px, 0);
+}
+`;
+
+const characterPositionTtbMax500 = keyframes`
+0% {
+  transform: translate3d(0, 0px, 0);
+} 100% {
+  transform: translate3d(-150px, 300px, 0);
+}
+`;
+
+const CharacterAnimationOrigin = styled.div`
   position: absolute;
 
   &.rabbit {
@@ -212,6 +266,52 @@ const AnimationPositioner = styled.div`
   }
 `;
 
+const CharacterPositioner = styled.div`
+  ${(props) => {
+    const { outroDirection } = props;
+
+    return css`
+      position: relative;
+      width: 30px;
+      height: 30px;
+
+      transform-origin: center;
+
+      ${outroDirection === "ttb" &&
+      css`
+        animation-name: ${characterPositionTtb};
+      `}
+      ${outroDirection === "btt" &&
+      css`
+        animation-name: ${characterPositionBtt};
+      `}
+
+      @media (max-width: 599.98px) {
+        ${outroDirection === "ttb" &&
+        css`
+          animation-name: ${characterPositionTtbMax500};
+        `}
+
+        ${outroDirection === "btt" &&
+        css`
+          animation-name: ${characterPositionBttMax500};
+        `}
+      }
+
+      animation-duration: 1200ms;
+      animation-timing-function: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+      animation-direction: alternate;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+
+      &.animation-paused {
+        animation-play-state: paused;
+      }
+    `;
+  }}
+`;
+
 const CharacterImg = styled.picture`
   ${(props) => {
     const { animationDuration, animationDelay } = props;
@@ -233,6 +333,10 @@ const CharacterImg = styled.picture`
       animation-direction: alternate;
       animation-iteration-count: infinite;
       animation-fill-mode: both;
+
+      &.animation-paused {
+        animation-play-state: paused;
+      }
     `;
   }}
 `;

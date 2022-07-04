@@ -7,6 +7,8 @@ export const FAIL_ASSET_LOAD = "@state/FAIL_ASSET_LOAD";
 export const START_ANIMATION = "@state/START_ANIMATION";
 export const END_ANIMATION = "@state/END_ANIMATION";
 
+export const PLAY_APP = "@state/PLAY_APP";
+
 export const GO_NEXT_PAGE = "@state/GO_NEXT_PAGE";
 export const GO_PREV_PAGE = "@state/GO_PREV_PAGE";
 export const GO_NEXT_SUBTITLE = "@state/GO_NEXT_SUBTITLE";

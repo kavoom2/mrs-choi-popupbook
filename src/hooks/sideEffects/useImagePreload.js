@@ -27,7 +27,7 @@ assetPreloader.preload = async function (nextAssets = []) {
 
     settled.forEach(({ status, value }) => {
       if (status === "fulfilled") {
-        const { domNode, asset } = value;
+        const { asset } = value;
         this._cache.add(asset);
       }
     });

@@ -1,17 +1,23 @@
 import { defaultCameraPos } from "@lib/constants/cameraTransitions";
-import { home, intro, outro, scene } from "@lib/constants/stageMachineStates";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
 import { lazy, Suspense, useContext } from "react";
 import Background from "./Background";
 import Camera from "./Camera";
+import DisableRender from "./DisableRenderer";
 import Stats from "./Stats";
+import {
+  bookContextSelector,
+  isStageSceneSelector,
+  isWebGLReadySelector,
+  stageValueSelector,
+} from "./_utils/stateMachineUtils";
 
-const Popupbook = lazy(() => import("./PopupBook"));
+const PopupBook = lazy(() => import("./PopupBook"));
 
-export default function Experience() {
+function Experience() {
   /**
    * XState State and Context
    */
@@ -54,10 +60,10 @@ export default function Experience() {
       }}
       className={`experience-section`}
     >
-      {/* Conditional Render Controller */}
+      {/* 0. Conditional Render Controller */}
       {!isWebGLReady && <DisableRender />}
 
-      {/* Environments */}
+      {/* 1. Environments */}
       <ambientLight intensity={0.2} />
       <spotLight
         position={[0, 5, 30]}
@@ -69,62 +75,25 @@ export default function Experience() {
       />
 
       <Suspense>
-        {/* Main Scenes */}
         <Background stageValue={stageValue} page={page} />
-        <Popupbook
+
+        {/* 2. Main Scenes */}
+        <PopupBook
           page={page}
           maxPages={maxPages}
           stageValue={stageValue}
           isStageScene={isStageScene}
         />
+
         <Environment preset="city" />
         <Camera stageValue={stageValue} />
       </Suspense>
 
-      {/* Debugger */}
+      {/* 3. Debugger */}
       {/* <AxisDebugger /> */}
       <Stats />
     </Canvas>
   );
 }
 
-function DisableRender() {
-  /**
-   * 페이지 불러오기 직 후, WebGL Renderer를 바로 사용하게 되면 급격한 프레임 드랍 이슈가 발생합니다.
-   * 따라서, XState의 isAssetLoaded가 TRUE가 된 이후에 WebGL Renderer를 사용하도록 합니다.
-   *
-   * - HTML preload 요소가 불러와진 이후에 렌더링을 허용해도 되지만, Network Water Flow상으로 크게 유의미하지는 않습니다.
-   *
-   * [Reference] https://github.com/pmndrs/react-three-fiber/discussions/769
-   *
-   */
-  useFrame(() => null, 1000);
-
-  return null;
-}
-
-function bookContextSelector(state) {
-  const { maxPages, page } = state["context"][scene]["book"];
-
-  return {
-    maxPages,
-    page,
-  };
-}
-
-function isWebGLReadySelector(state) {
-  return (
-    state.matches(home) ||
-    state.matches(intro) ||
-    state.matches(scene) ||
-    state.matches(outro)
-  );
-}
-
-function isStageSceneSelector(state) {
-  return state.matches(scene);
-}
-
-function stageValueSelector(state) {
-  return state.value;
-}
+export default Experience;

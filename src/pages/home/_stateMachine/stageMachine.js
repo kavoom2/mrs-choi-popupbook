@@ -4,7 +4,7 @@ import {
   home,
   intro,
   outro,
-  scene,
+  scene
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
@@ -15,16 +15,17 @@ import {
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
+  PLAY_APP,
   START_ANIMATION,
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-  SUCCEED_ASSET_LOAD,
+  SUCCEED_ASSET_LOAD
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout,
+  subtitleTimeout
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -33,8 +34,9 @@ import { assign, createMachine, send } from "xstate";
  */
 const maxPages = pageKeyList.length;
 
-const assetLoaderDelay = 4000;
+const assetLoaderDelay = 1000;
 const homeDelay = 1000;
+const homeExitDelay = 500;
 const introDelay = 7000;
 
 /**
@@ -110,7 +112,6 @@ const states = {
    * Home 스테이지
    */
   [home]: {
-    entry: [send({ type: START_ANIMATION })],
     on: {
       [STEP]: {
         target: intro,
@@ -129,7 +130,11 @@ const states = {
           assign({
             [home]: { isAnimating: false, isAnimationEnd: true },
           }),
+          send({ type: STEP }, { delay: homeExitDelay }),
         ],
+      },
+      [PLAY_APP]: {
+        actions: [send({ type: START_ANIMATION })],
       },
     },
     exit: [

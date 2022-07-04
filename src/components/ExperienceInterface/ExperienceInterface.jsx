@@ -1,5 +1,4 @@
 import { interfaceImages } from "@assets/images";
-import { scene } from "@lib/constants/stageMachineStates";
 import {
   GO_NEXT_PAGE,
   GO_NEXT_SUBTITLE,
@@ -14,6 +13,11 @@ import { Fragment, useCallback, useContext } from "react";
 import styled from "styled-components";
 import ControlButton from "./ControlButton";
 import Frame from "./Frame";
+import {
+  bookContextSelector,
+  isStageSceneSelector,
+  subtitleContextSelector,
+} from "./_utils/stateMachineUtils";
 
 function ExperienceInterface() {
   /**
@@ -23,8 +27,11 @@ function ExperienceInterface() {
 
   const { send } = globalService.stageService;
 
-  const book = useSelector(globalService.stageService, bookSelector);
-  const subtitle = useSelector(globalService.stageService, subtitleSelector);
+  const book = useSelector(globalService.stageService, bookContextSelector);
+  const subtitle = useSelector(
+    globalService.stageService,
+    subtitleContextSelector
+  );
 
   const { page, maxPages, isAnimating: isPageAnimating } = book;
   const { curIdx, maxIdx, isAnimating: isSubtitleAnimating } = subtitle;
@@ -148,19 +155,3 @@ const Aside = styled.aside`
   pointer-events: auto;
   touch-action: auto;
 `;
-
-function subtitleSelector(state) {
-  const subtitle = state["context"][scene]["subtitle"];
-
-  return subtitle;
-}
-
-function bookSelector(state) {
-  const book = state["context"][scene]["book"];
-
-  return book;
-}
-
-function isStageSceneSelector(state) {
-  return state.matches(scene);
-}

@@ -1,9 +1,8 @@
-import { scene } from "@lib/constants/stageMachineStates";
 import {
   subtitleColorProps,
   subtitleDelay,
   subtitles,
-  subtitleTimeout,
+  subtitleTimeout
 } from "@lib/constants/subtitles";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
@@ -12,6 +11,7 @@ import { useContext, useRef } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import styled, { css } from "styled-components";
 import Subtitle from "./Subtitle";
+import { bookContextSelector, subtitleContextSelector } from "./_utils/stateMachineUtils";
 
 const transitionClassName = "subtitle-item";
 
@@ -24,8 +24,8 @@ function Subtitles({ className, ...restProps }) {
    */
   const globalService = useContext(GlobalServiceContext);
 
-  const book = useSelector(globalService.stageService, bookSelector);
-  const subtitle = useSelector(globalService.stageService, subtitleSelector);
+  const book = useSelector(globalService.stageService, bookContextSelector);
+  const subtitle = useSelector(globalService.stageService, subtitleContextSelector);
 
   const { page, isAnimating: isPageAnimating } = book;
   const { curIdx, isAnimating: isSubtitleAnimating } = subtitle;
@@ -154,17 +154,6 @@ function Subtitles({ className, ...restProps }) {
   );
 }
 
-function subtitleSelector(state) {
-  const subtitle = state["context"][scene]["subtitle"];
-
-  return subtitle;
-}
-
-function bookSelector(state) {
-  const book = state["context"][scene]["book"];
-
-  return book;
-}
 
 export default Subtitles;
 

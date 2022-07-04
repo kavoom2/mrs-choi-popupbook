@@ -6,16 +6,23 @@ import {
 import { pageDepthMaterialNames } from "@lib/constants/materials";
 import { materialTransitions } from "@lib/constants/materialTransitions";
 import { pageMeshes } from "@lib/constants/meshs";
-import { CLOSE, OPEN, PREOPEN, RESET } from "@lib/constants/pageStatus";
 import { sceneTransitions } from "@lib/constants/sceneTransitions";
 import { useGLTF } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import useObjectAnimation from "./hooks/useObjectAnimation";
 import { pageList } from "./_utils/pageList";
+import {
+  getPopupBookAnimationStates,
+  popupBookPropsSelector,
+} from "./_utils/popupBookUtils";
 
 function PopupBook({ isStageScene, page, maxPages, stageValue }) {
-  const animationStates = getAnimationStates(isStageScene, page, maxPages);
+  const animationStates = getPopupBookAnimationStates(
+    isStageScene,
+    page,
+    maxPages
+  );
 
   /**
    * Node and Materials
@@ -43,8 +50,8 @@ function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   const gltfs = useMemo(
     () =>
       pageList.reduce((acc, { pageKey }) => {
-        const _nodes = propsSelector(nodes, pageMeshes[pageKey].nodes);
-        const _materials = propsSelector(
+        const _nodes = popupBookPropsSelector(nodes, pageMeshes[pageKey].nodes);
+        const _materials = popupBookPropsSelector(
           materials,
           pageMeshes[pageKey].materials
         );
@@ -129,30 +136,6 @@ function PopupBook({ isStageScene, page, maxPages, stageValue }) {
       <group ref={bookGroupPositionRef}>{renderPageNode}</group>
     </group>
   );
-}
-
-function getAnimationStates(isStageScene, page, maxPages) {
-  return Array(maxPages)
-    .fill(null)
-    .map((_, idx) => {
-      if (!isStageScene) return RESET;
-
-      if (idx > page) return PREOPEN;
-
-      if (idx === page) return OPEN;
-
-      return CLOSE;
-    });
-}
-
-function propsSelector(object, keys = []) {
-  const selectedProps = {};
-
-  keys.forEach((key) => {
-    if (object[key]) selectedProps[key] = object[key];
-  });
-
-  return selectedProps;
 }
 
 useGLTF.preload("/static/models/glb/popup_book.glb");
