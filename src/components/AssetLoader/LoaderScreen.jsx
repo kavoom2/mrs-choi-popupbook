@@ -129,24 +129,33 @@ const Screen = styled.section`
   left: 50%;
   transform: translate(-50%, -50%);
 
-  width: 1220px;
-  height: 800px;
+  width: 100%;
+  height: 100%;
+
+  min-width: 1220px;
+  min-height: 800px;
+
+  max-width: 130vh;
+  max-height: 88vh;
 
   user-select: none;
 
   @media (max-width: 1279.98px) {
-    width: 680px;
-    height: 800px;
+    min-width: auto;
+    min-height: auto;
+
+    max-width: 680px;
+    max-height: 800px;
   }
 
   @media (max-width: 899.98px) {
-    width: 480px;
-    height: 640px;
+    max-width: 480px;
+    max-height: 640px;
   }
 
   @media (max-width: 599.98px) {
-    width: 94vw;
-    height: 125vw;
+    max-width: 94vw;
+    max-height: 125vw;
   }
 
   .position-abs {

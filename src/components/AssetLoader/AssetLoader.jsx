@@ -23,14 +23,12 @@ import {
 // 2. 로딩 상태 완료 이후 사용자가 Start를 조작하게 하여 Intro 진입 | 소리 출력을 유도합니다.
 // 3. 로딩 페이지 UI 작업
 
-function IntroLoader() {
+function AssetLoader() {
   /**
    * WebGL Asset Loader
    */
   const { progress, errors, loaded, total } = useProgress();
-
   const isSuccess = loaded === total && errors?.length === 0 && total > 0;
-  const isLoading = loaded < total && errors?.length === 0 && total > 0;
 
   /**
    * XState
@@ -122,7 +120,7 @@ function IntroLoader() {
   );
 }
 
-export default IntroLoader;
+export default AssetLoader;
 
 const FallbackBackgrounds = styled.div`
   position: absolute;
@@ -160,7 +158,7 @@ const ProgressTextContainer = styled.div`
   text-align: center;
 
   .content {
-    font-size: 40px;
+    font-size: 60px;
     line-height: 1.6;
     color: #d2ab5b;
 
@@ -170,6 +168,12 @@ const ProgressTextContainer = styled.div`
 
     .percent {
       color: #8dc557;
+    }
+  }
+
+  @media (max-width: 1920px) {
+    .content {
+      font-size: 40px;
     }
   }
 
@@ -185,7 +189,7 @@ const ProgressTextContainer = styled.div`
     }
   }
 
-  transition: opacity 800ms ease, visibility 800ms ease;
+  transition: opacity 400ms ease, visibility 400ms ease;
 
   &.hidden {
     visibility: hidden;

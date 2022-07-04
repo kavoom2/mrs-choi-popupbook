@@ -4,18 +4,23 @@ import {
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
+  REPLAY_APP,
   STEP,
 } from "@lib/constants/stateMachineActions";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
-import { Fragment, useCallback, useContext } from "react";
+import { Fragment, useContext } from "react";
 import styled from "styled-components";
 import ControlButton from "./ControlButton";
 import Frame from "./Frame";
 import {
   bookContextSelector,
+  introContextSelector,
+  isIntroStageSelector,
+  isOutroStageSelector,
   isSceneStageSelector,
+  outroContextSelector,
   subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
 
@@ -36,35 +41,72 @@ function ExperienceInterface() {
   const { page, maxPages, isAnimating: isPageAnimating } = book;
   const { curIdx, maxIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
+  const { isAnimationEnd: isIntroAnimationEnded } = useSelector(
+    globalService.stageService,
+    introContextSelector
+  );
+
+  const { isEntering, isEnterEnd, isExiting, isExitEnd } = useSelector(
+    globalService.stageService,
+    outroContextSelector
+  );
+
+  const isIntroStage = useSelector(
+    globalService.stageService,
+    isIntroStageSelector
+  );
+
   const isSceneStage = useSelector(
     globalService.stageService,
     isSceneStageSelector
   );
 
+  const isOutroStage = useSelector(
+    globalService.stageService,
+    isOutroStageSelector
+  );
+
   /**
    * 함수 선언
    */
-  const goNextStep = useCallback(() => {
-    // 다음 진행 버튼의 Action 함수
+  const startApp = (event) => {
+    if (isIntroStage && isIntroAnimationEnded) send(STEP);
+  };
+
+  const goNextStep = (event) => {
     if (page === maxPages - 1 && curIdx === maxIdx) send(STEP);
     else if (curIdx < maxIdx) send(GO_NEXT_SUBTITLE);
     else send(GO_NEXT_PAGE);
-  }, [page, maxPages, curIdx, maxIdx, send]);
+  };
 
-  const goPrevStep = useCallback(() => {
-    // 이전 진행 버튼의 Action 함수
+  const goPrevStep = (event) => {
     if (curIdx > 0) send(GO_PREV_SUBTITLE);
     else send(GO_PREV_PAGE);
-  }, [curIdx, send]);
+  };
+
+  const replayApp = (event) => {
+    if (isOutroStage && isEnterEnd) send(REPLAY_APP);
+  };
 
   /**
    * 변수 선언
    */
 
-  const isInterfaceHidden = !isSceneStage || isPageAnimating;
+  // 1. Intro
+  const isIntroButtonHidden = !(isIntroStage && isIntroAnimationEnded);
 
-  const isPrevButtonHidden = (page === -1 && curIdx === 0) || isInterfaceHidden;
-  const isNextButtonHidden = page === maxPages || isInterfaceHidden;
+  // 2. Scene
+  const isSceneInterfaceHidden = !isSceneStage || isPageAnimating;
+
+  const isScenePrevButtonHidden =
+    (page === -1 && curIdx === 0) || isSceneInterfaceHidden;
+
+  const isSceneNextButtonHidden = page === maxPages || isSceneInterfaceHidden;
+
+  const isSceneButtonLoading = isPageAnimating || isSubtitleAnimating;
+
+  // 3. Outro
+  const isReplayAppButtonHidden = !(isOutroStage && isEnterEnd);
 
   /**
    * 클래스 명 선언
@@ -79,12 +121,62 @@ function ExperienceInterface() {
 
   const asideBottomClassNames = classNames({
     [`interface-aside-bottom`]: true,
-    hidden: isInterfaceHidden,
   });
 
   /**
    * 컴포넌트
    */
+
+  const renderAsideBottomNodes = (
+    <Fragment>
+      {isIntroStage && (
+        <Fragment>
+          <Dummy />
+
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowLtr}
+            imageAlt="go to read popup book :)"
+            onClick={startApp}
+            visible={!isIntroButtonHidden}
+          />
+        </Fragment>
+      )}
+
+      {(isSceneStage || isEntering) && (
+        <Fragment>
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowRtl}
+            imageAlt="Go to prev page button"
+            onClick={goPrevStep}
+            visible={!isScenePrevButtonHidden}
+            loading={isSceneButtonLoading}
+          />
+
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowLtr}
+            imageAlt="Go to next page button"
+            onClick={goNextStep}
+            visible={!isSceneNextButtonHidden}
+            loading={isSceneButtonLoading}
+          />
+        </Fragment>
+      )}
+
+      {isOutroStage && !isEntering && (
+        <Fragment>
+          <Dummy />
+
+          <ControlButton
+            imagePath={interfaceImages.buttonArrowLtr}
+            imageAlt="Replay popup book :)"
+            onClick={replayApp}
+            visible={!isReplayAppButtonHidden}
+          />
+        </Fragment>
+      )}
+    </Fragment>
+  );
+
   return (
     <Fragment>
       {/* 이미지 프레임 */}
@@ -97,21 +189,7 @@ function ExperienceInterface() {
         </Aside>
 
         <Aside className={asideBottomClassNames}>
-          <ControlButton
-            imagePath={interfaceImages.buttonArrowRtl}
-            imageAlt="Go to prev page button"
-            onClick={goPrevStep}
-            visible={!isPrevButtonHidden}
-            loading={isPageAnimating || isSubtitleAnimating}
-          />
-
-          <ControlButton
-            imagePath={interfaceImages.buttonArrowLtr}
-            imageAlt="Go to next page button"
-            onClick={goNextStep}
-            visible={!isNextButtonHidden}
-            loading={isPageAnimating || isSubtitleAnimating}
-          />
+          {renderAsideBottomNodes}
         </Aside>
       </Section>
     </Fragment>
@@ -135,11 +213,15 @@ const Section = styled.section`
   justify-content: space-between;
   align-items: stretch;
 
-  padding: 45px 45px;
-
   /* 프레임은 이전 Fixed 요소의 클릭 이벤트를 방해하면 안됩니다. */
   pointer-events: none;
   touch-action: none;
+
+  padding: 6vh 3vw;
+
+  @media (max-width: 2560px) {
+    padding: 45px 55px;
+  }
 
   @media (max-width: 599.98px) {
     padding: 3vh 2vw;
@@ -154,4 +236,11 @@ const Aside = styled.aside`
 
   pointer-events: auto;
   touch-action: auto;
+`;
+
+const Dummy = styled.div`
+  width: 0px;
+  height: 0px;
+
+  visibility: hidden;
 `;

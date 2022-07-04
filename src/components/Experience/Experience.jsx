@@ -3,7 +3,7 @@ import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
-import { lazy, Suspense, useContext } from "react";
+import { lazy, memo, Suspense, useContext } from "react";
 import Background from "./Background";
 import Camera from "./Camera";
 import DisableRender from "./DisableRenderer";
@@ -96,4 +96,4 @@ function Experience() {
   );
 }
 
-export default Experience;
+export default memo(Experience);

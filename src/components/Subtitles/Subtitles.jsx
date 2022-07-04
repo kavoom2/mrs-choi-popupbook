@@ -2,7 +2,7 @@ import {
   subtitleColorProps,
   subtitleDelay,
   subtitles,
-  subtitleTimeout
+  subtitleTimeout,
 } from "@lib/constants/subtitles";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
@@ -11,7 +11,10 @@ import { useContext, useRef } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import styled, { css } from "styled-components";
 import Subtitle from "./Subtitle";
-import { bookContextSelector, subtitleContextSelector } from "./_utils/stateMachineUtils";
+import {
+  bookContextSelector,
+  subtitleContextSelector,
+} from "./_utils/stateMachineUtils";
 
 const transitionClassName = "subtitle-item";
 
@@ -25,7 +28,10 @@ function Subtitles({ className, ...restProps }) {
   const globalService = useContext(GlobalServiceContext);
 
   const book = useSelector(globalService.stageService, bookContextSelector);
-  const subtitle = useSelector(globalService.stageService, subtitleContextSelector);
+  const subtitle = useSelector(
+    globalService.stageService,
+    subtitleContextSelector
+  );
 
   const { page, isAnimating: isPageAnimating } = book;
   const { curIdx, isAnimating: isSubtitleAnimating } = subtitle;
@@ -154,7 +160,6 @@ function Subtitles({ className, ...restProps }) {
   );
 }
 
-
 export default Subtitles;
 
 const Section = styled.section`
@@ -196,22 +201,31 @@ const Section = styled.section`
 `;
 
 const ResponsiveContainer = styled.div`
-  width: 1220px;
-  height: 800px;
+  width: 100%;
+  height: 100%;
+
+  min-width: 1220px;
+  min-height: 800px;
+
+  max-width: 130vh;
+  max-height: 88vh;
 
   @media (max-width: 1279.98px) {
-    width: 680px;
-    height: 800px;
+    min-width: auto;
+    min-height: auto;
+
+    max-width: 680px;
+    max-height: 800px;
   }
 
   @media (max-width: 899.98px) {
-    width: 480px;
-    height: 640px;
+    max-width: 480px;
+    max-height: 640px;
   }
 
   @media (max-width: 599.98px) {
-    width: 94vw;
-    height: 125vw;
+    max-width: 94vw;
+    max-height: 125vw;
   }
 
   display: flex;
@@ -227,7 +241,7 @@ const SubtitleList = styled.ul`
 
   padding: 0 0 60px 0;
 
-  font-size: 28px;
+  font-size: 36px;
   line-height: 1.6;
 
   text-align: center;
@@ -244,6 +258,10 @@ const SubtitleList = styled.ul`
     p {
       margin: 0px;
     }
+  }
+
+  @media (max-width: 1920px) {
+    font-size: 28px;
   }
 
   @media (max-width: 899.98px) {

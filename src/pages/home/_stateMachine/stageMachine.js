@@ -15,7 +15,12 @@ import {
   GO_NEXT_SUBTITLE,
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
+  OUTRO_ENTER_END,
+  OUTRO_ENTER_START,
+  OUTRO_EXIT_END,
+  OUTRO_EXIT_START,
   PLAY_APP,
+  REPLAY_APP,
   START_ANIMATION,
   STEP,
   SUBTITLE_END_ANIMATION,
@@ -37,7 +42,7 @@ const maxPages = pageKeyList.length;
 const assetLoaderDelay = 200;
 const homeDelay = 800;
 const homeExitDelay = 200;
-const introDelay = 6000;
+const introDelay = 4800;
 
 /**
  * XState Machine 정의
@@ -71,8 +76,10 @@ const context = {
     },
   },
   [outro]: {
-    isAnimating: false,
-    isAnimationEnd: false,
+    isEntering: false,
+    isEnterEnd: false,
+    isExiting: false,
+    isExitEnd: false,
   },
 };
 
@@ -434,36 +441,56 @@ const states = {
    * Outro 스테이지
    */
   [outro]: {
-    entry: [send({ type: START_ANIMATION })],
+    entry: [send({ type: OUTRO_ENTER_START })],
     on: {
       [STEP]: {
         target: intro,
-        cond: (ctx, event) => ctx[outro].isAnimationEnd,
+        cond: (ctx, event) => ctx[outro].isExitEnd,
+      },
+      [OUTRO_ENTER_START]: {
         actions: [
           assign({
-            [outro]: { isAnimating: false, isAnimationEnd: false },
+            [outro]: { isEntering: true, isEnterEnd: false },
+          }),
+          send({ type: OUTRO_ENTER_END }, { delay: 3000 }),
+        ],
+      },
+      [OUTRO_ENTER_END]: {
+        actions: [
+          assign({
+            [outro]: { isEntering: false, isEnterEnd: true },
           }),
         ],
       },
-      [START_ANIMATION]: {
+      [OUTRO_EXIT_START]: {
         actions: [
           assign({
-            [outro]: { isAnimating: true, isAnimationEnd: false },
+            [outro]: { isExiting: true, isExitEnd: false },
           }),
-          send({ type: END_ANIMATION }, { delay: 4000 }),
+          send({ type: OUTRO_EXIT_END }, { delay: 1500 }),
         ],
       },
-      [END_ANIMATION]: {
+      [OUTRO_EXIT_END]: {
         actions: [
           assign({
-            [outro]: { isAnimating: false, isAnimationEnd: true },
+            [outro]: { isExiting: false, isExitEnd: true },
           }),
+          send({ type: STEP }, { delay: 200 }),
         ],
+      },
+      [REPLAY_APP]: {
+        cond: (ctx, event) => ctx[outro].isEnterEnd,
+        actions: [send({ type: OUTRO_EXIT_START })],
       },
     },
     exit: [
       assign({
-        [outro]: { isAnimating: false, isAnimationEnd: false },
+        [outro]: {
+          isEntering: false,
+          isEnterEnd: false,
+          isExiting: false,
+          isExitEnd: false,
+        },
       }),
     ],
   },
