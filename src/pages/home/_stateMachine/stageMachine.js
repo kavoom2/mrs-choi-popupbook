@@ -4,7 +4,7 @@ import {
   home,
   intro,
   outro,
-  scene,
+  scene
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
@@ -25,12 +25,12 @@ import {
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-  SUCCEED_ASSET_LOAD,
+  SUCCEED_ASSET_LOAD
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout,
+  subtitleTimeout
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -39,10 +39,13 @@ import { assign, createMachine, send } from "xstate";
  */
 const maxPages = pageKeyList.length;
 
+// 변수 - Delay
 const assetLoaderDelay = 200;
 const homeDelay = 800;
 const homeExitDelay = 200;
 const introDelay = 4800;
+const outroEnterDelay = 3000;
+const outroExitDelay = 1500;
 
 /**
  * XState Machine 정의
@@ -450,30 +453,46 @@ const states = {
       [OUTRO_ENTER_START]: {
         actions: [
           assign({
-            [outro]: { isEntering: true, isEnterEnd: false },
+            [outro]: (ctx, event) => ({
+              ...ctx[outro],
+              isEntering: true,
+              isEnterEnd: false,
+            }),
           }),
-          send({ type: OUTRO_ENTER_END }, { delay: 3000 }),
+          send({ type: OUTRO_ENTER_END }, { delay: outroEnterDelay }),
         ],
       },
       [OUTRO_ENTER_END]: {
         actions: [
           assign({
-            [outro]: { isEntering: false, isEnterEnd: true },
+            [outro]: (ctx, event) => ({
+              ...ctx[outro],
+              isEntering: false,
+              isEnterEnd: true,
+            }),
           }),
         ],
       },
       [OUTRO_EXIT_START]: {
         actions: [
           assign({
-            [outro]: { isExiting: true, isExitEnd: false },
+            [outro]: (ctx, event) => ({
+              ...ctx[outro],
+              isExiting: true,
+              isExitEnd: false,
+            }),
           }),
-          send({ type: OUTRO_EXIT_END }, { delay: 1500 }),
+          send({ type: OUTRO_EXIT_END }, { delay: outroExitDelay }),
         ],
       },
       [OUTRO_EXIT_END]: {
         actions: [
           assign({
-            [outro]: { isExiting: false, isExitEnd: true },
+            [outro]: (ctx, event) => ({
+              ...ctx[outro],
+              isExiting: false,
+              isExitEnd: true,
+            }),
           }),
           send({ type: STEP }, { delay: 200 }),
         ],

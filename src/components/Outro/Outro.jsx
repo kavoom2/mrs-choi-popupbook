@@ -1,12 +1,33 @@
+import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
+import { useSelector } from "@xstate/react";
 import classNames from "classnames";
+import { useContext } from "react";
 import styled, { keyframes } from "styled-components";
+import { outroContextSelector } from "./_utils/stateMachineUtils";
 
 function Outro() {
+  /**
+   * XSstate
+   */
+  const globalService = useContext(GlobalServiceContext);
+
+  const { isExiting, isExitEnd } = useSelector(
+    globalService.stageService,
+    outroContextSelector
+  );
+
+  /**
+   * 변수 선언
+   */
+  const isOutroHidden = isExiting || isExitEnd;
+
   /**
    * 클래스 명 선언
    */
   const sectionClassNames = classNames({
     [`outro-section`]: true,
+    "slide-out": isOutroHidden,
+    "slide-in": !isOutroHidden,
   });
 
   return (
@@ -33,15 +54,21 @@ function Outro() {
 
 export default Outro;
 
-const curtainFadeIn = keyframes`
+const curtainSlideIn = keyframes`
     0% {
-        opacity: 0;
-        visibility: hidden;
+      transform: translate3d(-50%, -150%, 0);
     }
-
     100% {
-        opacity: 1;
-        visibility: visible;
+      transform: translate3d(-50%, -50%, 0);
+    }
+`;
+
+const curtainSlideOut = keyframes`
+    0% {
+      transform: translate3d(-50%, -50%, 0);
+    }
+    100% {
+      transform: translate3d(-50%, -150%, 0);
     }
 `;
 
@@ -81,11 +108,21 @@ const CurtainScreen = styled.section`
     max-height: 125vw;
   }
 
-  animation-name: ${curtainFadeIn};
-  animation-timing-function: ease;
-  animation-delay: 500ms;
-  animation-duration: 2000ms;
-  animation-fill-mode: both;
+  &.slide-in {
+    animation-name: ${curtainSlideIn};
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    animation-delay: 1000ms;
+    animation-duration: 1500ms;
+    animation-fill-mode: both;
+  }
+
+  &.slide-out {
+    animation-name: ${curtainSlideOut};
+    animation-timing-function: cubic-bezier(0.36, 0, 0.66, -0.56);
+    animation-delay: 100ms;
+    animation-duration: 1000ms;
+    animation-fill-mode: both;
+  }
 `;
 
 const PositionProvider = styled.div`
