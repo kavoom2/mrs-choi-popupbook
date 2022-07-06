@@ -5,8 +5,9 @@ import {
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
   REPLAY_APP,
-  STEP,
+  STEP
 } from "@lib/constants/stateMachineActions";
+import { AudioContext } from "@pages/home/AudioContextProvider";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
@@ -21,7 +22,7 @@ import {
   isOutroStageSelector,
   isSceneStageSelector,
   outroContextSelector,
-  subtitleContextSelector,
+  subtitleContextSelector
 } from "./_utils/stateMachineUtils";
 
 function ExperienceInterface() {
@@ -46,7 +47,7 @@ function ExperienceInterface() {
     introContextSelector
   );
 
-  const { isEntering, isEnterEnd, isExiting, isExitEnd } = useSelector(
+  const { isEntering, isEnterEnd, isExiting, } = useSelector(
     globalService.stageService,
     outroContextSelector
   );
@@ -65,6 +66,11 @@ function ExperienceInterface() {
     globalService.stageService,
     isOutroStageSelector
   );
+
+  /**
+   * Audio Context
+   */
+  const { audio, controls, state: audioState } = useContext(AudioContext);
 
   /**
    * 함수 선언
@@ -88,14 +94,19 @@ function ExperienceInterface() {
     if (isOutroStage && isEnterEnd) send(REPLAY_APP);
   };
 
+  // TODO: 배경음악을 컨트롤하는 UI가 필요합니다.
+  const playMusic = () => controls.play();
+
+  const pauseMusic = () => controls.pause();
+
   /**
    * 변수 선언
    */
 
-  // 1. Intro
+  // 1 - 1. Intro
   const isIntroButtonHidden = !(isIntroStage && isIntroAnimationEnded);
 
-  // 2. Scene
+  // 1 - 2. Scene
   const isSceneInterfaceHidden = !isSceneStage || isPageAnimating;
 
   const isScenePrevButtonHidden =
@@ -105,8 +116,13 @@ function ExperienceInterface() {
 
   const isSceneButtonLoading = isPageAnimating || isSubtitleAnimating;
 
-  // 3. Outro
-  const isReplayAppButtonHidden = !(isOutroStage && isEnterEnd);
+  // 1 -3. Outro
+  const isReplayAppButtonHidden = !(isOutroStage && isEnterEnd) || isExiting;
+
+  // 2. Audio
+  const isAudioHidden = !(isIntroStage || isSceneStage || isOutroStage)
+  const isAudioActive = !audioState.paused
+
 
   /**
    * 클래스 명 선언
@@ -179,6 +195,8 @@ function ExperienceInterface() {
 
   return (
     <Fragment>
+      {audio}
+
       {/* 이미지 프레임 */}
       <Frame />
 

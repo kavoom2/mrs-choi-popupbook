@@ -22,7 +22,7 @@ function Background({ stageValue, page, states }) {
 
   const [bColor, tColor] = useMemo(
     () => [new THREE.Color(bottomColor), new THREE.Color(topColor)],
-    []
+    [] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const colorVec = useMemo(() => new THREE.Color(), []);

@@ -1,16 +1,18 @@
 import { Stats as StatsDebugger } from "@react-three/drei";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useEffectOnce } from "react-use";
 
 function Stats() {
-  const node = useRef(document.createElement("div"));
+  const node = useRef();
 
-  useEffect(() => {
+  useEffectOnce(() => {
+    node.current = document.createElement("div");
     node.current.id = "stats";
 
     document.body.appendChild(node.current);
 
-    return () => document.body.removeChild(node.current);
-  }, []);
+    return () => node.current && document.body.removeChild(node.current);
+  }); // eslint-disable-line
 
   return <StatsDebugger parent={node.current} />;
 }

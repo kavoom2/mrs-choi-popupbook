@@ -55,7 +55,7 @@ function Camera({ stageValue }) {
           ),
       });
     }
-  }, [stageValue]);
+  }, [stageValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useFrame(({ camera }) => {
     camera.updateProjectionMatrix();

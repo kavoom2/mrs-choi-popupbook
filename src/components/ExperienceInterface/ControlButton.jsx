@@ -98,7 +98,7 @@ const Button = styled.button`
   /* 버튼 상태 정의 */
   @media (hover: hover) and (pointer: fine) {
     /* Mobile device hover issue: https://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices */
-    &:hover:not(a.loading):not(.disabled) {
+    &:hover:not(.loading):not(.disabled) {
       transform: translateY(-5px);
       transition: 200ms ease;
       filter: drop-shadow(0px 4px 5px rgba(30, 50, 0, 0.5));

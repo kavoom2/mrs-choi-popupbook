@@ -5,8 +5,8 @@ const {
 } = require("customize-cra");
 const path = require("path");
 
-const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin =
+//   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 const HtmlWebpackInjectPreload = require("@principalstudio/html-webpack-inject-preload");
 
@@ -25,7 +25,7 @@ module.exports = override(
   /**
    * Plugin: Bundle analyzer
    */
-  addWebpackPlugin(new BundleAnalyzerPlugin()),
+  // addWebpackPlugin(new BundleAnalyzerPlugin()),
 
   /**
    * Plugin: Html link preload injector

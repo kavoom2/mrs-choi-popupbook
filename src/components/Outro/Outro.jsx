@@ -56,7 +56,7 @@ export default Outro;
 
 const curtainSlideIn = keyframes`
     0% {
-      transform: translate3d(-50%, -150%, 0);
+      transform: translate3d(-50%, -180%, 0);
     }
     100% {
       transform: translate3d(-50%, -50%, 0);
@@ -68,7 +68,7 @@ const curtainSlideOut = keyframes`
       transform: translate3d(-50%, -50%, 0);
     }
     100% {
-      transform: translate3d(-50%, -150%, 0);
+      transform: translate3d(-50%, -180%, 0);
     }
 `;
 

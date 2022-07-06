@@ -4,7 +4,7 @@ import {
   home,
   intro,
   outro,
-  scene
+  scene,
 } from "@lib/constants/stageMachineStates";
 import {
   BOOK_END_ANIMATION,
@@ -25,12 +25,12 @@ import {
   STEP,
   SUBTITLE_END_ANIMATION,
   SUBTITLE_START_ANIMATION,
-  SUCCEED_ASSET_LOAD
+  SUCCEED_ASSET_LOAD,
 } from "@lib/constants/stateMachineActions";
 import {
   subtitleDelay,
   subtitles,
-  subtitleTimeout
+  subtitleTimeout,
 } from "@lib/constants/subtitles";
 import { assign, createMachine, send } from "xstate";
 
@@ -42,8 +42,8 @@ const maxPages = pageKeyList.length;
 // 변수 - Delay
 const assetLoaderDelay = 200;
 const homeDelay = 800;
-const homeExitDelay = 200;
-const introDelay = 4800;
+const homeExitDelay = 50;
+const introDelay = 2500;
 const outroEnterDelay = 3000;
 const outroExitDelay = 1500;
 

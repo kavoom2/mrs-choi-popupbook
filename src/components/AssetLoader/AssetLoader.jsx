@@ -11,6 +11,7 @@ import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
 
+import { AudioContext } from "@pages/home/AudioContextProvider";
 import classNames from "classnames";
 import { useEffect } from "react";
 import {
@@ -50,10 +51,22 @@ function AssetLoader() {
   } = home;
 
   /**
+   * Audio Context
+   */
+  const { controls, state: audioState } = useContext(AudioContext);
+
+  /**
    * 내부 함수 선언
    */
   const playApp = (event) => {
-    if (isSuccess && !isHomeExitAnimating) send(PLAY_APP);
+    if (isSuccess && !isHomeExitAnimating) {
+      send(PLAY_APP);
+
+      audioState.paused &&
+        setTimeout(() => {
+          controls.play();
+        }, 1000);
+    }
   };
 
   /**

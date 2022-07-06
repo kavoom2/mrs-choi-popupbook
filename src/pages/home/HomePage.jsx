@@ -12,6 +12,7 @@ import {
 import { useSelector } from "@xstate/react";
 import { lazy, Suspense, useContext } from "react";
 import styled from "styled-components";
+import { AuidoContextProvider } from "./AudioContextProvider";
 import {
   GlobalServiceContext,
   GlobalServiceProvider,
@@ -62,11 +63,13 @@ function HomePageContextProvided(props) {
         <Experience />
       </Suspense>
 
-      {isSubtitleRendered && <Subtitles />}
-      {isLoaderRendered && <AssetLoader />}
-      {isOutroRendered && <Outro />}
+      <AuidoContextProvider>
+        {isSubtitleRendered && <Subtitles />}
+        {isLoaderRendered && <AssetLoader />}
+        {isOutroRendered && <Outro />}
 
-      <ExperienceInterface />
+        <ExperienceInterface />
+      </AuidoContextProvider>
     </Main>
   );
 }
