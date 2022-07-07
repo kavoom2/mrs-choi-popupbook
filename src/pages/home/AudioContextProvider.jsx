@@ -1,6 +1,7 @@
 import mainAudio from "@assets/audios/ukulele.mp3";
 import { createContext, useMemo } from "react";
 import { useAudio } from "react-use";
+import { useDidMount } from "rooks";
 
 /**
  * React + Xstate
@@ -14,6 +15,7 @@ export const AuidoContextProvider = (props) => {
     src: mainAudio,
     autoPlay: true,
     loop: true,
+    volume: 0.1,
   });
 
   const value = useMemo(
@@ -25,6 +27,10 @@ export const AuidoContextProvider = (props) => {
     }),
     [audio, state, controls, ref]
   );
+
+  useDidMount(() => {
+    controls.volume(0.25);
+  });
 
   return (
     <AudioContext.Provider value={value}>

@@ -45,7 +45,7 @@ const homeDelay = 800;
 const homeExitDelay = 50;
 const introDelay = 2500;
 const outroEnterDelay = 3000;
-const outroExitDelay = 1500;
+const outroExitDelay = 1000;
 
 /**
  * XState Machine 정의
@@ -494,7 +494,7 @@ const states = {
               isExitEnd: true,
             }),
           }),
-          send({ type: STEP }, { delay: 200 }),
+          send({ type: STEP }),
         ],
       },
       [REPLAY_APP]: {

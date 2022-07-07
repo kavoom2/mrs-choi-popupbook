@@ -1,14 +1,14 @@
 import { MainRouter } from "@routes";
-import { inspect } from "@xstate/inspect";
+// import { inspect } from "@xstate/inspect";
 import "./styles/main.css";
 import "./styles/normalize.css";
 
 /**
  * Debug Xstate
  */
-inspect({
-  iframe: false,
-});
+// inspect({
+//   iframe: false,
+// });
 
 /**
  * Root App

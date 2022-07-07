@@ -5,7 +5,7 @@ import {
   GO_PREV_PAGE,
   GO_PREV_SUBTITLE,
   REPLAY_APP,
-  STEP
+  STEP,
 } from "@lib/constants/stateMachineActions";
 import { AudioContext } from "@pages/home/AudioContextProvider";
 import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
@@ -22,7 +22,7 @@ import {
   isOutroStageSelector,
   isSceneStageSelector,
   outroContextSelector,
-  subtitleContextSelector
+  subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
 
 function ExperienceInterface() {
@@ -47,7 +47,7 @@ function ExperienceInterface() {
     introContextSelector
   );
 
-  const { isEntering, isEnterEnd, isExiting, } = useSelector(
+  const { isEntering, isEnterEnd, isExiting, isExited } = useSelector(
     globalService.stageService,
     outroContextSelector
   );
@@ -117,12 +117,15 @@ function ExperienceInterface() {
   const isSceneButtonLoading = isPageAnimating || isSubtitleAnimating;
 
   // 1 -3. Outro
-  const isReplayAppButtonHidden = !(isOutroStage && isEnterEnd) || isExiting;
+  const isReplayAppButtonHidden = !(
+    isOutroStage &&
+    isEnterEnd &&
+    !(isEntering || isExiting || isExited)
+  );
 
   // 2. Audio
-  const isAudioHidden = !(isIntroStage || isSceneStage || isOutroStage)
-  const isAudioActive = !audioState.paused
-
+  const isAudioHidden = !(isIntroStage || isSceneStage || isOutroStage);
+  const isAudioActive = !audioState.paused;
 
   /**
    * 클래스 명 선언
@@ -158,7 +161,7 @@ function ExperienceInterface() {
         </Fragment>
       )}
 
-      {(isSceneStage || isEntering) && (
+      {isSceneStage && (
         <Fragment>
           <ControlButton
             imagePath={interfaceImages.buttonArrowRtl}
@@ -178,7 +181,7 @@ function ExperienceInterface() {
         </Fragment>
       )}
 
-      {isOutroStage && !isEntering && (
+      {isOutroStage && (
         <Fragment>
           <Dummy />
 

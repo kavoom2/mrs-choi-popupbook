@@ -75,7 +75,7 @@ export const cameraTransitions = {
   [outro]: {
     position: {
       ...defaultCameraPos,
-      // z: 18,
+      z: 32,
       duration: 3,
       delay: 0,
       ease: "power3.inOut",
