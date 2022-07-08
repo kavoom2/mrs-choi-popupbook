@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: 16.13.2
 
-      - name: NodeModules 캐싱 적용
-        uses: actions/cache@2
+      - name: 의존성 패키지 캐싱 적용
+        uses: actions/cache@v2
         id: node-root
         with:
           path: node_modules
