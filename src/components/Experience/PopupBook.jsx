@@ -116,7 +116,7 @@ function PopupBook({ isStageScene, page, maxPages, stageValue }) {
   );
 
   /**
-   * 페이지 렌더링
+   * WebGL 요소 렌더링(Popup gltf)
    */
   const renderPageNode = pageList.map((item, idx) => (
     <item.AxisMesh key={item.uid} pageRotationRef={pageRotationRefs[idx]}>

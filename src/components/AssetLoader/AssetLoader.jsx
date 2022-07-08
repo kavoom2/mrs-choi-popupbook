@@ -4,7 +4,6 @@ import {
   PLAY_APP,
   SUCCEED_ASSET_LOAD,
 } from "@lib/constants/stateMachineActions";
-import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useProgress } from "@react-three/drei";
 import { useSelector } from "@xstate/react";
 import { useContext } from "react";
@@ -13,7 +12,8 @@ import LoaderScreen from "./LoaderScreen";
 
 import { AudioContext } from "@pages/home/AudioContextProvider";
 import classNames from "classnames";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useWillUnmount } from "rooks";
 import {
   assetLoaderContextSelector,
   homeContextSelector,
@@ -24,7 +24,8 @@ import {
 // 2. 로딩 상태 완료 이후 사용자가 Start를 조작하게 하여 Intro 진입 | 소리 출력을 유도합니다.
 // 3. 로딩 페이지 UI 작업
 
-function AssetLoader() {
+function AssetLoader({ stageService }) {
+  const timeoutRef = useRef(null);
   /**
    * WebGL Asset Loader
    */
@@ -34,16 +35,12 @@ function AssetLoader() {
   /**
    * XState
    */
-  const globalService = useContext(GlobalServiceContext);
 
-  const { send } = globalService.stageService;
+  const { send } = stageService;
 
-  const isAssetLoaded = useSelector(
-    globalService.stageService,
-    assetLoaderContextSelector
-  );
+  const isAssetLoaded = useSelector(stageService, assetLoaderContextSelector);
 
-  const home = useSelector(globalService.stageService, homeContextSelector);
+  const home = useSelector(stageService, homeContextSelector);
 
   const {
     isAnimating: isHomeExitAnimating,
@@ -62,10 +59,12 @@ function AssetLoader() {
     if (isSuccess && !isHomeExitAnimating) {
       send(PLAY_APP);
 
-      audioState.paused &&
-        setTimeout(() => {
+      // 약간의 딜레이를 음악을 주면서 시작합니다.
+      if (audioState.paused) {
+        timeoutRef.current = setTimeout(() => {
           controls.play();
         }, 1000);
+      }
     }
   };
 
@@ -98,6 +97,10 @@ function AssetLoader() {
     if (isSuccess && !isAssetLoaded) send(SUCCEED_ASSET_LOAD);
     // eslint-disable-next-line
   }, [isSuccess]);
+
+  useWillUnmount(() => {
+    timeoutRef.current && clearTimeout(timeoutRef.current);
+  });
 
   /**
    * 노드 선언 및 컴포넌트 렌더링

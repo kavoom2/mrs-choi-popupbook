@@ -1,18 +1,14 @@
-import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
-import { useContext } from "react";
 import styled, { keyframes } from "styled-components";
 import { outroContextSelector } from "./_utils/stateMachineUtils";
 
-function Outro() {
+function Outro({ stageService }) {
   /**
-   * XSstate
+   * XSstate State and Context
    */
-  const globalService = useContext(GlobalServiceContext);
-
   const { isExiting, isExitEnd } = useSelector(
-    globalService.stageService,
+    stageService,
     outroContextSelector
   );
 
@@ -30,6 +26,10 @@ function Outro() {
     "slide-in": !isOutroHidden,
   });
 
+  /**
+   * 컴포넌트 렌더링
+   */
+  // TODO: 연극 장막(Play Curtains 이미지를 제작하여 적용합니다.)
   return (
     <CurtainScreen className={sectionClassNames}>
       <PositionProvider>

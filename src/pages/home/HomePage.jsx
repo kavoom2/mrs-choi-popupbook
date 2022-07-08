@@ -24,16 +24,17 @@ const Experience = lazy(() => import("@components/Experience"));
 function HomePage(props) {
   return (
     <GlobalServiceProvider>
-      <HomePageContextProvided />
+      <HomePageGlobalServiceConsumer />
     </GlobalServiceProvider>
   );
 }
 
-function HomePageContextProvided(props) {
+function HomePageGlobalServiceConsumer(props) {
   /**
    * XState State and Context
    */
   const globalService = useContext(GlobalServiceContext);
+  const stageService = globalService.stageService;
 
   /**
    * 불필요한 Rerender가 발생하지 않도록, XState useSelector를 사용해야 합니다.
@@ -54,21 +55,21 @@ function HomePageContextProvided(props) {
   const isOutroRendered = stageValue === outro;
 
   /**
-   * 노드 선언 및 페이지 렌더링
+   * 노드 선언 및 페이지 컴포넌트 렌더링
    */
   return (
     <Main>
       {/* Gltf Model이 불러오기 전까지 빈 화면만 보이지 않도록 Lazy loading합니다. */}
       <Suspense fallback={null}>
-        <Experience />
+        <Experience stageService={stageService} />
       </Suspense>
 
       <AuidoContextProvider>
-        {isSubtitleRendered && <Subtitles />}
-        {isLoaderRendered && <AssetLoader />}
-        {isOutroRendered && <Outro />}
+        {isSubtitleRendered && <Subtitles stageService={stageService} />}
+        {isLoaderRendered && <AssetLoader stageService={stageService} />}
+        {isOutroRendered && <Outro stageService={stageService} />}
 
-        <ExperienceInterface />
+        <ExperienceInterface stageService={stageService} />
       </AuidoContextProvider>
     </Main>
   );

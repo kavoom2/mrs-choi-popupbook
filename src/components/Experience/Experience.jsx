@@ -1,9 +1,8 @@
 import { defaultCameraPos } from "@lib/constants/cameraTransitions";
-import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
-import { lazy, memo, Suspense, useContext } from "react";
+import { lazy, memo, Suspense } from "react";
 import Background from "./Background";
 import Camera from "./Camera";
 import DisableRender from "./DisableRenderer";
@@ -17,32 +16,18 @@ import {
 
 const PopupBook = lazy(() => import("./PopupBook"));
 
-function Experience() {
+function Experience({ stageService }) {
   /**
    * XState State and Context
-   */
-  const globalService = useContext(GlobalServiceContext);
-
-  /**
+   *
    * 불필요한 Rerender가 발생하지 않도록, XState useSelector를 사용해야 합니다.
    */
-  const stageValue = useSelector(
-    globalService.stageService,
-    stageValueSelector
-  );
 
-  const { page, maxPages } = useSelector(
-    globalService.stageService,
-    bookContextSelector
-  );
-  const isStageScene = useSelector(
-    globalService.stageService,
-    isStageSceneSelector
-  );
-  const isWebGLReady = useSelector(
-    globalService.stageService,
-    isWebGLReadySelector
-  );
+  const stageValue = useSelector(stageService, stageValueSelector);
+
+  const { page, maxPages } = useSelector(stageService, bookContextSelector);
+  const isStageScene = useSelector(stageService, isStageSceneSelector);
+  const isWebGLReady = useSelector(stageService, isWebGLReadySelector);
 
   /**
    * Render WebGL Elements

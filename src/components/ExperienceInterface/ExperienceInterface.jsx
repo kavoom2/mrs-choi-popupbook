@@ -8,7 +8,6 @@ import {
   STEP,
 } from "@lib/constants/stateMachineActions";
 import { AudioContext } from "@pages/home/AudioContextProvider";
-import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
 import { Fragment, useContext } from "react";
@@ -25,47 +24,31 @@ import {
   subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
 
-function ExperienceInterface() {
+function ExperienceInterface({ stageService }) {
   /**
    * XState State and Context
    */
-  const globalService = useContext(GlobalServiceContext);
+  const { send } = stageService;
 
-  const { send } = globalService.stageService;
-
-  const book = useSelector(globalService.stageService, bookContextSelector);
-  const subtitle = useSelector(
-    globalService.stageService,
-    subtitleContextSelector
-  );
+  const book = useSelector(stageService, bookContextSelector);
+  const subtitle = useSelector(stageService, subtitleContextSelector);
 
   const { page, maxPages, isAnimating: isPageAnimating } = book;
   const { curIdx, maxIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
   const { isAnimationEnd: isIntroAnimationEnded } = useSelector(
-    globalService.stageService,
+    stageService,
     introContextSelector
   );
 
   const { isEntering, isEnterEnd, isExiting, isExited } = useSelector(
-    globalService.stageService,
+    stageService,
     outroContextSelector
   );
 
-  const isIntroStage = useSelector(
-    globalService.stageService,
-    isIntroStageSelector
-  );
-
-  const isSceneStage = useSelector(
-    globalService.stageService,
-    isSceneStageSelector
-  );
-
-  const isOutroStage = useSelector(
-    globalService.stageService,
-    isOutroStageSelector
-  );
+  const isIntroStage = useSelector(stageService, isIntroStageSelector);
+  const isSceneStage = useSelector(stageService, isSceneStageSelector);
+  const isOutroStage = useSelector(stageService, isOutroStageSelector);
 
   /**
    * Audio Context
@@ -110,7 +93,9 @@ function ExperienceInterface() {
   const isSceneInterfaceHidden = !isSceneStage || isPageAnimating;
 
   const isScenePrevButtonHidden =
-    (page === -1 && curIdx === 0) || isSceneInterfaceHidden;
+    (page === -1 && curIdx === 0) ||
+    (page === 0 && curIdx === 0) ||
+    isSceneInterfaceHidden;
 
   const isSceneNextButtonHidden = page === maxPages || isSceneInterfaceHidden;
 
@@ -124,6 +109,7 @@ function ExperienceInterface() {
   );
 
   // 2. Audio
+  // TODO: 음악 재생 버튼을 조건부 렌더링 + 상태에 따라 다른 외형을 적용합니다.
   const isAudioHidden = !(isIntroStage || isSceneStage || isOutroStage);
   const isAudioActive = !audioState.paused;
 
@@ -143,9 +129,8 @@ function ExperienceInterface() {
   });
 
   /**
-   * 컴포넌트
+   * 컴포넌트 렌더링
    */
-
   const renderAsideBottomNodes = (
     <Fragment>
       {isIntroStage && (

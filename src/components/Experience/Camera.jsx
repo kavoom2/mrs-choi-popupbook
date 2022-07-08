@@ -26,6 +26,11 @@ function Camera({ stageValue }) {
   const lookAtRef = useRef(defaultCameraLookAt);
   const lookAtVec3 = useMemo(() => new THREE.Vector3(), []);
 
+  /**
+   * Side Effect
+   *
+   * 카메라 상태 전환은 Gsap에 위임합니다.
+   */
   useEffect(() => {
     const { lookAt, position } = valueSelector(stageValue, cameraTransitions);
 

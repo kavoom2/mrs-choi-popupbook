@@ -2,6 +2,12 @@ import { Stats as StatsDebugger } from "@react-three/drei";
 import { useRef } from "react";
 import { useEffectOnce } from "react-use";
 
+/**
+ * FPS, MS, MB 등의 상태를 확인하는 성능 측정 Debugger입니다.
+ *
+ * [Details] https://www.npmjs.com/package/stats-js
+ */
+
 function Stats() {
   const node = useRef();
 

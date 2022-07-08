@@ -3,6 +3,11 @@ import { useFrame } from "@react-three/fiber";
 import { Depth, LayerMaterial, Noise } from "lamina";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { backgroundColorSelector } from "./_utils/backgroundUtils";
+
+/**
+ * WebGl 화면상의 Background
+ */
 
 function Background({ stageValue, page, states }) {
   /**
@@ -14,7 +19,7 @@ function Background({ stageValue, page, states }) {
    * 현재 색상에 대한 값과
    * Lerp에 사용할 Singleton Vector 선언
    */
-  const { bottomColor, topColor } = colorSelector(
+  const { bottomColor, topColor } = backgroundColorSelector(
     sceneBackgrounds,
     stageValue,
     page
@@ -28,6 +33,8 @@ function Background({ stageValue, page, states }) {
   const colorVec = useMemo(() => new THREE.Color(), []);
 
   /**
+   * Side Effect
+   *
    * 색상이 변경될 경우 lerp를 수행합니다.
    */
   useFrame(() => {
@@ -41,6 +48,8 @@ function Background({ stageValue, page, states }) {
   });
 
   /**
+   * WebGL 요소 렌더링
+   *
    * 배경 Object 렌더링
    */
   return (
@@ -70,30 +79,5 @@ function Background({ stageValue, page, states }) {
     </mesh>
   );
 }
-
-function colorSelector(sceneBackgrounds, stageState, page) {
-  const currentStageProps = sceneBackgrounds?.[stageState] ?? null;
-
-  let backgroundProps = sceneBackgrounds[stageState];
-
-  if (currentStageProps?.children) {
-    backgroundProps = currentStageProps.children[page];
-  }
-
-  const { bottomColor, topColor } = {
-    ...introBackgrounds,
-    ...backgroundProps,
-  };
-
-  return {
-    bottomColor,
-    topColor,
-  };
-}
-
-const introBackgrounds = {
-  bottomColor: 0xe3cc94,
-  topColor: 0xcde5df,
-};
 
 export default Background;

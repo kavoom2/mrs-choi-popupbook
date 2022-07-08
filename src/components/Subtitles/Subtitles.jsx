@@ -4,10 +4,9 @@ import {
   subtitles,
   subtitleTimeout,
 } from "@lib/constants/subtitles";
-import { GlobalServiceContext } from "@pages/home/GlobalServiceProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import styled, { css } from "styled-components";
 import Subtitle from "./Subtitle";
@@ -18,26 +17,21 @@ import {
 
 const transitionClassName = "subtitle-item";
 
-/**
- * 자막들을 스테이지 상태에 따라 렌더링합니다.
- */
-function Subtitles({ className, ...restProps }) {
+function Subtitles({ className, stageService, ...restProps }) {
   /**
    * XState State and Context
    */
-  const globalService = useContext(GlobalServiceContext);
-
-  const book = useSelector(globalService.stageService, bookContextSelector);
-  const subtitle = useSelector(
-    globalService.stageService,
-    subtitleContextSelector
-  );
+  const book = useSelector(stageService, bookContextSelector);
+  const subtitle = useSelector(stageService, subtitleContextSelector);
 
   const { page, isAnimating: isPageAnimating } = book;
   const { curIdx, isAnimating: isSubtitleAnimating } = subtitle;
 
   /**
-   * 페이지, 자막 인덱스에 따른 애니메이션 속성값 변경
+   * 페이지, 자막 인덱스에 따른 애니메이션 속성값 선언
+   * 페이지, 자막 넘김으로 발생한 리렌더링을 제외하고, transition duration과 transition delay는 영향을 받지 않습니다.
+   * 자막 애니메이션을 TransitionGroup, CSSTransition에 위임하고자
+   * 리렌더링을 유발하지 않으면서도 의도치 않은 리렌더링에도 값이 변하지 않도록 useRef를 사용합니다.
    *
    * Timout: enter, exit
    * Delay: enter, exit
@@ -119,7 +113,7 @@ function Subtitles({ className, ...restProps }) {
   /**
    * 컴포넌트 렌더링
    *
-   * 자막 fade in, fade out은 Transtition Group과 CSS Transtition에 위임합니다.
+   * 자막 Fade in, Fade out은 Transtition Group과 CSS Transtition에 위임합니다.
    */
   return (
     <Section {...restProps} className={sectionClassNames}>
