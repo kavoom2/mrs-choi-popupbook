@@ -1,16 +1,14 @@
-name: 웹사이트 배포
+name: 서비스 배포
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
   pull_request:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: 브랜치 checkout
@@ -21,7 +19,15 @@ jobs:
         with:
           node-version: 16.13.2
 
-      - name: 패키지 설치
+      - name: NodeModules 캐싱 적용
+        uses: actions/cache@2
+        id: node-root
+        with:
+          path: node_modules
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
+
+      - name: 의존성 패키지 설치
+        if: steps.node-root.outputs.cache-hit != 'true'
         run: npm install
 
       - name: 빌드 파일 생성
