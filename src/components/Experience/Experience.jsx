@@ -1,4 +1,5 @@
 import { defaultCameraPos } from "@lib/constants/cameraTransitions";
+import { isPostBuild } from "@lib/utils/postbuild";
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
@@ -83,6 +84,17 @@ function Experience({ stageService }) {
   );
 }
 
+function ExperienceMock() {
+  /**
+   * SEO 관련 ReactSnap postbuild issue
+   * PostBuild에서 ThreeJS의 MathUtils 라이브러리 함수를 제대로 참조하지 못합니다.
+   * 따라서, PostBuild 단계에서는 Mock Element를 참조하도록 해야 합니다.
+   *
+   * [Reference] https://github.com/stereobooster/react-snap/issues/392
+   */
+  return null;
+}
+
 function DevModeUtils() {
   if (!isDevelopment) return null;
 
@@ -94,4 +106,4 @@ function DevModeUtils() {
   );
 }
 
-export default memo(Experience);
+export default isPostBuild ? ExperienceMock : memo(Experience);

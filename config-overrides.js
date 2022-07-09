@@ -9,7 +9,6 @@ const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const HtmlWebpackInjectPreload = require("@principalstudio/html-webpack-inject-preload");
-const PrerenderSPAPlugin = require("prerender-spa-plugin-next");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";

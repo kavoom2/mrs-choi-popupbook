@@ -5,6 +5,10 @@ import { HelmetProvider } from "react-helmet-async";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+/**
+ * ! SEO 라이브러리 호환성 이슈로 createRoot API를 사용하지 않습니다.
+ */
+
 const rootElement = document.getElementById("root");
 // const root = ReactDOM.createRoot(rootElement);
 
