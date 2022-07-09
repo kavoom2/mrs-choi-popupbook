@@ -94,17 +94,6 @@ if (isBundleAnalyzed)
 if (isProduction)
   OverrideConfigs.push(
     /**
-     * Plugin: SPA Prerenderer
-     * 기존 버전은 webpack ^5와 호환성 이슈가 있어 대체 라이브러리를 사용합니다.
-     * [Reference] https://github.com/chrisvfritz/prerender-spa-plugin/issues/414
-     */
-    // addWebpackPlugin(
-    //   new PrerenderSPAPlugin({
-    //     routes: ["/"],
-    //   })
-    // ),
-
-    /**
      * Plugin: Manifest
      */
     addWebpackPlugin(

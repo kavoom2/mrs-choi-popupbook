@@ -36,6 +36,7 @@
     "start:bundleAnalzye": "react-app-rewired start --bundleAnalzye",
     "build": "react-app-rewired build",
     "build:bundleAnalzye": "react-app-rewired build --bundleAnalzye",
+    "postbuild": "react-snap",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
@@ -63,10 +64,13 @@
     "favicons": "^6.2.2",
     "favicons-webpack-plugin": "^5.0.2",
     "html-webpack-plugin": "^5.5.0",
-    "prerender-spa-plugin-next": "^4.2.0",
     "react-app-rewired": "^2.2.1",
+    "react-snap": "^1.23.0",
     "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-manifest-plugin": "^5.0.0"
+  },
+  "reactSnap": {
+    "source": "build"
   }
 }
