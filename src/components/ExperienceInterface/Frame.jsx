@@ -1,4 +1,10 @@
 import { interfaceImages } from "@assets/images";
+import {
+  breakpointsMax,
+  breakpointsMin,
+  resToMax,
+  resToMin,
+} from "@components/@design-language";
 import { useImagePreload } from "@hooks/sideEffects";
 import classNames from "classnames";
 import { memo } from "react";
@@ -41,17 +47,17 @@ function Frame() {
 
       <Picture flexOrder={2} className={imageClassNames}>
         <source
-          media="(min-width: 1280px)"
+          media={`(min-width: ${breakpointsMin.desktop}px)`}
           srcSet={interfaceImages.frameDesktop1920}
           alt={frameAlt}
         />
         <source
-          media="(min-width: 900px)"
+          media={`(min-width: ${breakpointsMin.laptop}px)`}
           srcSet={interfaceImages.frameDesktop1080}
           alt={frameAlt}
         />
         <source
-          media="(min-width: 600px)"
+          media={`(min-width: ${breakpointsMin.tablet}px)`}
           srcSet={interfaceImages.frameMobile900}
           alt={frameAlt}
         />
@@ -82,7 +88,7 @@ const FrameWrapper = styled.section`
   user-select: none;
   pointer-events: none;
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     flex-direction: column;
   }
 `;
@@ -106,7 +112,7 @@ const BlankFiller = styled.div`
       transform-origin: center;
       transform: scaleX(1.1);
 
-      @media (max-width: 599.98px) {
+      ${resToMax(breakpointsMax.mobile)} {
         transform: scaleY(1.1);
       }
 
@@ -127,7 +133,7 @@ const Picture = styled.picture`
       width: 100%;
       height: auto;
 
-      @media (min-width: 600px) {
+      ${resToMin(breakpointsMin.tablet)} {
         height: 100%;
         width: auto;
 

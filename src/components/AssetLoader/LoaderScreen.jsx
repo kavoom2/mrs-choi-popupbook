@@ -1,4 +1,9 @@
 import { interfaceImages } from "@assets/images";
+import {
+  breakpointsMax,
+  breakpointsMin,
+  resToMax,
+} from "@components/@design-language";
 import useImagePreload from "@hooks/sideEffects/useImagePreload";
 import classNames from "classnames";
 import styled, { css, keyframes } from "styled-components";
@@ -89,7 +94,7 @@ function LoaderScreen({
           >
             <CharacterImg {...bearCharProps} className={bearClassNames}>
               <source
-                media="(min-width:600px)"
+                media={`(min-width:${breakpointsMin.tablet}px)`}
                 srcSet={interfaceImages.loaderBearNormal}
                 alt={bearAlt}
               />
@@ -105,7 +110,7 @@ function LoaderScreen({
           >
             <CharacterImg {...rabbitCharProps} className={rabbitClassNames}>
               <source
-                media="(min-width:600px)"
+                media={`(min-width:${breakpointsMin.tablet}px)`}
                 srcSet={interfaceImages.loaderRabbitNormal}
                 alt={rabbitAlt}
               />
@@ -140,7 +145,7 @@ const Screen = styled.section`
 
   user-select: none;
 
-  @media (max-width: 1279.98px) {
+  ${resToMax(breakpointsMax.laptopL)} {
     min-width: auto;
     min-height: auto;
 
@@ -148,12 +153,12 @@ const Screen = styled.section`
     max-height: 800px;
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     max-width: 480px;
     max-height: 640px;
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     max-width: 94vw;
     max-height: 125vw;
   }
@@ -241,17 +246,17 @@ const CharacterAnimationOrigin = styled.div`
     top: -100px;
     right: -160px;
 
-    @media (max-width: 1279.98px) {
+    ${resToMax(breakpointsMax.laptopL)} {
       top: -100px;
       right: -160px;
     }
 
-    @media (max-width: 899.98px) {
+    ${resToMax(breakpointsMax.tablet)} {
       top: -90px;
       right: -160px;
     }
 
-    @media (max-width: 599.98px) {
+    ${resToMax(breakpointsMax.mobile)} {
       top: -40px;
       right: -120px;
     }
@@ -261,17 +266,17 @@ const CharacterAnimationOrigin = styled.div`
     bottom: -80px;
     left: -130px;
 
-    @media (max-width: 1279.98px) {
+    ${resToMax(breakpointsMax.laptopL)} {
       bottom: -80px;
       left: -130px;
     }
 
-    @media (max-width: 899.98px) {
+    ${resToMax(breakpointsMax.tablet)} {
       bottom: -120px;
       left: -160px;
     }
 
-    @media (max-width: 599.98px) {
+    ${resToMax(breakpointsMax.mobile)} {
       bottom: -80px;
       left: -140px;
     }
@@ -298,7 +303,7 @@ const CharacterPositioner = styled.div`
         animation-name: ${characterPositionBtt};
       `}
 
-      @media (max-width: 599.98px) {
+      ${resToMax(breakpointsMax.mobile)} {
         ${outroDirection === "ttb" &&
         css`
           animation-name: ${characterPositionTtbMax500};

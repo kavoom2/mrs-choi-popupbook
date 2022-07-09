@@ -1,3 +1,4 @@
+import { isBrowser } from "@lib/utils/browser";
 import { useDidMount } from "rooks";
 
 /**
@@ -19,7 +20,11 @@ function useCameraZoom(camera) {
   });
 }
 
-export default useCameraZoom;
+function useMockCameraZoom(camera) {
+  return null;
+}
+
+export default isBrowser ? useCameraZoom : useMockCameraZoom;
 
 const zoomConfigs = {
   maxWidth: 1280,

@@ -1,3 +1,4 @@
+import { breakpointsMax, resToMax } from "@components/@design-language";
 import classNames from "classnames";
 import styled from "styled-components";
 
@@ -57,7 +58,7 @@ function noop(event) {
 export default ControlButton;
 
 const Button = styled.button`
-  width: 100px;
+  width: auto;
   height: 100px;
 
   padding: 0;
@@ -77,13 +78,15 @@ const Button = styled.button`
 
   cursor: pointer;
 
-  @media (max-width: 899.98px) {
-    width: 90px;
+  ${resToMax(breakpointsMax.laptopL)} {
     height: 90px;
   }
 
-  @media (max-width: 599.98px) {
-    width: 70px;
+  ${resToMax(breakpointsMax.tablet)} {
+    height: 80px;
+  }
+
+  ${resToMax(breakpointsMax.mobile)} {
     height: 70px;
   }
 
@@ -99,21 +102,21 @@ const Button = styled.button`
   @media (hover: hover) and (pointer: fine) {
     /* Mobile device hover issue: https://stackoverflow.com/questions/23885255/how-to-remove-ignore-hover-css-style-on-touch-devices */
     &:hover:not(.loading):not(.disabled) {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
       transition: 200ms ease;
-      filter: drop-shadow(0px 4px 5px rgba(30, 50, 0, 0.5));
+      filter: drop-shadow(0px 3px 4px rgba(30, 50, 0, 0.45));
     }
   }
 
   &.loading {
     opacity: 0.9;
     transform: scale(0.9);
-    filter: drop-shadow(0px 2px 3px rgba(30, 50, 0, 0.65)) contrast(0.9);
+    filter: drop-shadow(0px 2px 3px rgba(30, 50, 0, 0.45)) contrast(0.9);
     cursor: default;
   }
 
   &.disabled {
-    filter: drop-shadow(0px 2px 3px rgba(30, 50, 0, 0.65)) contrast(0.8);
+    filter: drop-shadow(0px 2px 3px rgba(30, 50, 0, 0.45)) contrast(0.8);
     cursor: not-allowed;
   }
 

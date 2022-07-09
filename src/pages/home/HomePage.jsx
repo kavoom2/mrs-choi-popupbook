@@ -10,22 +10,27 @@ import {
   scene,
 } from "@lib/constants/stageMachineStates";
 import { useSelector } from "@xstate/react";
-import { lazy, Suspense, useContext } from "react";
+import { Fragment, lazy, Suspense, useContext } from "react";
 import styled from "styled-components";
 import { AuidoContextProvider } from "./AudioContextProvider";
 import {
   GlobalServiceContext,
   GlobalServiceProvider,
 } from "./GlobalServiceProvider";
+import Head from "./Head";
 import { stageValueSelector } from "./_utils/stateMachineUtils";
 
 const Experience = lazy(() => import("@components/Experience"));
 
 function HomePage(props) {
   return (
-    <GlobalServiceProvider>
-      <HomePageGlobalServiceConsumer />
-    </GlobalServiceProvider>
+    <Fragment>
+      <Head />
+
+      <GlobalServiceProvider>
+        <HomePageGlobalServiceConsumer />
+      </GlobalServiceProvider>
+    </Fragment>
   );
 }
 

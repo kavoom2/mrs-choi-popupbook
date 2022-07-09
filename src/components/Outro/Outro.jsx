@@ -1,3 +1,5 @@
+import { interfaceImages } from "@assets/images";
+import { breakpointsMax, resToMax } from "@components/@design-language";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
 import styled, { keyframes } from "styled-components";
@@ -40,10 +42,7 @@ function Outro({ stageService }) {
             <p>우리가 함께 만든 100일 동안의 이야기</p>
             <p>Made by</p>
             <p>
-              <span className="red">Mr.JUNG</span>
-              {" & "}
-              <span className="green">Ms.CHOI</span>
-              {" :)"}
+              Mr.JUNG{" & "}Ms.CHOI{" :)"}
             </p>
           </Paragraphs>
         </SectionSpacer>
@@ -90,7 +89,7 @@ const CurtainScreen = styled.section`
 
   user-select: none;
 
-  @media (max-width: 1279.98px) {
+  ${resToMax(breakpointsMax.laptopL)} {
     min-width: auto;
     min-height: auto;
 
@@ -98,12 +97,12 @@ const CurtainScreen = styled.section`
     max-height: 800px;
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     max-width: 480px;
     max-height: 640px;
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     max-width: 94vw;
     max-height: 125vw;
   }
@@ -119,8 +118,8 @@ const CurtainScreen = styled.section`
   &.slide-out {
     animation-name: ${curtainSlideOut};
     animation-timing-function: cubic-bezier(0.36, 0, 0.66, -0.56);
-    animation-delay: 100ms;
-    animation-duration: 1000ms;
+    animation-delay: 50ms;
+    animation-duration: 900ms;
     animation-fill-mode: both;
   }
 `;
@@ -144,7 +143,28 @@ const Curtain = styled.div`
   transform-origin: center center;
   transform: scale(1.2);
 
-  background-color: #d6d2bc;
+  background-color: #f5544d;
+
+  background-image: url(${interfaceImages.outroCurtainPattern});
+  background-size: 80px auto;
+  background-repeat: repeat repeat;
+  background-position: center center;
+
+  ${resToMax(breakpointsMax.desktop)} {
+    background-size: 70px auto;
+  }
+
+  ${resToMax(breakpointsMax.laptopL)} {
+    background-size: 60px auto;
+  }
+
+  ${resToMax(breakpointsMax.tablet)} {
+    background-size: 50px auto;
+  }
+
+  ${resToMax(breakpointsMax.mobile)} {
+    background-size: 40px auto;
+  }
 `;
 
 const SectionSpacer = styled.div`
@@ -172,30 +192,22 @@ const Paragraphs = styled.div`
 
     font-size: 60px;
     line-height: 1.8;
-    color: #d2ab5b;
-
-    .red {
-      color: #d66d63;
-    }
-
-    .green {
-      color: #8dc557;
-    }
+    color: #ffffff;
   }
 
-  @media (max-width: 1920px) {
+  ${resToMax(breakpointsMax.desktopL)} {
     p {
       font-size: 40px;
     }
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     p {
       font-size: 30px;
     }
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     p {
       font-size: 20px;
     }

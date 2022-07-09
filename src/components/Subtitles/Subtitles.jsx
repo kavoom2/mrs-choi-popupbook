@@ -1,3 +1,4 @@
+import { breakpointsMax, resToMax } from "@components/@design-language";
 import {
   subtitleColorProps,
   subtitleDelay,
@@ -204,7 +205,7 @@ const ResponsiveContainer = styled.div`
   max-width: 130vh;
   max-height: 88vh;
 
-  @media (max-width: 1279.98px) {
+  ${resToMax(breakpointsMax.laptopL)} {
     min-width: auto;
     min-height: auto;
 
@@ -212,12 +213,12 @@ const ResponsiveContainer = styled.div`
     max-height: 800px;
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     max-width: 480px;
     max-height: 640px;
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     max-width: 94vw;
     max-height: 125vw;
   }
@@ -254,16 +255,16 @@ const SubtitleList = styled.ul`
     }
   }
 
-  @media (max-width: 1920px) {
+  ${resToMax(breakpointsMax.desktopL)} {
     font-size: 28px;
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     padding: 0 0 40px 0;
     font-size: 22px;
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     padding: 0 0 30px 0;
     font-size: 18px;
   }

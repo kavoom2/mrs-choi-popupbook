@@ -2,7 +2,8 @@ import { defaultCameraPos } from "@lib/constants/cameraTransitions";
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
-import { lazy, memo, Suspense } from "react";
+import { Fragment, lazy, memo, Suspense } from "react";
+import AxisDebugger from "./AxisDebugger";
 import Background from "./Background";
 import Camera from "./Camera";
 import DisableRender from "./DisableRenderer";
@@ -15,6 +16,8 @@ import {
 } from "./_utils/stateMachineUtils";
 
 const PopupBook = lazy(() => import("./PopupBook"));
+
+const isDevelopment = process.env.NODE_ENV === "development";
 
 function Experience({ stageService }) {
   /**
@@ -41,7 +44,7 @@ function Experience({ stageService }) {
         position: [defaultCameraPos.x, defaultCameraPos.y, defaultCameraPos.z],
       }}
       gl={{
-        antialias: false,
+        antialias: true,
       }}
       className={`experience-section`}
     >
@@ -75,9 +78,19 @@ function Experience({ stageService }) {
       </Suspense>
 
       {/* 3. Debugger */}
-      {/* <AxisDebugger /> */}
-      <Stats />
+      <DevModeUtils />
     </Canvas>
+  );
+}
+
+function DevModeUtils() {
+  if (!isDevelopment) return null;
+
+  return (
+    <Fragment>
+      <AxisDebugger />
+      <Stats />
+    </Fragment>
   );
 }
 

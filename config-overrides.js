@@ -5,28 +5,17 @@ const {
 } = require("customize-cra");
 const path = require("path");
 
-// const BundleAnalyzerPlugin =
-//   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const HtmlWebpackInjectPreload = require("@principalstudio/html-webpack-inject-preload");
+const PrerenderSPAPlugin = require("prerender-spa-plugin-next");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
-/**
- * 2. Setup webpack configs
- *
- * CRA에서 eject를 사용하지 않고 Webpack 설정을 덮어 씌우려면
- * customize-cra와 react-app-rewired를 사용해야 합니다.
- *
- * [Github: react-app-rewired] https://github.com/timarney/react-app-rewired
- * [Github: customize-cra] https://github.com/arackaf/customize-cra
- *
- *
- */
-module.exports = override(
-  /**
-   * Plugin: Bundle analyzer
-   */
-  // addWebpackPlugin(new BundleAnalyzerPlugin()),
+const isProduction = process.env.NODE_ENV === "production";
+const isBundleAnalyzed = process.argv.includes("--bundleAnalzye");
 
+const OverrideConfigs = [
   /**
    * Plugin: Html link preload injector
    * [Reference] https://www.wiktorwisniewski.dev/blog/preloading-assets-with-webpack5
@@ -72,6 +61,17 @@ module.exports = override(
   ),
 
   /**
+   * Plugin: Manifest, Favicon Generator
+   */
+  addWebpackPlugin(
+    new FaviconsWebpackPlugin({
+      logo: "./src/assets/logo/logo.png",
+      cache: true,
+      inject: true,
+    })
+  ),
+
+  /**
    * Alias
    */
   addWebpackAlias({
@@ -82,5 +82,47 @@ module.exports = override(
     "@hooks": path.resolve(__dirname, "./src/hooks"),
     "@lib": path.resolve(__dirname, "./src/lib"),
     "@assets": path.resolve(__dirname, "./src/assets"),
-  })
-);
+  }),
+];
+
+/**
+ * Plugin: Bundle analyzer
+ */
+if (isBundleAnalyzed)
+  OverrideConfigs.push(addWebpackPlugin(new BundleAnalyzerPlugin()));
+
+if (isProduction)
+  OverrideConfigs.push(
+    /**
+     * Plugin: SPA Prerenderer
+     * 기존 버전은 webpack ^5와 호환성 이슈가 있어 대체 라이브러리를 사용합니다.
+     * [Reference] https://github.com/chrisvfritz/prerender-spa-plugin/issues/414
+     */
+    addWebpackPlugin(
+      new PrerenderSPAPlugin({
+        routes: ["/"],
+      })
+    ),
+
+    /**
+     * Plugin: Manifest
+     */
+    addWebpackPlugin(
+      new WebpackManifestPlugin({
+        basePath: "./build",
+      })
+    )
+  );
+
+/**
+ * 2. Setup webpack configs
+ *
+ * CRA에서 eject를 사용하지 않고 Webpack 설정을 덮어 씌우려면
+ * customize-cra와 react-app-rewired를 사용해야 합니다.
+ *
+ * [Github: react-app-rewired] https://github.com/timarney/react-app-rewired
+ * [Github: customize-cra] https://github.com/arackaf/customize-cra
+ *
+ *
+ */
+module.exports = override(...OverrideConfigs);

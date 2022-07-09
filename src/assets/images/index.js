@@ -11,6 +11,12 @@ import loaderRabbitNormal from "./preload600_loader_rabbit_normal.png";
 
 import buttonArrowLtr from "./ui_button_arrow_ltr.png";
 import buttonArrowRtl from "./ui_button_arrow_rtl.png";
+import buttonAudioOff from "./ui_button_audio_off.png";
+import buttonAudioOn from "./ui_button_audio_on.png";
+import buttonReplay from "./ui_button_replay.png";
+import buttonStart from "./ui_button_start.png";
+
+import outroCurtainPattern from "./outro_pattern_curtain.png";
 
 export const interfaceImages = {
   frameDesktop1080,
@@ -26,4 +32,10 @@ export const interfaceImages = {
 
   buttonArrowLtr,
   buttonArrowRtl,
+  buttonAudioOn,
+  buttonAudioOff,
+  buttonStart,
+  buttonReplay,
+
+  outroCurtainPattern,
 };

@@ -1,4 +1,5 @@
 import { interfaceImages } from "@assets/images";
+import { breakpointsMax, resToMax } from "@components/@design-language";
 import {
   GO_NEXT_PAGE,
   GO_NEXT_SUBTITLE,
@@ -77,10 +78,9 @@ function ExperienceInterface({ stageService }) {
     if (isOutroStage && isEnterEnd) send(REPLAY_APP);
   };
 
-  // TODO: 배경음악을 컨트롤하는 UI가 필요합니다.
-  const playMusic = () => controls.play();
+  const unmuteAudio = () => controls.unmute();
 
-  const pauseMusic = () => controls.pause();
+  const muteAudio = () => controls.mute();
 
   /**
    * 변수 선언
@@ -109,9 +109,15 @@ function ExperienceInterface({ stageService }) {
   );
 
   // 2. Audio
-  // TODO: 음악 재생 버튼을 조건부 렌더링 + 상태에 따라 다른 외형을 적용합니다.
-  const isAudioHidden = !(isIntroStage || isSceneStage || isOutroStage);
-  const isAudioActive = !audioState.paused;
+  const isAudioMuted = audioState.muted;
+
+  const audioImagePath = isAudioMuted
+    ? interfaceImages.buttonAudioOff
+    : interfaceImages.buttonAudioOn;
+
+  const audioImageAlt = isAudioMuted ? "unmute audio" : "mute audio";
+
+  const audioToggle = isAudioMuted ? unmuteAudio : muteAudio;
 
   /**
    * 클래스 명 선언
@@ -131,6 +137,19 @@ function ExperienceInterface({ stageService }) {
   /**
    * 컴포넌트 렌더링
    */
+
+  const renderAsideTopNodes = (
+    <Fragment>
+      <Dummy />
+
+      <ControlButton
+        imagePath={audioImagePath}
+        imageAlt={audioImageAlt}
+        onClick={audioToggle}
+      />
+    </Fragment>
+  );
+
   const renderAsideBottomNodes = (
     <Fragment>
       {isIntroStage && (
@@ -171,7 +190,7 @@ function ExperienceInterface({ stageService }) {
           <Dummy />
 
           <ControlButton
-            imagePath={interfaceImages.buttonArrowLtr}
+            imagePath={interfaceImages.buttonReplay}
             imageAlt="Replay popup book :)"
             onClick={replayApp}
             visible={!isReplayAppButtonHidden}
@@ -190,9 +209,7 @@ function ExperienceInterface({ stageService }) {
 
       {/* 조작 가능한 UI 레이아웃 */}
       <Section className={sectionClassNames}>
-        <Aside className={asideTopClassNames}>
-          {/* //TODO: 홈 버튼 UI가 들어갑니다. */}
-        </Aside>
+        <Aside className={asideTopClassNames}>{renderAsideTopNodes}</Aside>
 
         <Aside className={asideBottomClassNames}>
           {renderAsideBottomNodes}
@@ -225,11 +242,11 @@ const Section = styled.section`
 
   padding: 6vh 3vw;
 
-  @media (max-width: 2560px) {
+  ${resToMax(breakpointsMax.desktopL)} {
     padding: 45px 55px;
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     padding: 3vh 2vw;
   }
 `;

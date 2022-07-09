@@ -10,22 +10,16 @@ import { useContext } from "react";
 import styled from "styled-components";
 import LoaderScreen from "./LoaderScreen";
 
+import { breakpointsMax, resToMax } from "@components/@design-language";
 import { AudioContext } from "@pages/home/AudioContextProvider";
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
-import { useWillUnmount } from "rooks";
+import { useEffect } from "react";
 import {
   assetLoaderContextSelector,
   homeContextSelector,
 } from "./_utils/stateMachineUtils";
 
-// TODO: Asset이 불러와 지기 전, 로딩 화면을 구성해야 합니다.
-// 1. 전경 색상을 로딩 화면 색상과 동일하게 하여 빈 화면이 아니도록 판단하게 해야 합니다.
-// 2. 로딩 상태 완료 이후 사용자가 Start를 조작하게 하여 Intro 진입 | 소리 출력을 유도합니다.
-// 3. 로딩 페이지 UI 작업
-
 function AssetLoader({ stageService }) {
-  const timeoutRef = useRef(null);
   /**
    * WebGL Asset Loader
    */
@@ -61,9 +55,9 @@ function AssetLoader({ stageService }) {
 
       // 약간의 딜레이를 음악을 주면서 시작합니다.
       if (audioState.paused) {
-        timeoutRef.current = setTimeout(() => {
+        setTimeout(() => {
           controls.play();
-        }, 1000);
+        }, 750);
       }
     }
   };
@@ -98,10 +92,6 @@ function AssetLoader({ stageService }) {
     // eslint-disable-next-line
   }, [isSuccess]);
 
-  useWillUnmount(() => {
-    timeoutRef.current && clearTimeout(timeoutRef.current);
-  });
-
   /**
    * 노드 선언 및 컴포넌트 렌더링
    */
@@ -118,20 +108,18 @@ function AssetLoader({ stageService }) {
       isCharacterExit={isCharacterExit}
       fallback={<FallbackBackgrounds className={fallbackBgClassNames} />}
     >
-      <ProgressTextContainer className={progressTextClassNames}>
-        {loadingRenderNode}
-      </ProgressTextContainer>
+      <Contents>
+        <ProgressTextContainer className={progressTextClassNames}>
+          {loadingRenderNode}
+        </ProgressTextContainer>
 
-      <ButtonWrapper>
-        {/* // TODO: 기능에 적합한 버튼 asset을 제작해야 합니다. */}
-        {/* 또는, 필요에 맞게 사용합니다. */}
         <ControlButton
-          imagePath={interfaceImages.buttonArrowLtr}
+          imagePath={interfaceImages.buttonStart}
           imageAlt="Play game"
           onClick={playApp}
           visible={!isPlayButtonHidden}
         />
-      </ButtonWrapper>
+      </Contents>
     </LoaderScreen>
   );
 }
@@ -160,15 +148,40 @@ const FallbackBackgrounds = styled.div`
   }
 `;
 
+const Contents = styled.div`
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1;
+
+  > :last-child {
+    margin-top: 32px;
+  }
+
+  ${resToMax(breakpointsMax.tablet)} {
+    > :last-child {
+      margin-top: 20px;
+    }
+  }
+
+  ${resToMax(breakpointsMax.mobile)} {
+    > :last-child {
+    }
+  }
+`;
+
 const ProgressTextContainer = styled.div`
   font-family: "UhBeenamsoyoung";
 
   width: 90%;
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 
   word-break: keep-all;
   text-align: center;
@@ -187,19 +200,19 @@ const ProgressTextContainer = styled.div`
     }
   }
 
-  @media (max-width: 1920px) {
+  ${resToMax(breakpointsMax.desktopL)} {
     .content {
-      font-size: 40px;
+      font-size: 36px;
     }
   }
 
-  @media (max-width: 899.98px) {
+  ${resToMax(breakpointsMax.tablet)} {
     .content {
       font-size: 30px;
     }
   }
 
-  @media (max-width: 599.98px) {
+  ${resToMax(breakpointsMax.mobile)} {
     .content {
       font-size: 20px;
     }
@@ -211,13 +224,4 @@ const ProgressTextContainer = styled.div`
     visibility: hidden;
     opacity: 0;
   }
-`;
-
-const ButtonWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  z-index: 2000;
 `;
