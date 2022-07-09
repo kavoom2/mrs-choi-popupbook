@@ -31,7 +31,6 @@ function Outro({ stageService }) {
   /**
    * 컴포넌트 렌더링
    */
-  // TODO: 연극 장막(Play Curtains 이미지를 제작하여 적용합니다.)
   return (
     <CurtainScreen className={sectionClassNames}>
       <PositionProvider>
