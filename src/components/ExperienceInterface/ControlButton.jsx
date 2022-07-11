@@ -72,7 +72,6 @@ const Button = styled.button`
   user-select: none;
 
   img {
-    width: 100%;
     height: 100%;
   }
 
