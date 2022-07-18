@@ -69,6 +69,13 @@ const Button = styled.button`
 
   outline: none;
   border: none;
+
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   img {
@@ -84,8 +91,7 @@ const Button = styled.button`
   ${resToMax(breakpointsMax.tablet)} {
     height: 80px;
   }
-
-  ${resToMax(breakpointsMax.mobile)} {
+  e ${resToMax(breakpointsMax.mobile)} {
     height: 70px;
   }
 
@@ -128,7 +134,7 @@ const Button = styled.button`
   }
 
   &.hidden {
-    transform: scale(0.0001);
+    transform: scale(0.0001) !important;
     transition: transform 300ms cubic-bezier(0.36, 0, 0.66, -0.56);
 
     user-select: none;

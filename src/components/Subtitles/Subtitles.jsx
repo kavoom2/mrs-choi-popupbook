@@ -16,7 +16,7 @@ import {
   subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
 
-const transitionClassName = "subtitle-item";
+const transitionClassName = "css-transition-subtitle-item";
 
 function Subtitles({ className, stageService, ...restProps }) {
   /**

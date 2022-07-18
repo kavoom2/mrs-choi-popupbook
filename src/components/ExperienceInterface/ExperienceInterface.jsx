@@ -12,6 +12,7 @@ import { AudioContext } from "@pages/home/AudioContextProvider";
 import { useSelector } from "@xstate/react";
 import classNames from "classnames";
 import { Fragment, useContext } from "react";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import styled from "styled-components";
 import ControlButton from "./ControlButton";
 import Frame from "./Frame";
@@ -24,6 +25,8 @@ import {
   outroContextSelector,
   subtitleContextSelector,
 } from "./_utils/stateMachineUtils";
+
+const transitionClassName = "css-transition-button";
 
 function ExperienceInterface({ stageService }) {
   /**
@@ -42,7 +45,7 @@ function ExperienceInterface({ stageService }) {
     introContextSelector
   );
 
-  const { isEntering, isEnterEnd, isExiting, isExited } = useSelector(
+  const { isEnterEnd, isExiting, isExited } = useSelector(
     stageService,
     outroContextSelector
   );
@@ -87,26 +90,20 @@ function ExperienceInterface({ stageService }) {
    */
 
   // 1 - 1. Intro
-  const isIntroButtonHidden = !(isIntroStage && isIntroAnimationEnded);
+  const isIntroButtonRendered = isIntroStage && isIntroAnimationEnded;
 
   // 1 - 2. Scene
-  const isSceneInterfaceHidden = !isSceneStage || isPageAnimating;
+  const isSceneButtonRendered = isSceneStage && !isPageAnimating;
 
-  const isScenePrevButtonHidden =
-    (page === -1 && curIdx === 0) ||
-    (page === 0 && curIdx === 0) ||
-    isSceneInterfaceHidden;
+  const isScenePrevButtonHidden = page === 0 && curIdx === 0;
 
-  const isSceneNextButtonHidden = page === maxPages || isSceneInterfaceHidden;
+  const isSceneNextButtonHidden = page === maxPages;
 
-  const isSceneButtonLoading = isPageAnimating || isSubtitleAnimating;
+  const isSceneButtonLoading = isSubtitleAnimating;
 
   // 1 -3. Outro
-  const isReplayAppButtonHidden = !(
-    isOutroStage &&
-    isEnterEnd &&
-    !(isEntering || isExiting || isExited)
-  );
+  const isOutroButtonRendered =
+    isOutroStage && isEnterEnd && (!isExiting || isExited);
 
   // 2. Audio
   const isAudioMuted = audioState.muted;
@@ -135,9 +132,19 @@ function ExperienceInterface({ stageService }) {
   });
 
   /**
+   * Props 선언
+   */
+  const cssTransitionProps = {
+    classNames: transitionClassName,
+    timeout: {
+      enter: 300,
+      exit: 300,
+    },
+  };
+
+  /**
    * 컴포넌트 렌더링
    */
-
   const renderAsideTopNodes = (
     <Fragment>
       <Dummy />
@@ -150,23 +157,32 @@ function ExperienceInterface({ stageService }) {
     </Fragment>
   );
 
+  /**
+   * 버튼 렌더링 여부에 따른 Enter, Exit 애니메이션은
+   * TransitionGroup + CSSTransition에 위임합니다.
+   */
   const renderAsideBottomNodes = (
-    <Fragment>
-      {isIntroStage && (
-        <Fragment>
+    <TransitionGroup component={TransitionStyleProvider}>
+      {/* Phase 1. 인트로 */}
+      {isIntroButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <Dummy />
+        </CSSTransition>
+      )}
 
+      {isIntroButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <ControlButton
             imagePath={interfaceImages.buttonArrowLtr}
             imageAlt="go to read popup book :)"
             onClick={startApp}
-            visible={!isIntroButtonHidden}
           />
-        </Fragment>
+        </CSSTransition>
       )}
 
-      {isSceneStage && (
-        <Fragment>
+      {/* Phase 2. 막 */}
+      {isSceneButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <ControlButton
             imagePath={interfaceImages.buttonArrowRtl}
             imageAlt="Go to prev page button"
@@ -174,7 +190,11 @@ function ExperienceInterface({ stageService }) {
             visible={!isScenePrevButtonHidden}
             loading={isSceneButtonLoading}
           />
+        </CSSTransition>
+      )}
 
+      {isSceneButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <ControlButton
             imagePath={interfaceImages.buttonArrowLtr}
             imageAlt="Go to next page button"
@@ -182,22 +202,25 @@ function ExperienceInterface({ stageService }) {
             visible={!isSceneNextButtonHidden}
             loading={isSceneButtonLoading}
           />
-        </Fragment>
+        </CSSTransition>
       )}
 
-      {isOutroStage && (
-        <Fragment>
+      {isOutroButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <Dummy />
+        </CSSTransition>
+      )}
 
+      {isOutroButtonRendered && (
+        <CSSTransition {...cssTransitionProps}>
           <ControlButton
             imagePath={interfaceImages.buttonReplay}
             imageAlt="Replay popup book :)"
             onClick={replayApp}
-            visible={!isReplayAppButtonHidden}
           />
-        </Fragment>
+        </CSSTransition>
       )}
-    </Fragment>
+    </TransitionGroup>
   );
 
   return (
@@ -259,6 +282,41 @@ const Aside = styled.aside`
 
   pointer-events: auto;
   touch-action: auto;
+`;
+
+const TransitionStyleProvider = styled.div`
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+
+  .${transitionClassName}-enter {
+    transform: scale(0.0001);
+
+    user-select: none;
+    pointer-events: none;
+    touch-action: none;
+  }
+
+  .${transitionClassName}-enter-active {
+    transform: scale(1);
+
+    transition: transform 300ms cubic-bezier(0.54, 1.66, 0.81, 1) !important;
+  }
+
+  .${transitionClassName}-exit {
+    transform: scale(1);
+  }
+
+  .${transitionClassName}-exit-active {
+    transform: scale(0.0001);
+
+    transition: transform 300ms cubic-bezier(0.36, 0, 0.66, -0.56) !important;
+
+    user-select: none;
+    pointer-events: none;
+    touch-action: none;
+  }
 `;
 
 const Dummy = styled.div`
