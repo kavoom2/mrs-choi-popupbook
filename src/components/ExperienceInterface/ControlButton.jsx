@@ -91,7 +91,8 @@ const Button = styled.button`
   ${resToMax(breakpointsMax.tablet)} {
     height: 80px;
   }
-  e ${resToMax(breakpointsMax.mobile)} {
+
+  ${resToMax(breakpointsMax.mobile)} {
     height: 70px;
   }
 
