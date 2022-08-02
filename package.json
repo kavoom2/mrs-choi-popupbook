@@ -34,7 +34,7 @@
     "start": "react-app-rewired start",
     "start:webglDebug": "react-app-rewired start --webglDebug",
     "start:bundleAnalzye": "react-app-rewired start --bundleAnalzye",
-    "build": "react-app-rewired build",
+    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:bundleAnalzye": "react-app-rewired build --bundleAnalzye",
     "postbuild": "react-snap",
     "test": "react-app-rewired test",

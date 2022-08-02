@@ -5,6 +5,8 @@ const {
 } = require("customize-cra");
 const path = require("path");
 
+const webpack = require("webpack");
+
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
@@ -98,6 +100,15 @@ if (isProduction)
     addWebpackPlugin(
       new WebpackManifestPlugin({
         basePath: "./build",
+      })
+    ),
+
+    /**
+     * Disable React Devtools
+     */
+    addWebpackPlugin(
+      new webpack.DefinePlugin({
+        __REACT_DEVTOOLS_GLOBAL_HOOK__: "({ isDisabled: true })",
       })
     )
   );
