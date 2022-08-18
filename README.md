@@ -1,8 +1,8 @@
 <div align="center">
-    <img src="https://drive.google.com/uc?export=view&id=1bM9sHVYVzX6KWOBwRmJBGjyOX3EKie4y" width="25%"/>
+    <img src="logo.png" width="25%"/>
 </div>
 <div align="center">
-    <img src="https://drive.google.com/uc?export=view&id=1f7EhAt7rEcyhndnrOF3XDGM6xpxUmYH_" />
+    <img src="preview.png" />
 </div>
 
 # :wave: Hey, Ms.Choi!
