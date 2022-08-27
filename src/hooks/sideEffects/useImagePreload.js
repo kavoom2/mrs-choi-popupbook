@@ -1,8 +1,13 @@
+import { getWebpPath } from "@components/Picture/_utils/paths";
 import { useDidMount } from "rooks";
+import { checkWebPSupport } from "./_utils/webp";
 
 const assetPreloader = {
   _cache: new Set(),
 };
+
+let isWebpSupported =
+  navigator.userAgent != "ReactSnap" ? true : checkWebPSupport();
 
 assetPreloader.preload = async function (nextAssets = []) {
   const promiseList = nextAssets
@@ -18,7 +23,7 @@ assetPreloader.preload = async function (nextAssets = []) {
               asset: asset,
             });
           img.onerror = img.onabort = () => reject();
-          img.src = asset;
+          img.src = isWebpSupported ? getWebpPath(asset) : asset;
         })
     );
 

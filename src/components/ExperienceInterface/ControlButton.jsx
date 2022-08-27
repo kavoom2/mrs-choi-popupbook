@@ -1,4 +1,5 @@
 import { breakpointsMax, resToMax } from "@components/@design-language";
+import Picture from "@components/Picture";
 import classNames from "classnames";
 import styled from "styled-components";
 
@@ -46,7 +47,7 @@ function ControlButton({
       className={buttonClassNames}
       disabled={mergedDisabled}
     >
-      <img src={imagePath} alt={imageAlt} loading="lazy" />
+      <Picture src={imagePath} alt={imageAlt} />
     </Button>
   );
 }
