@@ -73,6 +73,14 @@
     "webpack-manifest-plugin": "^5.0.0"
   },
   "reactSnap": {
-    "source": "build"
+    "source": "build",
+    "crawl": false,
+    "include": [
+      "/"
+    ],
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   }
 }
