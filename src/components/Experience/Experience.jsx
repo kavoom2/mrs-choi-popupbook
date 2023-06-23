@@ -4,17 +4,17 @@ import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "@xstate/react";
 import { Fragment, lazy, memo, Suspense } from "react";
-import AxisDebugger from "./AxisDebugger";
-import Background from "./Background";
-import Camera from "./Camera";
-import DisableRender from "./DisableRenderer";
-import Stats from "./Stats";
 import {
   bookContextSelector,
   isStageSceneSelector,
   isWebGLReadySelector,
   stageValueSelector,
 } from "./_utils/stateMachineUtils";
+import AxisDebugger from "./AxisDebugger";
+import Background from "./Background";
+import Camera from "./Camera";
+import DisableRender from "./DisableRenderer";
+import Stats from "./Stats";
 
 const PopupBook = lazy(() => import("./PopupBook"));
 
@@ -74,7 +74,7 @@ function Experience({ stageService }) {
           isStageScene={isStageScene}
         />
 
-        <Environment preset="city" />
+        <Environment files="/static/environments/potsdamer_platz_1k.hdr" />
         <Camera stageValue={stageValue} />
       </Suspense>
 
