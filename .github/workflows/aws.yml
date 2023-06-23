@@ -34,7 +34,7 @@ jobs:
         run: yarn install
 
       - name: 빌드 파일 생성
-        run: yarn CI=false build
+        run: yarn build
 
       - name: AWS 보안 설정
         uses: aws-actions/configure-aws-credentials@v1
