@@ -59,6 +59,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@principalstudio/html-webpack-inject-preload": "^1.2.7",
     "customize-cra": "^1.0.0",
     "favicons": "^6.2.2",
