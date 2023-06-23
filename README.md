@@ -23,6 +23,7 @@
 - WebGL 성능 최적화
   - gltf 모델 최적화
   - 벡터 연산 시 싱글톤 인스턴스를 사용하여 성능 향상
+- Webpack을 이용한 빌드 시 이미지 최적화 (_.png -> _.webp)
 - 페이지 초기 로딩 중 사용성 개선(로딩 화면에 필요한 특정 리소스를 Preload하도록 설정)
 - AWS(S3 + Cloudfront + Route53)로 정적 웹사이트 배포
 - GitHub Actions를 이용한 배포 자동화

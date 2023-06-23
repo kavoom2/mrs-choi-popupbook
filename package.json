@@ -64,6 +64,7 @@
     "favicons": "^6.2.2",
     "favicons-webpack-plugin": "^5.0.2",
     "html-webpack-plugin": "^5.5.0",
+    "imagemin-webp-webpack-plugin": "^3.3.6",
     "react-app-rewired": "^2.2.1",
     "react-snap": "^1.23.0",
     "webpack": "^5.73.0",

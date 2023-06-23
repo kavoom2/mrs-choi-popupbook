@@ -4,6 +4,7 @@ import {
   breakpointsMin,
   resToMax,
 } from "@components/@design-language";
+import Picture from "@components/Picture";
 import useImagePreload from "@hooks/sideEffects/useImagePreload";
 import classNames from "classnames";
 import styled, { css, keyframes } from "styled-components";
@@ -92,14 +93,18 @@ function LoaderScreen({
             className={commonPositionerClassNames}
             outroDirection="ttb"
           >
-            <CharacterImg {...bearCharProps} className={bearClassNames}>
-              <source
-                media={`(min-width:${breakpointsMin.tablet}px)`}
-                srcSet={interfaceImages.loaderBearNormal}
-                alt={bearAlt}
-              />
-              <img src={interfaceImages.loaderBearSmall} alt={bearAlt} />
-            </CharacterImg>
+            <CharacterImg
+              {...bearCharProps}
+              className={bearClassNames}
+              src={interfaceImages.loaderBearSmall}
+              alt={bearAlt}
+              srcSets={[
+                {
+                  srcSet: interfaceImages.loaderBearNormal,
+                  media: `(min-width:${breakpointsMin.tablet}px)`,
+                },
+              ]}
+            />
           </CharacterPositioner>
         </CharacterAnimationOrigin>
 
@@ -108,14 +113,18 @@ function LoaderScreen({
             className={commonPositionerClassNames}
             outroDirection="btt"
           >
-            <CharacterImg {...rabbitCharProps} className={rabbitClassNames}>
-              <source
-                media={`(min-width:${breakpointsMin.tablet}px)`}
-                srcSet={interfaceImages.loaderRabbitNormal}
-                alt={rabbitAlt}
-              />
-              <img src={interfaceImages.loaderRabbitSmall} alt={rabbitAlt} />
-            </CharacterImg>
+            <CharacterImg
+              {...rabbitCharProps}
+              className={rabbitClassNames}
+              src={interfaceImages.loaderRabbitSmall}
+              alt={rabbitAlt}
+              srcSets={[
+                {
+                  srcSet: interfaceImages.loaderRabbitNormal,
+                  media: `(min-width:${breakpointsMin.tablet}px)`,
+                },
+              ]}
+            />
           </CharacterPositioner>
         </CharacterAnimationOrigin>
 
@@ -329,7 +338,7 @@ const CharacterPositioner = styled.div`
   }}
 `;
 
-const CharacterImg = styled.picture`
+const CharacterImg = styled(Picture)`
   ${(props) => {
     const { animationDuration, animationDelay } = props;
 

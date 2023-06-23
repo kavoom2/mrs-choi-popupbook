@@ -5,6 +5,7 @@ import {
   resToMax,
   resToMin,
 } from "@components/@design-language";
+import PictureOrigin from "@components/Picture";
 import { useImagePreload } from "@hooks/sideEffects";
 import classNames from "classnames";
 import { memo } from "react";
@@ -45,24 +46,26 @@ function Frame() {
 
       <BlankFiller flexOrder={3} />
 
-      <Picture flexOrder={2} className={imageClassNames}>
-        <source
-          media={`(min-width: ${breakpointsMin.desktop}px)`}
-          srcSet={interfaceImages.frameDesktop1920}
-          alt={frameAlt}
-        />
-        <source
-          media={`(min-width: ${breakpointsMin.laptop}px)`}
-          srcSet={interfaceImages.frameDesktop1080}
-          alt={frameAlt}
-        />
-        <source
-          media={`(min-width: ${breakpointsMin.tablet}px)`}
-          srcSet={interfaceImages.frameMobile900}
-          alt={frameAlt}
-        />
-        <img src={interfaceImages.frameMobile600} alt={frameAlt} />
-      </Picture>
+      <Picture
+        flexOrder={2}
+        className={imageClassNames}
+        src={interfaceImages.frameMobile600}
+        alt={frameAlt}
+        srcSets={[
+          {
+            srcSet: interfaceImages.frameDesktop1920,
+            media: `(min-width: ${breakpointsMin.desktop}px)`,
+          },
+          {
+            srcSet: interfaceImages.frameDesktop1080,
+            media: `(min-width: ${breakpointsMin.laptop}px)`,
+          },
+          {
+            srcSet: interfaceImages.frameMobile900,
+            media: `(min-width: ${breakpointsMin.tablet}px)`,
+          },
+        ]}
+      />
     </FrameWrapper>
   );
 }
@@ -121,7 +124,7 @@ const BlankFiller = styled.div`
   }}
 `;
 
-const Picture = styled.picture`
+const Picture = styled(PictureOrigin)`
   ${(props) => {
     const { flexOrder } = props;
 
